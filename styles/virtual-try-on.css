@@ -1,0 +1,159 @@
+input[type=file], /* FF, IE7+, chrome (except button) */
+input[type=file]::-webkit-file-upload-button {
+  /* chromes and blink button */
+  cursor: pointer;
+}
+
+.virtual-try-on-container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 50px 0;
+}
+
+.try-on-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 50px;
+}
+
+h2 {
+  color: #353c44;
+  font-size: 30px;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.left-side {
+  position: relative;
+}
+
+.user-image {
+  line-height: 0;
+}
+
+.user-image img,
+#videoCam {
+  border: 2px solid #666666;
+  border-radius: 50px;
+  width: 450px;
+  height: 450px;
+}
+
+.user-camera {
+  display: none;
+}
+
+.use-camera {
+  background-color: white;
+  position: absolute;
+  z-index: 50;
+  bottom: 30px;
+  right: 37%;
+  height: 50px;
+  width: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 100px;
+  cursor: pointer;
+}
+
+.upload-image {
+  background-color: white;
+  position: absolute;
+  z-index: 50;
+  bottom: 30px;
+  right: 50%;
+  height: 50px;
+  width: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 100px;
+  cursor: pointer;
+}
+
+.upload {
+  width: 100%;
+  opacity: 0;
+  position: absolute;
+  cursor: pointer;
+}
+
+.right-side {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.item-container {
+  min-height: 400px;
+  max-height: 400px;
+  min-width: 470px;
+  max-width: 470px;
+  overflow-y: scroll;
+}
+
+.items {
+  display: inline-grid;
+  grid-template-columns: auto auto auto;
+  gap: 30px;
+  margin-top: 20px;
+  margin-right: 20px;
+}
+
+.items h2 {
+  margin: 0;
+}
+
+.filters {
+  display: flex;
+  gap: 35px;
+}
+
+.filters a {
+  color: #353c44;
+  font-weight: 600 !important;
+  text-transform: capitalize;
+}
+
+.filter-item {
+  border-bottom: 3px solid white;
+  cursor: pointer !important;
+}
+
+.filter-item-active {
+  border-bottom: 3px solid #172b4d;
+}
+
+.items img {
+  border: 1px solid #e6e6e6;
+  border-radius: 10px;
+}
+
+.items h3 {
+  font-size: 16px;
+  text-align: center;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.item {
+  cursor: pointer;
+}
+
+/* image drag */
+.dragme {
+  position: relative;
+  width: 270px;
+  height: 203px;
+  cursor: move;
+}
+
+.dragmeDiv {
+  position: absolute;
+  top: 25%;
+  z-index: 50;
+  left: 25%;
+}

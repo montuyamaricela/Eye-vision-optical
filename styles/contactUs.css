@@ -1,0 +1,276 @@
+body {
+  position: relative;
+}
+
+.contact-content {
+  display: inline-grid;
+  grid-template-columns: auto auto;
+  gap: 50px;
+  width: 100%;
+}
+
+.section-title {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.div-title {
+  color: #666666;
+  font-size: 18px;
+  margin-top: 20px;
+}
+
+.contact-item {
+  display: flex;
+  gap: 20px;
+  border-bottom: 1px solid #dedede;
+  padding-bottom: 20px;
+  margin-top: 20px;
+}
+
+.textWithIcon {
+  display: flex;
+  width: 25%;
+  gap: 5px;
+}
+
+.textWithIcon p {
+  color: #666666;
+  font-weight: 400;
+  font-size: 14px;
+}
+.contact-detail {
+  color: #666666;
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: normal;
+  width: 90%;
+}
+
+.contact-detail {
+  text-transform: lowercase;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.contact-form {
+  width: 800px;
+}
+
+.form-input {
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  width: 100%;
+}
+
+.form-input input,
+select,
+textarea {
+  border: 1px solid #d4d4d4 !important;
+}
+
+.check {
+  display: flex;
+  align-items: start;
+  gap: 10px;
+}
+
+.span {
+  font-size: 14px;
+  color: #999999;
+}
+
+.colored-link {
+  color: #3f61ad;
+  text-transform: capitalize;
+}
+
+.colored-link:hover {
+  color: #6cbeec;
+}
+
+.submit {
+  width: 200px;
+  padding: 10px 0;
+  border-radius: 5px;
+  background-color: #428fc5;
+  color: white;
+  border: 2px solid transparent;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.submit:hover {
+  background-color: #519fd6;
+  color: white;
+}
+
+.book-appointment {
+  width: 90%;
+  margin: auto;
+}
+
+.two-column-input {
+  display: flex;
+  gap: 30px;
+}
+
+.two-column-input .form-input input,
+select,
+.form-input input,
+textarea {
+  border-radius: 5px !important;
+  margin-top: 5px;
+}
+
+.text {
+  color: #333333;
+  font-weight: 600;
+  margin: 10px 0 5px 0;
+}
+
+.contact-box {
+  background-color: #f6f6f6;
+  text-align: center;
+  padding: 50px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin: 20px 0 75px 0;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.bg-dark {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: black;
+  opacity: 0.5;
+  z-index: 50;
+}
+
+/* .sent {
+  position: fixed;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  top: 350px;
+  left: 700px;
+  width: 400px;
+  height: 200px;
+  background-color: white;
+  border-radius: 20px;
+  z-index: 60;
+  padding: 0 50px;
+  text-align: center;
+} */
+
+.sent {
+  position: fixed;
+  background-color: white;
+  top: 320px;
+  left: 750px;
+  right: 0;
+  bottom: 0;
+  width: 350px;
+  height: 250px;
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 20px;
+  text-align: center;
+  padding: 0 50px;
+  display: none;
+}
+
+#dark {
+  display: none;
+}
+
+.closebtn {
+  position: absolute;
+  border: none;
+  /* width: 25px;
+  height: 25px; */
+  cursor: pointer;
+  top: -55px;
+  right: -30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.closebtn svg {
+  width: 30px;
+  height: 30px;
+}
+
+.content {
+  position: relative;
+  /* display: flex;
+  align-items: center;
+  justify-content: center; */
+}
+
+.required {
+  color: red;
+}
+
+.popupMessage {
+  font-weight: 600;
+  font-size: 13px;
+  margin-top: 10px;
+}
+
+.closebtn-appointment {
+  position: absolute;
+  border: none;
+  /* width: 25px;
+  height: 25px; */
+  cursor: pointer;
+  top: -40px;
+  right: -30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.closebtn-appointment svg {
+  width: 30px;
+  height: 30px;
+}
+
+.confirmation {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.confirmation p {
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.confbutton {
+  margin-top: 20px;
+}
+
+.close {
+  background-color: #3f61ad;
+  color: white;
+  padding: 7px 40px;
+  text-transform: uppercase;
+  font-size: 14px;
+  border-radius: 5px;
+}

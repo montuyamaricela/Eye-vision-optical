@@ -1,0 +1,167 @@
+.about-bg {
+  background-image: url(../public/images/backgrounds/about.png);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  padding: 200px;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#about h3 {
+  font-family: "EB Garamond", serif;
+  font-size: 48px;
+  font-weight: 700;
+}
+
+.about-item {
+  display: flex;
+  align-items: center;
+  line-height: 0;
+}
+
+.image {
+  width: 50%;
+}
+
+.about-image {
+  width: 100%;
+  height: 500px;
+}
+
+.content {
+  width: 50%;
+  line-height: normal;
+}
+
+.about {
+  line-height: 25px;
+}
+
+.right {
+  margin-bottom: 0;
+  margin-left: 50px;
+}
+
+.left {
+  margin-bottom: 0;
+  margin-right: 50px;
+}
+
+/* frequently asked question */
+.faq {
+  margin-top: 20px;
+  font-family: "Lato", sans-serif;
+}
+
+.faq-item {
+  width: 600px;
+  margin: auto;
+}
+
+.faq-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.question {
+  cursor: pointer;
+  display: flex;
+  background-color: #ebebeb;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+}
+
+.question:hover {
+  background-color: #cccccc;
+  transition: all 0.3s ease-in-out;
+}
+
+.item-question {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.question svg {
+  display: flex;
+}
+
+.plus {
+  transition: transform 0.5s ease-in-out;
+}
+
+.answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease-in-out;
+}
+
+.faq-item.open .answer {
+  max-height: 200px;
+}
+
+.faq-item.open .question {
+  background-color: #cccccc;
+}
+
+.answer p {
+  padding: 30px 20px;
+  margin: 0;
+}
+
+.faq-item.open .plus {
+  transform: rotate(45deg);
+}
+
+/* .check {
+  width: 100px;
+  height: 100px;
+} */
+
+
+.bordered-text {
+  width: 600px;
+  margin: auto;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.header > h2 {
+  margin-bottom: 10px;
+  text-align: center;
+  font-size: 40px;
+}
+
+.item {
+  position: relative;
+  border-left: 1px solid black;
+  padding-left: 50px;
+}
+
+.check {
+  position: absolute;
+  top: -25px;
+  left: -20px;
+}
+
+.bordered-title {
+  color: #4977bc;
+  margin-top: 10px;
+  font-size: 20px;
+  text-transform: capitalize;
+  padding-top: 10px;
+}
+
+.bordered-description {
+  font-size: 15px;
+  margin-top: 5px;
+  padding-bottom: 20px;
+}

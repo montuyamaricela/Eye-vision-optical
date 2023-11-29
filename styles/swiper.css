@@ -1,0 +1,47 @@
+.swiper-container {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: auto; /* Adjust the height as needed */
+}
+
+.swiper-wrapper {
+  display: flex;
+  transition: transform 3s ease;
+  width: 100%;
+}
+
+.swiper-slide {
+  flex: 0 0 100%;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.swiper-slide img {
+  width: 100%;
+  height: 832px;
+  object-fit: cover;
+}
+
+.swiper-dots {
+  position: absolute;
+  text-align: center;
+  bottom: 20px;
+  right: 0;
+  left: 0;
+}
+
+.swiper-dot {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  background-color: transparent;
+  border-radius: 50%;
+  border: 4px solid white;
+  margin: 0 5px;
+  cursor: pointer;
+}
+
+.swiper-dot.active {
+  background-color: #3f61ad;
+}
