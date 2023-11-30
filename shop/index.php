@@ -356,14 +356,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- <div>
-            <h3>Social</h3>
-            <div class="footer-item">
-              <a href="">Facebook</a>
-              <a href="">Instagram</a>
-              <a href="">Twiter</a>
-            </div>
-          </div> -->
             </div>
         </div>
     </footer>

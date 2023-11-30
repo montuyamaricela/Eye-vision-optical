@@ -84,7 +84,7 @@
 }
 
 .product-items-container {
-  height: 620px !important;
+  height: 660px !important;
 }
 
 .product-item {
@@ -104,12 +104,16 @@
 
 .product-details {
   background-color: #f7f7f7;
-  padding: 10px 0;
+  padding: 10px;
   margin: 0;
+  height: 70px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .product-details h3 {
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 600;
   text-transform: capitalize;
 }

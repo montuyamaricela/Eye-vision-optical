@@ -69,7 +69,7 @@
                         ?>
                     </div>
                 </div>
-                <a href="../contact.php">contact</a>
+                <a href="virtual-try-on.php">Virtual Try On</a>
                 <a href="appointment.php">Book an Appointment</a>
 
                 <div class="svg-items">

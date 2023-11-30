@@ -76,7 +76,7 @@ $result = mysqli_query($con, $sql);
     <link rel="stylesheet" href="../styles/global.css?v=4" />
 
     <!-- product styles/css -->
-    <link rel="stylesheet" href="../styles/product.css?v=4" />
+    <link rel="stylesheet" href="../styles/product.css?v=5" />
 </head>
 
 <body>
@@ -209,16 +209,17 @@ $result = mysqli_query($con, $sql);
                     </div>
                     <div class="category-items-long" id="category-items">
                         <a href="products.php?category=<?php echo $filter_category; ?>">All</a>
-
                         <a href="products.php?color=Black&category=<?php echo $filter_category; ?>">Black</a>
                         <a href="products.php?color=Silver&category=<?php echo $filter_category; ?>">Silver</a>
-                        <a href="products.php?color=Gray&category=<?php echo $filter_category; ?>">Gray</a>
+                        <a href="products.php?color=Pink&category=<?php echo $filter_category; ?>">Pink</a>
+                        <a href="products.php?color=Gold&category=<?php echo $filter_category; ?>">Gold</a>
                         <a href="products.php?color=Brown&category=<?php echo $filter_category; ?>">Brown</a>
                         <a href="products.php?color=Green&category=<?php echo $filter_category; ?>">Green</a>
                         <a href="products.php?color=Red&category=<?php echo $filter_category; ?>">Red</a>
                         <a href="products.php?color=Orange&category=<?php echo $filter_category; ?>">Orange</a>
-                        <a
-                            href="products.php?color=Clear/white&category=<?php echo $filter_category; ?>">Clear/white</a>
+                        <a href="products.php?color=Clear/white&category=<?php echo $filter_category; ?>">
+                            Clear/white
+                        </a>
 
                         <!-- Add more color options as needed -->
                     </div>

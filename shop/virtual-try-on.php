@@ -4,8 +4,13 @@ include '../db_connection.php';
 mysqli_select_db($con, 'product');
 
 if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) {
-        $user_id = $_SESSION['user_id'];
-} 
+    $user_id = $_SESSION['user_id'];
+} else {
+    echo "<script>
+        alert('You must logged in before accessing the page!');
+        location.href='login.php'
+    </script>";
+}
 
 
 
@@ -23,12 +28,15 @@ $initial_page = ($page_number - 1) * $limit;
 $sql = "SELECT * FROM products";
 
 // Add condition to filter by category if specified in the URL
-if (!empty($filter_category)) {
+if (!empty($filter_category) && $filter_category !== 'Accessories') {
     $sql .= " WHERE Category = '$filter_category'";
+} elseif ($filter_category === '') {
+    // Exclude products with 'Accessories' category
+    $sql .= " WHERE Category != 'Accessories'";
 }
 
-
 $sql .= " LIMIT $initial_page, $limit";
+
 
 $result = mysqli_query($con, $sql);
 ?>
@@ -53,7 +61,7 @@ $result = mysqli_query($con, $sql);
     <link rel="stylesheet" href="../styles/global.css?v=4" />
 
     <!-- product styles/css -->
-    <link rel="stylesheet" href="../styles/virtual-try-on.css?v=2" />
+    <link rel="stylesheet" href="../styles/virtual-try-on.css?v=5" />
 </head>
 
 <body>
@@ -80,7 +88,7 @@ $result = mysqli_query($con, $sql);
                         ?>
                     </div>
                 </div>
-                <a href="../contact.php">contact</a>
+                <a href="virtual-try-on.php">Virtual Try On</a>
                 <a href="appointment.php">Book an Appointment</a>
 
                 <div class="svg-items">
@@ -159,10 +167,11 @@ $result = mysqli_query($con, $sql);
                         <img src="" id="try-on-image" alt="Image">
                     </div>
                     <div class="dragmeDiv">
-                        <img src="../public/images/Glasses/EO-EYEWEAR.jpg" class="dragme" alt="item">
+                        <div class="resizable">
+                            <img src="#" id="try-item" class="dragme" alt="item">
 
+                        </div>
                     </div>
-
                     <div class="use-camera" onclick="openCam()">
                         <svg xmlns=" http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="#172B4D" width="24">
@@ -184,14 +193,27 @@ $result = mysqli_query($con, $sql);
             </div>
             <div class="right-side">
                 <div class="filters">
-                    <a href="virtual-try-on.php" class="">All</a>
+                    <?php
+                        if ($filter_category === ''){
+                            echo "<a href='virtual-try-on.php' class='filter-item-active'>All</a>";
+                        } else {
+                            echo "<a href='virtual-try-on.php'>All</a>";
+
+                        }
+                    ?>
                     <?php
                         $sql = "SELECT * FROM Category";
                         $res = mysqli_query($con, $sql);
                             while ($row = mysqli_fetch_array($res)){
                                 if ($row['Category_name'] != 'Accessories') {
                                     $category = $row['Category_name'];
-                                    echo "<a class='filter-item' data-category='$category'>$category</a>";
+                                    if ($filter_category === $category){
+                                        echo "<a class='filter-item-active' data-category='$category'>$category</a>";
+                                    } else {
+                                        echo "<a class='filter-item' data-category='$category'>$category</a>";
+
+                                    }
+
                                 }
                             }
                         ?>
@@ -203,19 +225,15 @@ $result = mysqli_query($con, $sql);
                         }
                         ?>
                         <?php while ($row = mysqli_fetch_array($result)){ ?>
-                        <!-- <a href=" <products.php" class="product-item"> -->
-                        <!-- <a href="item.php?product-id=<?php echo $row['ID']?>"> -->
-                        <div class="item">
-
+                        <div class="item" onclick="getImageSrc(this)">
                             <div class=" product-image">
-                                <img src="../public/images/<?php echo $row['Image']?>" alt="<?php echo $row['Name']?>"
-                                    height="120" />
+                                <img id="product-image" src="../public/images/<?php echo $row['Image']?>"
+                                    alt="<?php echo $row['Name']?>" height="120" />
                             </div>
                             <div>
                                 <h3><?php echo $row['Name']?></h3>
                             </div>
                         </div>
-                        <!-- </a> -->
                         <?php } ?>
                     </div>
 

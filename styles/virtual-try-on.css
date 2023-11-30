@@ -143,17 +143,62 @@ h2 {
   cursor: pointer;
 }
 
+#try-item {
+  display: none;
+}
+
 /* image drag */
-.dragme {
+/* .dragme {
   position: relative;
-  width: 270px;
-  height: 203px;
+  width: 200px;
+  height: 200px;
   cursor: move;
 }
 
 .dragmeDiv {
   position: absolute;
-  top: 25%;
+  top: 0;
   z-index: 50;
-  left: 25%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  line-height: 0;
+}
+
+.resizable {
+  display: inline-block;
+  background: transparent;
+  resize: both;
+  overflow: hidden;
+} */
+
+.dragme {
+  position: relative;
+  width: 100%; /* Set initial width to 100% */
+  max-width: 60%; /* Maximum width of 150px */
+  margin: auto;
+  height: auto; /* Maintain aspect ratio */
+  cursor: move;
+}
+
+.dragmeDiv {
+  position: absolute;
+  top: 0;
+  z-index: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100%;
+  line-height: 0;
+}
+
+.resizable {
+  display: inline-block;
+  background: transparent;
+  width: 100%;
+
+  /* width: 100%; */
+  height: 100%;
+  resize: both; /* Allow resizing */
+  overflow: hidden; /* Hide overflow to prevent visual issues when resizing */
 }

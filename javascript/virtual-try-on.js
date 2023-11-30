@@ -13,22 +13,11 @@ function setImageSource(src) {
 function handleFilterClick(event) {
   event.preventDefault();
 
-  // Remove the "active" class from all filter links
-  filterLinks.forEach((link) => {
-    link.classList.remove("filter-item-active");
-  });
-
-  // Apply your filter logic here...
-  event.target.classList.add("filter-item-active");
-
   // After filtering, reapply the uploaded image if it exists in sessionStorage
   const uploadedImageSrc = sessionStorage.getItem("uploadedImageSrc");
   if (uploadedImageSrc) {
     setImageSource(uploadedImageSrc);
   }
-
-  // Add the "active" class to the clicked link
-  event.target.classList.add("active");
 
   // Manually update the URL without triggering a page reload
   const filterCategory = event.target.getAttribute("data-category");
@@ -75,8 +64,6 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-
-
 // open camera
 function openCam() {
   document.getElementById("user-image").style.display = "none";
@@ -107,15 +94,11 @@ function openCam() {
     });
 }
 
-
 // display image
 function displayImage() {
   document.getElementById("user-image").style.display = "block";
   document.getElementById("user-camera").style.display = "none";
 }
-
-
-
 
 // drag and drop image
 function startDrag(e) {
@@ -163,3 +146,14 @@ window.onload = function () {
   document.onmousedown = startDrag;
   document.onmouseup = stopDrag;
 };
+
+// gets the image path of the clicked Image
+function getImageSrc(element) {
+  document.getElementById("try-item").style.display = "block";
+
+  let clickedImage = element.querySelector(".product-image img");
+  if (clickedImage) {
+    let src = clickedImage.getAttribute("src");
+    document.getElementById("try-item").src = src;
+  }
+}

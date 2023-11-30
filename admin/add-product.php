@@ -89,7 +89,8 @@
                             <option value="Black">Black</option>
                             <option value="Silver">Silver</option>
                             <option value="Green">Green</option>
-                            <option value="Gray">Gray</option>
+                            <option value="Pink">Pink</option>
+                            <option value="Gold">Gold</option>
                             <option value="Brown">Brown</option>
                             <option value="Red">Red</option>
                             <option value="Orange">Orange</option>
