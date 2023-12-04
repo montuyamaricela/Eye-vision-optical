@@ -1,0 +1,280 @@
+/* color scheme 
+text: 353c44
+background-light: F3F4F4
+background-dark: 1C1C1C */
+
+/* hero section ======================================= */
+
+.hero-section {
+  position: relative;
+  background: rgba(255, 255, 255, 0.9); /* White background with opacity */
+  text-align: center;
+}
+
+.dark-bg {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background-color: black;
+  opacity: 0.4;
+}
+
+.hero-section-landing {
+  background-image: url(../public/images/backgrounds/bg-2.png);
+  /* height: 800px; */
+  padding: 250px 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+}
+
+.hero {
+  text-align: center;
+  width: 50%;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  position: relative;
+  z-index: 20;
+  color: white;
+}
+
+.dark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: black;
+  opacity: 0.4;
+}
+
+.hero h1 {
+  font-size: 54px;
+}
+
+.hero-content p {
+  font-size: 15px;
+  margin: 10px 0;
+  width: 10px;
+}
+
+.hero-btn {
+  margin-top: 10px;
+  width: 150px;
+  background-color: transparent;
+  border: 1px solid white;
+  color: white;
+  padding: 10px 0;
+  border-radius: 5px;
+  transition: all 0.5s ease-in-out;
+  text-transform: uppercase !important;
+  cursor: pointer;
+}
+
+.hero-btn:hover {
+  transform: scale(1.09);
+}
+
+/* about section */
+.section-header {
+  font-size: 15px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #428fc5;
+  margin: 0;
+}
+
+.about-cont {
+  margin: 10px 0 50px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 100px;
+}
+
+.about-desc {
+  width: 80%;
+}
+
+.about-header {
+  font-size: 40px;
+  font-weight: 600;
+  line-height: 1;
+  margin-top: 5px;
+  text-align: left !important;
+}
+
+.about-description {
+  line-height: 24px;
+  margin: 20px 0;
+  font-size: 16px;
+}
+
+.aboutbtn {
+  background-color: transparent;
+  border: 1px solid #4aa0d6;
+  padding: 6px 30px;
+  border-radius: 5px;
+  color: #4aa0d6;
+  font-size: 14px;
+  transition: all 0.3s ease-in-out;
+}
+
+.aboutbtn:hover {
+  background-color: #4aa0d6;
+  color: white;
+}
+
+.about-image {
+  width: 100%;
+}
+
+.three-grid-image {
+  display: inline-grid;
+  gap: 40px;
+  grid-template-columns: auto auto auto;
+}
+
+.grid-container img {
+  width: 100%;
+}
+
+.two-grid-image {
+  display: inline-grid;
+  gap: 40px;
+  grid-template-columns: auto auto;
+}
+
+.grid-container {
+  display: inline-grid;
+  grid-template-columns: auto;
+  gap: 40px;
+  margin-top: 50px;
+}
+
+.grid-image {
+  width: 100%;
+  margin: 0;
+}
+
+.grid-image:hover {
+  opacity: 0.4;
+  transition: all 0.7s ease;
+}
+
+#appointment {
+  /* background-color: #303e47; */
+  background-image: url(../public/images/backgrounds/cta-bannerr.jpg);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.appointment {
+  display: flex;
+  color: white;
+}
+
+.appointment-img {
+  display: flex;
+  justify-content: center;
+  width: 50%;
+}
+
+.appointment-banner-content {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: start;
+}
+
+.section-title {
+  text-align: center;
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 5px;
+  color: #428fc5;
+}
+
+.appointment-banner-content h2 {
+  font-weight: 400;
+  font-size: 35px;
+  line-height: 40px;
+  margin: 10px 0 15px 0;
+}
+
+.appointment-banner-content p {
+  line-height: 26px;
+}
+
+.appointment-btn {
+  background-color: #428fc5;
+  padding: 10px 20px;
+  color: white;
+  font-size: 13px;
+  margin-top: 10px;
+  border-radius: 5px;
+  text-transform: capitalize;
+}
+
+.appointment-btn:hover {
+  background-color: #519fd6;
+}
+
+.shop-cont {
+  margin: 10px 0 50px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 100px;
+}
+
+.shop-desc {
+  width: 80%;
+}
+
+.shop-header {
+  font-size: 40px;
+  font-weight: 600;
+  line-height: 1;
+  margin-top: 5px;
+  text-align: left !important;
+}
+
+.shop-description {
+  line-height: 24px;
+  margin: 20px 0;
+  font-size: 16px;
+}
+
+.shopbtn {
+  background-color: transparent;
+  border: 1px solid #4aa0d6;
+  padding: 6px 30px;
+  border-radius: 5px;
+  color: #4aa0d6;
+  font-size: 14px;
+  transition: all 0.3s ease-in-out;
+}
+
+.shopbtn:hover {
+  background-color: #4aa0d6;
+  color: white;
+}
+
+.shop-image {
+  width: 80%;
+  line-height: 0;
+}
+
+.shop-image img {
+  width: 100%;
+}

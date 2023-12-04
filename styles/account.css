@@ -1,0 +1,310 @@
+body {
+  position: relative;
+}
+
+.card input {
+  border: 1px solid #ced4da;
+  border-radius: 3px;
+}
+.card form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-input {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+}
+
+.form-input a {
+  margin-left: auto;
+  color: #3f61ad;
+  font-weight: 400;
+  font-size: 14px;
+}
+
+.form-input a:hover {
+  color: #6cbeec;
+  cursor: pointer;
+}
+
+form button,
+.sendEmail {
+  background-color: #172b4d;
+  border: none;
+  padding: 10px 0;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.sendEmail {
+  width: 100%;
+}
+
+.divider {
+  width: 100%;
+  height: 1px;
+  background-color: #e5e5e5;
+}
+
+.span {
+  text-align: center;
+  font-size: 14px;
+}
+.signup {
+  color: #3f61ad;
+  text-transform: capitalize;
+}
+
+.signup:hover {
+  color: #6cbeec;
+}
+
+.check {
+  display: flex;
+  align-items: start;
+}
+
+.bg-dark {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: black;
+  opacity: 0.5;
+  display: none;
+  z-index: 50;
+}
+
+.success {
+  position: fixed;
+  background-color: white;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 500px;
+  height: 75px;
+  z-index: 60;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  display: none;
+  text-align: center;
+}
+
+.forgotPass {
+  position: fixed;
+  background-color: white;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 500px;
+  height: 140px;
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  display: none;
+  text-align: center;
+}
+
+.success h3 {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.success p,
+.forgotPass p {
+  font-size: 14px;
+  font-weight: 400;
+  margin-top: 5px;
+}
+
+.success a,
+.forgotPass a {
+  font-size: 14px;
+  margin-top: 5px;
+  font-weight: 700;
+  margin-top: 5px;
+  text-transform: capitalize;
+  color: #3f61ad;
+}
+
+.error {
+  color: red;
+  font-size: 13px;
+  display: none;
+}
+
+.errorSignup {
+  color: red;
+  font-size: 13px;
+  display: none;
+}
+
+.forgotPass input {
+  border: 1px solid #ced4da;
+  width: 300px;
+  border-radius: 3px;
+}
+
+.forgotpass-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  /* gap: 20px; */
+}
+
+.forgotpass-content .form-input {
+  margin: 20px 0;
+}
+
+.forgotpass-content .closeIcon {
+  position: absolute;
+  top: -63px;
+  right: -70px;
+}
+
+.closeIcon {
+  position: absolute;
+  top: -70px;
+  right: -70px;
+}
+
+.closeBlocked {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+}
+
+/* My Account page */
+.profile {
+  display: flex;
+  gap: 50px;
+  margin: 20px 0;
+  justify-content: center;
+}
+
+.profile input,
+.profileCard {
+  border: 1px solid #ced4da;
+  border-radius: 3px;
+}
+
+.profileCard {
+  width: 50%;
+}
+
+.profileForm {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  padding: 30px 40px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  padding: 0 30px;
+  height: 60px;
+  color: white;
+  font-weight: 500;
+  background-color: #75afc0;
+  text-transform: uppercase;
+}
+
+.save {
+  display: flex;
+  margin: auto;
+  height: 40px;
+  align-items: center;
+  width: 150px;
+  background-color: #3f61ad;
+  border: none;
+  color: white;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.save:hover {
+  background-color: transparent;
+  border: 2px solid #3f61ad;
+  color: #3f61ad;
+}
+
+/* my account page */
+
+.svg-circle {
+  /* border: 1px solid black; */
+  width: 100px;
+  height: 100px;
+  padding: 10px;
+  border-radius: 100%;
+  background-color: gray;
+  cursor: pointer;
+  margin: auto;
+  position: relative;
+}
+
+.circle {
+  /* border: 1px solid black; */
+  width: 100px;
+  height: 100px;
+  padding: 10px;
+  border-radius: 100%;
+  cursor: pointer;
+  margin: auto;
+  position: relative;
+}
+
+input[type="file"] {
+  width: 100px;
+  height: 100px;
+  border-radius: 100%;
+  position: absolute;
+  left: -7px;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  cursor: pointer;
+  opacity: 0;
+}
+
+#profileImage {
+  display: none;
+  width: 100px;
+}
+
+.profilepic {
+  position: relative;
+}
+
+.profilePhoto {
+  border: 1px solid gray;
+  height: 100%;
+  width: 100%;
+  border-radius: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 20;
+  cursor: pointer;
+}
