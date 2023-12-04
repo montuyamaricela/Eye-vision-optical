@@ -308,15 +308,19 @@
 .summary-checkout table {
   width: 100%;
   font-size: 16px;
+  border-collapse: collapse;
+  /* text-align: center; */
 }
 
 .summary-checkout th {
   color: #929292;
   font-weight: 400;
+  text-align: left;
 }
 .summary-checkout td {
   color: #353c44;
   font-weight: 500;
+  font-size: 14px;
 }
 
 .paymentoption {

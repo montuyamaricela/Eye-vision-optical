@@ -142,3 +142,6 @@
   padding: 128px 0;
 }
 
+.totalOrder td {
+  font-size: 18px !important;
+}

@@ -49,6 +49,7 @@
             } else {
                 echo "<script>
                     alert('Verify your account first');
+                    window.open('http://www.gmail.com')
                 </script>";
             }
         }
@@ -296,7 +297,7 @@
                                         <button class='button'>Checkout</button>
                                     </div>";
                                     }
-                                } else{
+                                } else {
                                     echo "
                                     <div class='button-group'>
                                         <button class='button' onclick='redirectToLogin()'>

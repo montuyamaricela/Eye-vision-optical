@@ -189,79 +189,99 @@
             } else { ?>
             <div class="cart-container">
                 <div class="cart-products">
+                    <!-- <table>
+                        <tr>
+                            <th class="">
+                                <input type="checkbox" id="header-checkbox">
+                                <p>products</p>
+                            </th>
 
+                        </tr>
+                    </table> -->
                     <?php while ($row = mysqli_fetch_array($res)){?>
+                    <form action="checkout.php" method="POST" id="checkoutItems">
 
-                    <div class="product cart-items">
-                        <div class="card-item">
 
-                            <div class="remove-cart" onclick="removeItem(this)">
-                                <svg xmlns=" http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" height="25px">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                                <form class="remove-form" method="POST" action="cart.php">
-                                    <input type="text" class="product-id" hidden id="wishid"
-                                        value="<?php echo $row['Product_ID']?>" name="prodid">
-                                </form>
-                            </div>
+                        <div class="product cart-items">
+                            <div class="card-item">
+                                <input type="checkbox" class="data-checkbox" data-id="<?php echo $row[
+                                            'Product_ID'
+                                        ]; ?>">
+                                <input type="hidden" id="data-field" name="data" value="">
 
-                            <div class="card-image">
-                                <?php
+                                <div class="remove-cart" onclick="removeItem(this)">
+                                    <svg xmlns=" http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" height="25px">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                    <form class="remove-form" method="POST" action="cart.php">
+                                        <input type="text" class="product-id" hidden id="wishid"
+                                            value="<?php echo $row['Product_ID']?>" name="prodid">
+                                    </form>
+                                </div>
+
+                                <div class="card-image">
+                                    <?php
                                     $product_image = $row['Image'];
                                     echo "<img src='../public/images/$product_image' height='250px'></img>";
                                 ?>
-                            </div>
-                            <div class="cart-detail">
-                                <h2><?php echo $row['Product_name']?></h2>
-                                <input type="text" id="idCart" value="<?php echo $row['Product_ID']?>" hidden>
-                                <div>
-                                    <p class="detail-gray">Color:</p>
-                                    <div class="row-item">
-                                        <p class="detail-black"><?php echo $row['Color']?></p>
-                                        <p class="detail-black initial-price"><?php echo "₱".$row['Price']?></p>
-                                    </div>
                                 </div>
-
-                                <div>
-                                    <p class="detail-gray">Quantity:</p>
-
-                                    <div class="row-item">
-                                        <div class="quantity-counter">
-                                            <span style="cursor: pointer" id="minus-button">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                    stroke-width="1.5" stroke="#3f61ad" height="20px">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M18 12H6" />
-                                                </svg>
-                                            </span>
-                                            <input type="number" id="quantity" value="<?php echo $row['Quantity']?>"
-                                                max="<?php echo $row['Stock']?>" onkeydown="disableEnterNumber()">
-                                            <span style="cursor: pointer" id="add-button">
-                                                <svg xmlns=" http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                    stroke-width="1.5" stroke="#3f61ad" height="20px">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        d="M12 6v12m6-6H6" />
-                                                </svg>
-
-                                            </span>
-                                        </div>
-                                        <div>
-                                            <p class="detail-gray" id="grand-total"> Grand Total:
-                                                <span
-                                                    class="detail-black grand-total"><?php echo "₱".$row['Price']?></span>
-                                            </p>
+                                <div class="cart-detail">
+                                    <h2><?php echo $row['Product_name']?></h2>
+                                    <input type="text" id="idCart" value="<?php echo $row['Product_ID']?>" hidden>
+                                    <div>
+                                        <p class="detail-gray">Color:</p>
+                                        <div class="row-item">
+                                            <p class="detail-black"><?php echo $row['Color']?></p>
+                                            <p class="detail-black initial-price"><?php echo "₱".$row['Price']?></p>
                                         </div>
                                     </div>
 
-                                </div>
-                            </div>
+                                    <div>
+                                        <p class="detail-gray">Quantity:</p>
 
+                                        <div class="row-item">
+                                            <div class="quantity-counter">
+                                                <span style="cursor: pointer" id="minus-button">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="#3f61ad"
+                                                        height="20px">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            d="M18 12H6" />
+                                                    </svg>
+                                                </span>
+                                                <input type="number" class="quantity-input" id="quantity"
+                                                    name="quantity" value="<?php echo $row['Quantity']?>"
+                                                    max="<?php echo $row['Stock']?>" onkeydown="disableEnterNumber()">
+                                                <span style="cursor: pointer" id="add-button">
+                                                    <svg xmlns=" http://www.w3.org/2000/svg" fill="none"
+                                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="#3f61ad"
+                                                        height="20px">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            d="M12 6v12m6-6H6" />
+                                                    </svg>
+
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <p class="detail-gray" id="grand-total"> Grand Total:
+                                                    <span
+                                                        class="detail-black grand-total"><?php echo "₱".$row['Price']?></span>
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
                         </div>
-                    </div>
+                        <?php 
+                        }
+                        
+                    ?>
+                    </form>
 
-                    <?php }?>
-
-                    </table>
                 </div>
                 <?php if(mysqli_num_rows($res) != 0){ ?>
 
@@ -272,16 +292,7 @@
                         <p class="detail-black" id="allTotal">₱000.00</p>
                     </div>
                     <div class="cart-button">
-                        <form method='POST' action='item.php'>
-                            <input type='text' hidden name='id' id='id' value='$ID'>
-                            <input type='text' hidden name='product_name' value='$ProdName'>
-
-                            <input type='text' hidden name='quantity' id='quantityTotal'>
-                            <input type='text' hidden name='grandTotal' id='grandTotal'>
-                            <button>Checkout</button>
-
-                        </form>
-
+                        <button onclick="checkoutProducts()">Checkout</button>
                     </div>
                 </div>
                 <?php } ?>
@@ -343,7 +354,7 @@
         </div>
     </div>
 
-    <script src="../javascript/cart.js?v=21"></script>
+    <script src="../javascript/cart.js?v=29"></script>
     <script src="../javascript/global.js?v=2"></script>
 
 

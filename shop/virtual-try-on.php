@@ -5,12 +5,14 @@ mysqli_select_db($con, 'product');
 
 if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) {
     $user_id = $_SESSION['user_id'];
-} else {
-    echo "<script>
-        alert('You must logged in before accessing the page!');
-        location.href='login.php'
-    </script>";
-}
+} 
+
+// else {
+//     echo "<script>
+//         alert('You must logged in before accessing the page!');
+//         location.href='login.php'
+//     </script>";
+// }
 
 
 
@@ -61,7 +63,7 @@ $result = mysqli_query($con, $sql);
     <link rel="stylesheet" href="../styles/global.css?v=4" />
 
     <!-- product styles/css -->
-    <link rel="stylesheet" href="../styles/virtual-try-on.css?v=5" />
+    <link rel="stylesheet" href="../styles/virtual-try-on.css?v=8" />
 </head>
 
 <body>
@@ -164,12 +166,11 @@ $result = mysqli_query($con, $sql);
                         <video id="videoCam"></video>
                     </div>
                     <div class="user-image" id="user-image">
-                        <img src="" id="try-on-image" alt="Image">
+                        <img src="../public/images/upload-image.jpg" id="try-on-image" alt="Image">
                     </div>
                     <div class="dragmeDiv">
                         <div class="resizable">
                             <img src="#" id="try-item" class="dragme" alt="item">
-
                         </div>
                     </div>
                     <div class="use-camera" onclick="openCam()">

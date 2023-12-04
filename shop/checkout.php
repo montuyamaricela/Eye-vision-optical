@@ -2,24 +2,63 @@
     session_start();
     $user_id = $_SESSION['user_id'];
     include '../db_connection.php';
-      if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] != true) {
+    mysqli_select_db($con, 'user');
+    $fetchInfo = "SELECT a.ID, a.Name, a.Email, a.Phone, a.Address, b.Status
+        FROM user_info a
+        JOIN accounts b ON a.ID = b.ID
+        WHERE a.ID = '$user_id'";
+    $userInfo = mysqli_query($con, $fetchInfo); 
+    $userInfoStatus = mysqli_query($con, $fetchInfo);
+
+    while ($row = mysqli_fetch_array($userInfoStatus)){
+        if ($row['Status'] != "Verified"){
+            echo "<script>
+                alert('You need to verify your account first');
+                location.href='index.php'
+            </script>"; 
+        }
+    }
+    if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] != true) {
         echo "<script>
             alert('You need to login first');
             location.href='login.php'
         </script>";
-    } 
-    mysqli_select_db($con, 'user');
+    } else {
+        if (isset($_POST['data'])) {
+            $jsonData = $_POST['data'];
+            $data = json_decode($jsonData, true);
+            if ($data !== null) {
+                // Initialize arrays for product IDs and quantities
+                $productIds = [];
+                $quantities = [];
 
-    // if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    //     $id = $_POST['prodid'];
-    //     $removeCartItem = "DELETE FROM cart WHERE Product_ID = '$id'";
-    //     if(mysqli_query($con, $removeCartItem)){
-    //         echo "<script>
-    //             alert('Successfully Removed!')
-    //             location.href='cart.php'
-    //         </script>";
-    //     }
-    // }
+                // Iterate through each item in the JSON data
+                foreach ($data as $item) {
+                    // Get product ID and quantity
+                    $productId = $item['productId'];
+                    $quantity = $item['quantity'];
+
+                    // Store in respective arrays
+                    $productIds[] = $productId;
+                    $quantities[] = $quantity;
+                }
+                $idsToCheckout = implode(', ', array_map(fn($id) => "'$id'", $productIds));
+
+                //$products = "SELECT * FROM cart WHERE Product_ID IN ($idsToCheckout)";
+                $products = "Select Product_ID, Product_name,  Price, User_id, Stock from product.products a join user.cart b on a.ID = b.Product_ID WHERE b.User_id = '$user_id' AND Product_ID IN ($idsToCheckout)";
+                $checkedoutItem = mysqli_query($con, $products);
+
+
+            } else {
+                echo "Invalid JSON format";
+            }
+
+        } else {
+            echo "<script>
+                history.back();
+            </script>";
+        }
+    }
 ?>
 
 <!DOCTYPE html>
@@ -39,9 +78,9 @@
     <link rel="stylesheet" href="../styles/global.css?v=2" />
 
     <!-- cart page styles/css -->
-    <link rel="stylesheet" href="../styles/cart.css?v=7" />
+    <link rel="stylesheet" href="../styles/cart.css?v=9" />
 
-    <link rel="stylesheet" href="../styles/product.css?v=7" />
+    <link rel="stylesheet" href="../styles/product.css?v=9" />
 
     <link rel="stylesheet" href="../styles/contactUs.css?v=2" />
 
@@ -185,34 +224,37 @@
                     <h3>Shipping Address</h3>
 
                     <form action="">
+                        <?php while ($row = mysqli_fetch_array($userInfo)) { ?>
+
                         <div class="two-column-input">
                             <div class="form-input">
                                 <label for="name">Email Address </label>
-                                <input type="email" id="email" name="email" required />
+                                <input type="email" id="email" name="email" value="<?php echo $row['Email']; ?>"
+                                    required disabled />
                             </div>
                             <div class="form-input">
                                 <label for="name">Phone </label>
-                                <input type="number" id="phone" name="phone" required />
-                            </div>
-                        </div>
-                        <div class="two-column-input">
-                            <div class="form-input">
-                                <label for="name">First Name</label>
-                                <input type="tesxt" id="firstname" name="firstname" required />
-                            </div>
-                            <div class="form-input">
-                                <label for="name">Last Name </label>
-                                <input type="text" id="lastname" name="lastname" required />
+                                <input type="number" id="phone" name="phone" value="<?php echo $row['Phone']; ?>"
+                                    required />
                             </div>
                         </div>
                         <div class="form-input">
+                            <label for="name">Full Name</label>
+                            <input type="text" id="fullname" value="<?php echo $row['Name']; ?>" name="fullname"
+                                required />
+                        </div>
+
+                        <div class="form-input">
                             <label for="name">Address</label>
-                            <input type="text" id="Address" name="Address" required />
+                            <input type="text" id="Address" value="<?php echo $row['Address']; ?>" name="Address"
+                                required />
                         </div>
                         <div class="form-input">
                             <label for="name">Add a note to your order:</label>
                             <textarea name="message" rows="7" id="message" name="message"></textarea>
                         </div>
+                        <?php } ?>
+
                     </form>
                 </div>
                 <div class="summary-checkout">
@@ -224,12 +266,39 @@
                                 <th>Quantity</th>
                                 <th>Amount</th>
                             </tr>
+                            <?php 
+                            $totalCheckout = 0; // Initialize totalCheckout variable
+
+                            if(mysqli_num_rows($checkedoutItem) === 0){
+                                echo " <div class='no-items'>
+                                    <h2>Shopping Cart</h2>
+                                    <div class='cart-card'>
+                                        <p>No Item(s) in your shopping cart yet.</p>
+                                    </div>
+                                </div>";
+                            } else { ?>
+                            <?php while ($row = mysqli_fetch_array($checkedoutItem)){
+                                $index = array_search($productId, $productIds);
+                                $quantity = ($index !== false) ? $quantities[$index] : 0;
+                                $totalPrice = $row['Price'] * $quantity;
+                                $totalCheckout += $totalPrice;
+
+                                ?>
                             <tr>
-                                <td>Glasses 1</td>
-                                <td>1</td>
-                                <td>₱799.00</td>
+                                <td><?php echo $row['Product_name']?></td>
+                                <td><?php echo $quantity ?></td>
+                                <td><?php echo $totalPrice?></td>
                             </tr>
+                            <?php }}
+                            // Add the shipping fee
+                            
+                            ?>
+                            <!-- <tr class="totalOrder">
+                                <td colspan=2>Total</td>
+                                <td><?php echo $totalCheckout?></td>
+                            </tr> -->
                         </table>
+
                     </div>
                     <div class="divider-checkout"></div>
 
@@ -245,12 +314,13 @@
                         </div>
                         <div class="checkout-total">
                             <p class="detail-gray">Total:</p>
-                            <p class="detail-black total-checkout">₱900.00</p>
+                            <p class="detail-black total-checkout">₱<?php echo $totalCheckout + 200?>
+                            </p>
                         </div>
                     </div>
 
                     <div class=" checkout-button">
-                        <form method='POST' action='item.php'>
+                        <!-- <form>
                             <input type='text' hidden name='id' id='id' value='$ID'>
                             <input type='text' hidden name='product_name' value='$ProdName'>
 
@@ -258,7 +328,8 @@
                             <input type='text' hidden name='grandTotal' id='grandTotal'>
                             <button>Place your order</button>
 
-                        </form>
+                        </form> -->
+                        <button onclick="placeOrder()">Place your order</button>
 
                     </div>
                 </div>
@@ -320,8 +391,8 @@
         </div>
     </div>
 
-    <script src="../javascript/cart.js?v=21"></script>
-    <script src="../javascript/global.js?v=2"></script>
+    <script src="../javascript/checkout.js?v=2"></script>
+    <script src=" ../javascript/global.js?v=2"></script>
 
 
 

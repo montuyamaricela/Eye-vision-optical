@@ -2,14 +2,14 @@
     session_start();
     $user_id = $_SESSION['user_id'];
     include '../db_connection.php';
-      if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] != true) {
+    mysqli_select_db($con, 'user');
+
+    if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] != true) {
         echo "<script>
             alert('You need to login first');
             location.href='login.php'
         </script>";
     } 
-
-    mysqli_select_db($con, 'user');
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $prod_id = $_POST['prodid'];
