@@ -1,13 +1,13 @@
 <?php
     session_start();
     
-    if (isset($_SESSION['adminLoggedin']) && $_SESSION['adminLoggedin'] === false) {
+    if (isset($_SESSION['adminLoggedin']) && $_SESSION['adminLoggedin'] === false || empty($_SESSION) || empty($_SESSION['adminLoggedin'])) {
         echo "<script>
             location.href='login.php'
         </script>";
-    } 
+    }
     include '../db_connection.php';
-    mysqli_select_db($con, 'product');
+    mysqli_select_db($con, 'user');
 
     $limit = 10;
 
@@ -19,13 +19,13 @@
 
     $initial_page = ($page_number - 1) * $limit;
 
-    $filter_category = isset($_GET['filterByCategory']) ? $_GET['filterByCategory'] : '';
+    $filterID = isset($_GET['transactionID']) ? $_GET['transactionID'] : '';
 
-    $sql = "SELECT * FROM products";
+    $sql = "SELECT * FROM orders";
     
     // Add condition to filter by category if selected
-    if (!empty($filter_category)) {
-        $sql .= " WHERE Category = '$filter_category'";
+    if (!empty($filterID)) {
+        $sql .= " WHERE orderID = '$filterID'";
     }
 
     $sql .= " LIMIT $initial_page, $limit";
@@ -34,7 +34,7 @@
 
     function getStatusColorClass($status){
         switch ($status) {
-            case 'Pending':
+            case 'Order Pending':
                 return 'orange-bg';
             case 'Delivered':
                 return 'green-bg';
@@ -163,7 +163,7 @@
                 <div class="filterAdd">
                     <form action="">
                         <div class="filterBy">
-                            <input class="search" type="text" placeholder="Enter transaction ID">
+                            <input class="search" name="transactionID" type="text" placeholder="Enter transaction ID">
                             <button class="search-button">
                                 Search
                             </button>
@@ -176,14 +176,13 @@
                         <table>
                             <thead>
                                 <tr>
-
                                     <th width="150px">Transaction ID</th>
-                                    <th width="100px">Date</th>
+                                    <th width="150px">Date</th>
                                     <th>User Email</th>
                                     <th>Product</th>
                                     <th>Quantity</th>
-                                    <th>Payment Method</th>
-                                    <th>Status</th>
+                                    <th>Price</th>
+                                    <th width="150px">Status</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -194,18 +193,18 @@
                                 $row = mysqli_fetch_array($result)
                             ) { ?>
                                 <tr>
-                                    <td>332344</td>
-                                    <td>2023-11-12</td>
-                                    <td>johndoe@gmail.com</td>
+                                    <td><?php echo $row['orderID']?></td>
+                                    <td><?php echo $row['DateOrdered']?></td>
+                                    <td><?php echo $row['User_email']?></td>
 
-                                    <td>Glasses 1</td>
-                                    <td>1</td>
-                                    <td>Cash on delivery</td>
+                                    <td><?php echo $row['Product_name']?></td>
+                                    <td><?php echo $row['Quantity']?></td>
+                                    <td><?php echo $row['Price']?></td>
                                     <td>
                                         <p class="<?php echo getStatusColorClass(
-                                            'Delivered'
+                                            $row['Status']
                                         ); ?>">
-                                            Delivered
+                                            <?php echo $row['Status']?>
                                         </p>
                                     </td>
                                 </tr>
@@ -218,7 +217,7 @@
                 <div class="pagination">
                     <div>
                         <?php
-                        $getQuery = 'SELECT COUNT(*) FROM products';
+                        $getQuery = 'SELECT COUNT(*) FROM orders';
                         $result = mysqli_query($con, $getQuery);
                         $row = mysqli_fetch_row($result);
                         $total_rows = $row[0];
@@ -228,21 +227,21 @@
                         $total_pages = ceil($total_rows / $limit);
                         $pageURL = '';
                         if ($page_number >= 2) {
-                            echo "<a href='products.php?page=" .
+                            echo "<a href='payment-history.php?page=" .
                                 ($page_number - 1) .
                                 "'> Prev </a>";
                         }
                         for ($curpage = 1; $curpage <= $total_pages; $curpage++) {
                             if ($curpage == $page_number) {
                                 $pageURL .=
-                                    "<a class = 'active' href='products.php?page=" .
+                                    "<a class = 'active' href='payment-history.php?page=" .
                                     $curpage .
                                     "'>" .
                                     $curpage .
                                     ' </a>';
                             } else {
                                 $pageURL .=
-                                    "<a href='products.php?page=" .
+                                    "<a href='payment-history.php?page=" .
                                     $curpage .
                                     "'>" .
                                     $curpage .
@@ -252,7 +251,7 @@
                         echo $pageURL;
 
                         if ($page_number < $total_pages) {
-                            echo "<a href='products.php?page=" .
+                            echo "<a href='payment-history.php?page=" .
                                 ($page_number + 1) .
                                 "'> Next </a>";
                         }
@@ -273,61 +272,61 @@
 </html>
 
 <?php 
-if ($_SERVER["REQUEST_METHOD"] == 'POST') {
-    include '../db_connection.php';
-    mysqli_select_db($con, 'product');
+// if ($_SERVER["REQUEST_METHOD"] == 'POST') {
+//     include '../db_connection.php';
+//     mysqli_select_db($con, 'product');
 
-    $prodID = $_POST['id'];
-    $prodcode = $_POST['code'];
-    $prodname = $_POST['name'];
-    $prodprice = $_POST['price'];
-    $prodcolor = $_POST['color'];
-    $prodcategory = $_POST['category'];
-    $prodstock = $_POST['stock'];
-    $proddescription = $_POST['description'];
+//     $prodID = $_POST['id'];
+//     $prodcode = $_POST['code'];
+//     $prodname = $_POST['name'];
+//     $prodprice = $_POST['price'];
+//     $prodcolor = $_POST['color'];
+//     $prodcategory = $_POST['category'];
+//     $prodstock = $_POST['stock'];
+//     $proddescription = $_POST['description'];
 
-    $imageName = $_FILES['image']['name'];
-    $tmp_name = $_FILES['image']['tmp_name'];
+//     $imageName = $_FILES['image']['name'];
+//     $tmp_name = $_FILES['image']['tmp_name'];
 
-    // Check if the product with the new code already exists
-    $checkProduct = "SELECT * FROM products WHERE ID = '$prodID'";
-    $prod = mysqli_query($con, $checkProduct);
+//     // Check if the product with the new code already exists
+//     $checkProduct = "SELECT * FROM products WHERE ID = '$prodID'";
+//     $prod = mysqli_query($con, $checkProduct);
 
-    if (mysqli_num_rows($prod) > 0) {
-        // If the product code exists, update the details
-        if ($imageName) {
-            $location = "products/$imageName";
-            $destination = "../public/images/$location";
-            move_uploaded_file($tmp_name, $destination);
+//     if (mysqli_num_rows($prod) > 0) {
+//         // If the product code exists, update the details
+//         if ($imageName) {
+//             $location = "products/$imageName";
+//             $destination = "../public/images/$location";
+//             move_uploaded_file($tmp_name, $destination);
 
-            $updateProduct = "UPDATE products SET 
-                Name = '$prodname',
-                Price = '$prodprice',
-                Color = '$prodcolor',
-                Category = '$prodcategory',
-                Description = '$proddescription',
-                Stock = '$prodstock',
-                Image = '$location'
-                WHERE ID = '$prodID'";
-        } else {
-            // If no new image, update without changing the image
-            $updateProduct = "UPDATE products SET 
-                Name = '$prodname',
-                Price = '$prodprice',
-                Color = '$prodcolor',
-                Category = '$prodcategory',
-                Description = '$proddescription',
-                Stock = '$prodstock'
-                WHERE ID = '$prodID'";
-        }
+//             $updateProduct = "UPDATE products SET 
+//                 Name = '$prodname',
+//                 Price = '$prodprice',
+//                 Color = '$prodcolor',
+//                 Category = '$prodcategory',
+//                 Description = '$proddescription',
+//                 Stock = '$prodstock',
+//                 Image = '$location'
+//                 WHERE ID = '$prodID'";
+//         } else {
+//             // If no new image, update without changing the image
+//             $updateProduct = "UPDATE products SET 
+//                 Name = '$prodname',
+//                 Price = '$prodprice',
+//                 Color = '$prodcolor',
+//                 Category = '$prodcategory',
+//                 Description = '$proddescription',
+//                 Stock = '$prodstock'
+//                 WHERE ID = '$prodID'";
+//         }
 
-        mysqli_query($con, $updateProduct);
-        echo "<script>
-                location.href='success-add-product.php'
-            </script>";
-    }
+//         mysqli_query($con, $updateProduct);
+//         echo "<script>
+//                 location.href='success-add-product.php'
+//             </script>";
+//     }
 
-    mysqli_close($con);
-}
+//     mysqli_close($con);
+// }
 
 ?>

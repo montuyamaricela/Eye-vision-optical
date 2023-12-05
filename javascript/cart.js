@@ -5,7 +5,6 @@ function removeCart() {
 document.addEventListener("DOMContentLoaded", function () {
   // Get all the product containers on the page
   const productContainers = document.querySelectorAll(".product.cart-items");
-  let allTotal = 0;
 
   function updateGrandTotal(productContainer) {
     const grandTotalElement = productContainer.querySelector(".grand-total");

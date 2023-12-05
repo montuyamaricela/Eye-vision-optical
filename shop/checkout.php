@@ -3,6 +3,20 @@
     $user_id = $_SESSION['user_id'];
     include '../db_connection.php';
     mysqli_select_db($con, 'user');
+    
+    // identify if the product came from direct checkout or from cart.
+    $GLOBALS['directCheckout'] = false; 
+
+    // set the boolean variable
+    function setDirectCheckout($value) {
+        $GLOBALS['directCheckout'] = (bool)$value;
+    }
+
+    // Function to get the boolean variable
+    function getMyBoolean() {
+        return $GLOBALS['directCheckout'];
+    }
+
     $fetchInfo = "SELECT a.ID, a.Name, a.Email, a.Phone, a.Address, b.Status
         FROM user_info a
         JOIN accounts b ON a.ID = b.ID
@@ -43,7 +57,7 @@
                     $quantities[] = $quantity;
                 }
                 $idsToCheckout = implode(', ', array_map(fn($id) => "'$id'", $productIds));
-
+         
                 //$products = "SELECT * FROM cart WHERE Product_ID IN ($idsToCheckout)";
                 $products = "Select Product_ID, Product_name,  Price, User_id, Stock from product.products a join user.cart b on a.ID = b.Product_ID WHERE b.User_id = '$user_id' AND Product_ID IN ($idsToCheckout)";
                 $checkedoutItem = mysqli_query($con, $products);
@@ -54,9 +68,17 @@
             }
 
         } else {
-            echo "<script>
-                history.back();
-            </script>";
+            setDirectCheckout(true);
+            $itemID = $_POST['id'];
+            $itemName = $_POST['product_name'];
+            $itemQuantity = $_POST['checkoutQuantity'];
+            $itemPrice = $_POST['price'];
+
+            mysqli_select_db($con, 'product');
+
+            echo  $itemQuantity . $itemPrice;
+            $products = "Select ID, Name,  Price, Stock from products WHERE ID = '$itemID'";
+            $checkedoutItem = mysqli_query($con, $products);
         }
     }
 ?>
@@ -218,19 +240,20 @@
 
     <section class="container">
         <div>
-            <h2>Shopping Cart > Checkout</h2>
-            <div class="checkout-container">
-                <div class="shipping-address">
-                    <h3>Shipping Address</h3>
+            <form action="checkoutOrder.php" method="POST">
 
-                    <form action="">
+                <h2>Shopping Cart > Checkout</h2>
+                <div class="checkout-container">
+                    <div class="shipping-address">
+                        <h3>Shipping Address</h3>
+
                         <?php while ($row = mysqli_fetch_array($userInfo)) { ?>
 
                         <div class="two-column-input">
                             <div class="form-input">
                                 <label for="name">Email Address </label>
                                 <input type="email" id="email" name="email" value="<?php echo $row['Email']; ?>"
-                                    required disabled />
+                                    required />
                             </div>
                             <div class="form-input">
                                 <label for="name">Phone </label>
@@ -240,14 +263,14 @@
                         </div>
                         <div class="form-input">
                             <label for="name">Full Name</label>
-                            <input type="text" id="fullname" value="<?php echo $row['Name']; ?>" name="fullname"
-                                required />
+                            <input type="text" id="fullname" name="name" value="<?php echo $row['Name']; ?>"
+                                name="fullname" required />
                         </div>
 
                         <div class="form-input">
                             <label for="name">Address</label>
-                            <input type="text" id="Address" value="<?php echo $row['Address']; ?>" name="Address"
-                                required />
+                            <input type="text" id="Address" name="address" value="<?php echo $row['Address']; ?>"
+                                name="Address" required />
                         </div>
                         <div class="form-input">
                             <label for="name">Add a note to your order:</label>
@@ -255,18 +278,17 @@
                         </div>
                         <?php } ?>
 
-                    </form>
-                </div>
-                <div class="summary-checkout">
-                    <h2>Your Order</h2>
-                    <div>
-                        <table>
-                            <tr>
-                                <th>Product</th>
-                                <th>Quantity</th>
-                                <th>Amount</th>
-                            </tr>
-                            <?php 
+                    </div>
+                    <div class="summary-checkout">
+                        <h2>Your Order</h2>
+                        <div>
+                            <table>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Quantity</th>
+                                    <th>Amount</th>
+                                </tr>
+                                <?php 
                             $totalCheckout = 0; // Initialize totalCheckout variable
 
                             if(mysqli_num_rows($checkedoutItem) === 0){
@@ -277,64 +299,68 @@
                                     </div>
                                 </div>";
                             } else { ?>
-                            <?php while ($row = mysqli_fetch_array($checkedoutItem)){
-                                $index = array_search($productId, $productIds);
-                                $quantity = ($index !== false) ? $quantities[$index] : 0;
-                                $totalPrice = $row['Price'] * $quantity;
-                                $totalCheckout += $totalPrice;
+                                <?php while ($row = mysqli_fetch_array($checkedoutItem)){
 
+                                    // check if the product is direct checkout or came from cart 
+                                    if (!getMyBoolean()){
+                                        $index = array_search($productId, $productIds);
+                                        $quantity = ($index !== false) ? $quantities[$index] : 0;  
+                                        $productId = $row['Product_ID']; // Get the product ID from the current row
+                                        $totalPrice = $row['Price'] * $quantity;
+                                        $productName = $row['Product_name'];
+                                    } else {
+                                        $quantity = $itemQuantity;
+                                        $productId = $row['ID']; // Get the product ID from the current row
+                                        $totalPrice = intval($row['Price']) * intval($quantity);
+                                        $productName = $row['Name'];
+                                    }
+                                    $totalCheckout += $totalPrice;
                                 ?>
-                            <tr>
-                                <td><?php echo $row['Product_name']?></td>
-                                <td><?php echo $quantity ?></td>
-                                <td><?php echo $totalPrice?></td>
-                            </tr>
-                            <?php }}
+                                <input type="text" hidden name='ids[]' value="<?php echo $productId?>">
+                                <input type="text" hidden name='quantities[]' value="<?php echo $quantity ?>">
+                                <input type="text" hidden name='totalPrices[]' value="<?php echo $totalPrice ?>">
+
+                                <tr>
+                                    <td><?php echo $productName?></td>
+                                    <td><?php echo $quantity ?></td>
+                                    <td><?php echo $totalPrice?></td>
+                                </tr>
+                                <?php }}
                             // Add the shipping fee
                             
                             ?>
-                            <!-- <tr class="totalOrder">
+                                <!-- <tr class="totalOrder">
                                 <td colspan=2>Total</td>
                                 <td><?php echo $totalCheckout?></td>
                             </tr> -->
-                        </table>
+                            </table>
 
-                    </div>
-                    <div class="divider-checkout"></div>
-
-                    <div class="paymentoption">
-                        <p class="detail-gray">Payment option:</p>
-                        <button class="" disabled>Cash on delivery</button>
-                    </div>
-                    <div class="divider-checkout"></div>
-                    <div class="price-checkout">
-                        <div>
-                            <p class="detail-gray">Shipping Fee:</p>
-                            <p class="detail-black">₱200.00</p>
                         </div>
-                        <div class="checkout-total">
-                            <p class="detail-gray">Total:</p>
-                            <p class="detail-black total-checkout">₱<?php echo $totalCheckout + 200?>
-                            </p>
+                        <div class="divider-checkout"></div>
+
+                        <div class="paymentoption">
+                            <p class="detail-gray">Payment option:</p>
+                            <button class="" disabled>Cash on delivery</button>
                         </div>
-                    </div>
+                        <div class="divider-checkout"></div>
+                        <div class="price-checkout">
+                            <div>
+                                <p class="detail-gray">Shipping Fee:</p>
+                                <p class="detail-black">₱200.00</p>
+                            </div>
+                            <div class="checkout-total">
+                                <p class="detail-gray">Total:</p>
+                                <p class="detail-black total-checkout">₱<?php echo $totalCheckout + 200?>
+                                </p>
+                            </div>
+                        </div>
 
-                    <div class=" checkout-button">
-                        <!-- <form>
-                            <input type='text' hidden name='id' id='id' value='$ID'>
-                            <input type='text' hidden name='product_name' value='$ProdName'>
-
-                            <input type='text' hidden name='quantity' id='quantityTotal'>
-                            <input type='text' hidden name='grandTotal' id='grandTotal'>
-                            <button>Place your order</button>
-
-                        </form> -->
-                        <button onclick="placeOrder()">Place your order</button>
-
+                        <div class=" checkout-button">
+                            <button onclick="placeOrder()">Place your order</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-
+            </form>
         </div>
     </section>
 
@@ -404,7 +430,6 @@
 <?php 
     
     if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) {
-  
         mysqli_select_db($con, 'user');
         $sql = "SELECT a.ID, a.Name, a.Email, a.Phone, a.Address, a.Avatar,b.Password, b.Status
 			FROM user_info a, accounts b

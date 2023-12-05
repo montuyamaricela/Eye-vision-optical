@@ -266,6 +266,7 @@
                                 if($loggedIn){
                                     $ID = $row['ID'];
                                     $ProdName = $row['Name'];
+                                    $Price = $row['Price'];
                                     if ($row['Stock'] == 0){
                                     echo "
                                     <div class='button-group'>
@@ -294,7 +295,14 @@
                                             <button class='button'>Add To Wishlist</button>
                                         </form>
                                         
-                                        <button class='button'>Checkout</button>
+                                        <form action='checkout.php' method='POST'>
+                                            <input type='text' hidden name='id' id='id' value='$ID'>
+                                            <input type='text' hidden name='product_name' value='$ProdName'>
+                                            
+                                            <input type='text' hidden name='checkoutQuantity' id='checkoutQuantity'>
+                                            <input type='text' hidden name='price' value='$Price'>
+                                            <button class='button'>Checkout</button>
+                                        </form>
                                     </div>";
                                     }
                                 } else {
@@ -391,7 +399,7 @@
         </div>
     </div>
 
-    <script src="../javascript/displayContent.js?v=20"></script>
+    <script src="../javascript/displayContent.js?v=22"></script>
     <script src="../javascript/global.js?v=1"></script>
 
 </body>

@@ -1,11 +1,10 @@
 <?php 
     session_start();
-    
-    if (isset($_SESSION['adminLoggedin']) && $_SESSION['adminLoggedin'] === false) {
+    if (isset($_SESSION['adminLoggedin']) && $_SESSION['adminLoggedin'] === false || empty($_SESSION) || empty($_SESSION['adminLoggedin'])) {
         echo "<script>
             location.href='login.php'
         </script>";
-    } 
+    }
     $ID = $_GET['id'];
 
     include '../db_connection.php';

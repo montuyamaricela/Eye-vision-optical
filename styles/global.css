@@ -482,3 +482,25 @@ p {
 .wishlist {
   position: relative;
 }
+
+/* Status */
+.orange-text {
+  color: #d8930a;
+  font-weight: 500;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.green-text {
+  color: #006e07;
+  font-size: 18px;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.red-text {
+  color: #d62626;
+  font-weight: 500;
+  font-size: 18px;
+  margin-bottom: 10px;
+}

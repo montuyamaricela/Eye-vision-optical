@@ -39,8 +39,7 @@
     <link rel="stylesheet" href="../styles/global.css?v=2" />
 
     <!-- cart page styles/css -->
-    <link rel="stylesheet" href="../styles/orders.css?v=6" />
-
+    <link rel="stylesheet" href="../styles/orders.css?v=10" />
 </head>
 
 <body>
@@ -153,7 +152,7 @@
                                 <img src="#" alt="" id="navbarProfile">
                                 <p id="userName">Name</p>
                             </div>
-                            <p id="user" ">My Account</p>
+                            <p id="user">My Account</p>
                         </div>
                         <div class=" dropdown-content">
                             <div id='op2'>
@@ -176,47 +175,91 @@
     <section class="order-container">
         <div class="">
             <?php
-                $checkCart = "Select Product_ID, Product_name, Color, Image, Price, Quantity, User_id, Stock from product.products a join user.cart b on a.ID = b.Product_ID WHERE b.User_id = '$user_id'";
-                $res = mysqli_query($con, $checkCart);
+                $displayOrders = "SELECT * FROM orders WHERE User_id = '$user_id' OR orderID IN (SELECT orderID FROM orders WHERE User_id = '$user_id')";
+                $res = mysqli_query($con, $displayOrders);
             ?>
-            <?php if(mysqli_num_rows($res) === 0){
-                echo " <div class='no-items'>
-                            <h2>My Orders</h2>
-                            <div class='order-card'>
-                            <p>No order(s) to track.</p>
-                        </div>
-                        </div>";
-            } else { ?>
-            <div class="">
-                <div class="">
-                    <h2 class="header">My Orders</h2>
-                    <?php while ($row = mysqli_fetch_array($res)){?>
-                    <div class="divider"></div>
-                    <a href="order-track.php" class="order-item">
+            <?php 
+            $totalCheckout = 0; // Initialize totalCheckout variable
+            ?>
+            <?php
+$ordersByOrderID = []; // Associative array to store orders by orderID
+$totalCheckout = 0; // Initialize the totalCheckout variable
 
-                        <div class="item-image">
-                            <img src="../public/images/Glasses/EO-EYEWEAR.jpg" alt="" height="150">
-                        </div>
-                        <div class="order-detail">
-                            <p>Glasses 1</p>
-                            <p>
-                                Black
-                            </p>
-                        </div>
-                        <div class="order-detail-2">
-                            <p class="status">Delivered</p>
-                            <p class="price">₱999.00</p>
-                            <p class="quantity">Qty: 1</p>
-                            <p class="total">Order Total: <span class="total-price"> ₱999.00</span></p>
-                        </div>
-                    </a>
+// Fetch all orders for the user
+$displayOrders = "SELECT * FROM orders WHERE User_id = '$user_id'";
+$res = mysqli_query($con, $displayOrders);
 
-                    <?php }?>
-                    <div class="divider"></div>
+// Check if the query was successful
+if ($res) {
+    while ($row = mysqli_fetch_assoc($res)) {
+        $orderID = $row['orderID'];
+
+        // Fetch all items for the current order ID
+        $orderItemsQuery = "SELECT * FROM orders WHERE User_id = '$user_id' AND orderID = '$orderID'";
+        $orderItemsResult = mysqli_query($con, $orderItemsQuery);
+
+        // Check if the query for order items was successful
+        if ($orderItemsResult) {
+            // Initialize the total for the current order
+            $orderTotal = 0;
+
+            // Add the order details to the associative array based on orderID
+            $ordersByOrderID[$orderID] = [];
+
+            while ($item = mysqli_fetch_assoc($orderItemsResult)) {
+                $ordersByOrderID[$orderID][] = [
+                    'Product_name' => $item['Product_name'],
+                    'Status' => $item['Status'],
+                    'Price' => $item['Price'],
+                    'Quantity' => $item['Quantity']
+                    // Add more fields as needed
+                ];
+
+                // Calculate the total for the current item and add to the orderTotal
+                $itemTotal = $item['Price'];
+                echo "</br> ". $itemTotal;
+                $orderTotal += $itemTotal;
+            }
+
+            // Add the total for the current order to the overall totalCheckout
+            $totalCheckout += $orderTotal;
+        } else {
+            // Handle the case where the query for order items fails
+            echo "Error in fetching order items: " . mysqli_error($con);
+        }
+    }
+
+    // Iterate over the associative array to display orders
+    foreach ($ordersByOrderID as $orderID => $orderDetails) {
+?>
+            <div class="divider"></div>
+            <a href="order-track.php?order-id=<?php echo $orderID; ?>" class="order-item">
+                <?php foreach ($orderDetails as $item) { ?>
+                <div class="order-detail">
+                    <p><?php echo $item['Product_name']; ?></p>
+                    <p>Black</p>
                 </div>
+                <?php } ?>
+                <div class="item-image">
+                    <img src="../public/images/Glasses/EO-EYEWEAR.jpg" alt="" height="150">
+                </div>
+                <div class="order-detail-2">
+                    <p class="status"><?php echo $item['Status']; ?></p>
+                    <p class="price">₱<?php echo $item['Price']; ?></p>
+                    <p class="quantity">Qty: <?php echo $item['Quantity']; ?></p>
+                    <p class="total">Order Total: <span class="total-price"> ₱<?php echo $orderTotal; ?></span></p>
+                    <!-- Add more fields as needed -->
+                    <p class="total">Order Total: <span class="total-price"> ₱<?php echo $totalCheckout; ?></span></p>
+                </div>
+            </a>
+            <?php
+    }
+} else {
+    // Handle the case where the query for orders fails
+    echo "Error in fetching orders: " . mysqli_error($con);
+}
+?>
 
-            </div>
-            <?php }?>
         </div>
     </section>
 

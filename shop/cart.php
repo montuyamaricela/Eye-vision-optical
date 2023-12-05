@@ -354,7 +354,7 @@
         </div>
     </div>
 
-    <script src="../javascript/cart.js?v=29"></script>
+    <script src="../javascript/cart.js?v=30"></script>
     <script src="../javascript/global.js?v=2"></script>
 
 

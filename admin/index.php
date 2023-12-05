@@ -1,7 +1,9 @@
 <?php
     session_start();
-    
-    if (isset($_SESSION['adminLoggedin']) && $_SESSION['adminLoggedin'] === false) {
+    include '../db_connection.php';
+    mysqli_select_db($con, 'user');
+
+    if (isset($_SESSION['adminLoggedin']) && $_SESSION['adminLoggedin'] === false || empty($_SESSION) || empty($_SESSION['adminLoggedin'])) {
         echo "<script>
             location.href='login.php'
         </script>";
@@ -16,7 +18,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&family=Inter:wght@300; 400;500;600;700&family=Lato:wght@300;400;700;900&family=Poppins:wght@200;300;400;500;600;700&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="../styles/dashboardGlobal.css?v=16">
+    <link rel="stylesheet" href="../styles/dashboardGlobal.css?v=17">
     <link rel="stylesheet" href="../styles/global.css?v=1">
 </head>
 
@@ -119,9 +121,14 @@
                 <div class="dashboard-landing">
                     <h1>Eye Vision Dashboard</h1>
                     <div class="content-1">
-                        <h2>Quick Stat</h2>
+                        <!-- <h2>Quick Stat</h2> -->
                         <div class="stats">
-                            <div class="stat-card">
+                            <div class="stat-card" onclick="directTo('users-account.php')">
+                                <?php $getNumberOfAccounts = 'SELECT COUNT(*) as userCount FROM accounts';
+                                    $result = mysqli_query($con, $getNumberOfAccounts);
+                                    $row = mysqli_fetch_assoc($result);
+                                    $userCount = $row['userCount'];
+                                ?>
                                 <p>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" width="30">
@@ -131,9 +138,15 @@
 
                                 </p>
                                 <p class="stat-title">Users</p>
-                                <p class="stat-number">10</p>
+
+                                <p class="stat-number"><?php echo $userCount?></p>
                             </div>
-                            <div class="stat-card">
+                            <div class="stat-card" onclick="directTo('payment-history.php')">
+                                <?php $getNumberOfAccounts = 'SELECT COUNT(*) as orderCount FROM orders';
+                                    $result = mysqli_query($con, $getNumberOfAccounts);
+                                    $row = mysqli_fetch_assoc($result);
+                                    $orderCount = $row['orderCount'];
+                                ?>
                                 <p>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" width="30">
@@ -142,10 +155,15 @@
                                     </svg>
 
                                 </p>
-                                <p class="stat-title">Users</p>
-                                <p class="stat-number">5</p>
+                                <p class="stat-title">Orders</p>
+                                <p class="stat-number"><?php echo $orderCount?></p>
                             </div>
-                            <div class="stat-card">
+                            <div class="stat-card" onclick="directTo('appointment.php')">
+                                <?php $getNumberOfAccounts = 'SELECT COUNT(*) as appointmentCount FROM contact.appointments';
+                                    $result = mysqli_query($con, $getNumberOfAccounts);
+                                    $row = mysqli_fetch_assoc($result);
+                                    $appointmentCount = $row['appointmentCount'];
+                                ?>
                                 <p>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" width="30">
@@ -154,7 +172,7 @@
                                     </svg>
                                 </p>
                                 <p class="stat-title">Appointments</p>
-                                <p class="stat-number">5</p>
+                                <p class="stat-number"><?php echo $appointmentCount?></p>
                             </div>
                         </div>
                     </div>
@@ -207,7 +225,7 @@
         </div>
     </section>
     <!-- Add JavaScript code to handle checkbox functionality -->
-    <script src="../javascript/dashboard.js?v=25"></script>
+    <script src="../javascript/dashboard.js?v=27"></script>
 
 </body>
 

@@ -151,7 +151,7 @@ $result = mysqli_query($con, $sql);
                         <div class=" dropdown-content">
                             <div id='op2'>
                                 <a href='my-account.php'>My Account</a>
-                                <a href='order.php'>My Order</a>
+                                <a href='orders.php'>My Orders</a>
 
                                 <a href="logout.php" class='logout'>Logout</a>
                             </div>
