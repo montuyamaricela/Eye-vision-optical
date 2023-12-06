@@ -4,7 +4,7 @@
     include '../db_connection.php';
     mysqli_select_db($con, 'user');
 
-    if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] != true) {
+    if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] != true || empty($_SESSION)) {
         echo "<script>
             alert('You need to login first');
             location.href='login.php'

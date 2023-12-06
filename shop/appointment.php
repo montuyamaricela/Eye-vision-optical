@@ -1,7 +1,7 @@
 <?php 
     session_start(); 
     include '../db_connection.php';
-    if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === FALSE) {
+    if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === FALSE || empty($_SESSION)) {
         echo "<script>
             alert('You must logged in before accessing the page!');
             location.href='login.php'

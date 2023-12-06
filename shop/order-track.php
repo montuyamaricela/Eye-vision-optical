@@ -2,7 +2,7 @@
     session_start();
     $user_id = $_SESSION['user_id'];
     include '../db_connection.php';
-      if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] != true) {
+      if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] != true || empty($_SESSION)) {
         echo "<script>
             alert('You need to login first');
             location.href='login.php'
@@ -22,8 +22,7 @@
     }
 
     $orderID = isset($_GET['order-id']) ? $_GET['order-id'] : '';
-    function getStatusColorClass($status)
-    {
+    function getStatusColorClass($status){
         switch ($status) {
             case 'Order Pending':
                 return 'orange-text';
@@ -34,7 +33,6 @@
             default:
                 return '';
         }
-
     }
 
 ?>
@@ -209,15 +207,19 @@
                         stroke="currentColor" height="15" width="15">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                     </svg>
-                </span> <?php echo "heheeh"; ?>
+                </span> <span id="orderID"></span>
             </h2>
 
             <div class="divider"></div>
 
-            <?php    while ($row = mysqli_fetch_array($result)) { 
+            <?php  while ($row = mysqli_fetch_array($result)) { 
                 $Address = $row['Address'];
                 $phone = $row['Phone'];
                 $name = $row['User_name'];
+                $id = $row['orderID'];
+                echo "<script>
+                    document.getElementById('orderID').innerHTML = $id;
+                </script>";
             ?>
 
             <div>

@@ -58,6 +58,7 @@
   align-items: end;
   font-weight: 500;
   color: #353c44;
+  cursor: pointer;
 }
 
 .price {

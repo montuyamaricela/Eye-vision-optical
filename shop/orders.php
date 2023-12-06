@@ -2,7 +2,7 @@
     session_start();
     $user_id = $_SESSION['user_id'];
     include '../db_connection.php';
-      if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] != true) {
+      if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] != true || empty($_SESSION)) {
         echo "<script>
             alert('You need to login first');
             location.href='login.php'
@@ -18,6 +18,18 @@
                 alert('Successfully Removed!')
                 location.href='cart.php'
             </script>";
+        }
+    }
+    function getStatusColorClass($status){
+        switch ($status) {
+            case 'Order Pending':
+                return 'orange-text';
+            case 'Delivered':
+                return 'green-text';
+            case 'Cancelled':
+                return 'red-text';
+            default:
+                return '';
         }
     }
 ?>
@@ -175,93 +187,54 @@
     <section class="order-container">
         <div class="">
             <?php
-                $displayOrders = "SELECT * FROM orders WHERE User_id = '$user_id' OR orderID IN (SELECT orderID FROM orders WHERE User_id = '$user_id')";
-                $res = mysqli_query($con, $displayOrders);
+                $getOrderDetails = "SELECT orderID, Product_ID, Product_name, Quantity, a.Price as origPrice, b.Price, Color, Image, User_id, User_name, User_email, Phone, Address, Note, Status FROM product.products a join user.orders b on a.ID = b.Product_ID WHERE User_id = '$user_id'";          
+                $result = mysqli_query($con, $getOrderDetails);
             ?>
-            <?php 
-            $totalCheckout = 0; // Initialize totalCheckout variable
-            ?>
-            <?php
-$ordersByOrderID = []; // Associative array to store orders by orderID
-$totalCheckout = 0; // Initialize the totalCheckout variable
+            <?php if(mysqli_num_rows($result) === 0){
+                echo " <div class='no-items'>
+                            <h2>My Orders</h2>
+                            <div class='order-card'>
+                            <p>No order(s) to track.</p>
+                        </div>
+                        </div>";
+            } else { ?>
+            <div class="">
+                <div class="">
+                    <h2 class="header">My Orders</h2>
+                    <?php while ($row = mysqli_fetch_array($result)){?>
+                    <div class="divider"></div>
+                    <a href="order-track.php?order-id=<?php echo $row['orderID']?>" class="order-item">
 
-// Fetch all orders for the user
-$displayOrders = "SELECT * FROM orders WHERE User_id = '$user_id'";
-$res = mysqli_query($con, $displayOrders);
+                        <div class="item-image">
+                            <img src="../public/images/<?php echo $row['Image']?>"
+                                alt="<?php echo $row['Product_name']?>" height="100">
+                        </div>
+                        <div class="order-detail">
+                            <p><?php echo $row['Product_name']?></p>
+                            <p>
+                                <?php echo $row['Color']?>
+                            </p>
+                        </div>
+                        <div class="order-detail-2">
+                            <p class="status <?php echo getStatusColorClass($row['Status']); ?>">
+                                <?php echo $row['Status']?>
+                            </p>
+                            <p class="price">₱<?php echo $row['origPrice']?></p>
+                            <p class="quantity">Qty: <?php echo $row['Quantity']?></p>
+                            <p class="total">Order Total: <span class="total-price"> ₱<?php echo $row['Price']?></span>
+                            </p>
+                        </div>
+                    </a>
 
-// Check if the query was successful
-if ($res) {
-    while ($row = mysqli_fetch_assoc($res)) {
-        $orderID = $row['orderID'];
-
-        // Fetch all items for the current order ID
-        $orderItemsQuery = "SELECT * FROM orders WHERE User_id = '$user_id' AND orderID = '$orderID'";
-        $orderItemsResult = mysqli_query($con, $orderItemsQuery);
-
-        // Check if the query for order items was successful
-        if ($orderItemsResult) {
-            // Initialize the total for the current order
-            $orderTotal = 0;
-
-            // Add the order details to the associative array based on orderID
-            $ordersByOrderID[$orderID] = [];
-
-            while ($item = mysqli_fetch_assoc($orderItemsResult)) {
-                $ordersByOrderID[$orderID][] = [
-                    'Product_name' => $item['Product_name'],
-                    'Status' => $item['Status'],
-                    'Price' => $item['Price'],
-                    'Quantity' => $item['Quantity']
-                    // Add more fields as needed
-                ];
-
-                // Calculate the total for the current item and add to the orderTotal
-                $itemTotal = $item['Price'];
-                echo "</br> ". $itemTotal;
-                $orderTotal += $itemTotal;
-            }
-
-            // Add the total for the current order to the overall totalCheckout
-            $totalCheckout += $orderTotal;
-        } else {
-            // Handle the case where the query for order items fails
-            echo "Error in fetching order items: " . mysqli_error($con);
-        }
-    }
-
-    // Iterate over the associative array to display orders
-    foreach ($ordersByOrderID as $orderID => $orderDetails) {
-?>
-            <div class="divider"></div>
-            <a href="order-track.php?order-id=<?php echo $orderID; ?>" class="order-item">
-                <?php foreach ($orderDetails as $item) { ?>
-                <div class="order-detail">
-                    <p><?php echo $item['Product_name']; ?></p>
-                    <p>Black</p>
+                    <?php }?>
+                    <div class="divider"></div>
                 </div>
-                <?php } ?>
-                <div class="item-image">
-                    <img src="../public/images/Glasses/EO-EYEWEAR.jpg" alt="" height="150">
-                </div>
-                <div class="order-detail-2">
-                    <p class="status"><?php echo $item['Status']; ?></p>
-                    <p class="price">₱<?php echo $item['Price']; ?></p>
-                    <p class="quantity">Qty: <?php echo $item['Quantity']; ?></p>
-                    <p class="total">Order Total: <span class="total-price"> ₱<?php echo $orderTotal; ?></span></p>
-                    <!-- Add more fields as needed -->
-                    <p class="total">Order Total: <span class="total-price"> ₱<?php echo $totalCheckout; ?></span></p>
-                </div>
-            </a>
-            <?php
-    }
-} else {
-    // Handle the case where the query for orders fails
-    echo "Error in fetching orders: " . mysqli_error($con);
-}
-?>
 
+            </div>
+            <?php }?>
         </div>
     </section>
+
 
     <footer>
         <div class="container">
