@@ -71,7 +71,15 @@ $result = mysqli_query($con, $sql);
         <div class="navbar">
             <div>
                 <a href="index.php" class="logo">
-                    <img src="../public/images/logo/logo-no-bg.png" alt="" height="85px">
+                    <?php
+                        mysqli_select_db($con, 'cms');
+                        $getLogo = "SELECT * FROM logo WHERE id = '1'";
+                        $logo = mysqli_query($con, $getLogo);
+                        while ($row = mysqli_fetch_array($logo)){
+                            $image = $row['Image'];
+                            echo "<img src='../public/images/$image' alt='Logo' height='85px'>";
+                        }
+                    ?>
                 </a>
             </div>
             <div class="nav-items">
@@ -79,6 +87,7 @@ $result = mysqli_query($con, $sql);
                     <a>Products</a>
                     <div class=" dropdown-content">
                         <?php
+                            mysqli_select_db($con, 'product');
                             $sql = "SELECT * FROM Category";
                             $res = mysqli_query($con, $sql);
                 
@@ -155,7 +164,7 @@ $result = mysqli_query($con, $sql);
     </section>
 
     <section class="virtual-try-on-container">
-        <h2>Virtual Try On</h2>
+        <h2 class="dark-text">Virtual Try On</h2>
 
         <div class="try-on-container">
 
@@ -222,7 +231,7 @@ $result = mysqli_query($con, $sql);
                 <div class="item-container">
                     <div class="items">
                         <?php if (mysqli_num_rows($result) == 0){
-                            echo "<h2>No Products Available</h2>";
+                            echo "<h2 class='dark-text'>No Products Available</h2>";
                         }
                         ?>
                         <?php while ($row = mysqli_fetch_array($result)){ ?>
@@ -232,7 +241,7 @@ $result = mysqli_query($con, $sql);
                                     alt="<?php echo $row['Name']?>" height="120" />
                             </div>
                             <div>
-                                <h3><?php echo $row['Name']?></h3>
+                                <h3 class="dark-text"><?php echo $row['Name']?></h3>
                             </div>
                         </div>
                         <?php } ?>
@@ -255,44 +264,52 @@ $result = mysqli_query($con, $sql);
             <div class="footer-content">
                 <div class="footer-logo">
                     <a href="index.php">
-                        <img src="../public/images/logo/logo-no-bg.png" alt="" width="150">
-                    </a>
+                        <?php
+                        mysqli_select_db($con, 'cms');
+                        $getLogo = "SELECT * FROM logo WHERE id = '1'";
+                        $logo = mysqli_query($con, $getLogo);
+                        while ($row = mysqli_fetch_array($logo)){
+                            $image = $row['Image'];
+                            echo "<img src='../public/images/$image' alt='Logo' height='150'>";
+                        }
+                    ?> </a>
                 </div>
                 <div class="two-column">
                     <div>
-                        <h3>Products</h3>
+                        <h3 class="dark-text">Products</h3>
                         <div class="footer-item">
-                            <a href="shop.php">Shop</a>
+                            <a href="index.php">Shop</a>
                         </div>
                     </div>
                     <div>
-                        <h3>About</h3>
+                        <h3 class="dark-text">About</h3>
                         <div class="footer-item">
                             <a href="../about.php">About Us</a>
                         </div>
                     </div>
                 </div>
                 <div>
-                    <h3>Help</h3>
+                    <h3 class="dark-text">Help</h3>
                     <div class="footer-item">
-                        <a href="../appointment.php">Book an appointment</a>
+                        <a href="appointment.php">Book an appointment</a>
                         <a href="../contact.php">Ask a question</a>
                     </div>
                 </div>
                 <div class="two-column">
                     <div>
-                        <h3>Terms & Conditions</h3>
+                        <h3 class="dark-text">Terms & Conditions</h3>
                         <div class="footer-item">
                             <a href="">Terms & Conditions</a>
                         </div>
                     </div>
                     <div>
-                        <h3>Privacy Policy</h3>
+                        <h3 class="dark-text">Privacy Policy</h3>
                         <div class="footer-item">
                             <a href="">Privacy Policy</a>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </footer>
@@ -308,6 +325,25 @@ $result = mysqli_query($con, $sql);
 </html>
 
 <?php 
+    mysqli_select_db($con, 'cms');
+    $getColor = "SELECT * FROM color WHERE id = '1'";
+    $color = mysqli_query($con, $getColor);
+    while ($row = mysqli_fetch_array($color)){
+        $darkColor = $row['darkColor'];
+        $lightColor = $row['lightColor'];
+    }
+    echo "<script>
+        let elementsWithDarkClass = document.getElementsByClassName('dark-text');
+        for (var i = 0; i < elementsWithDarkClass.length; i++) {
+            elementsWithDarkClass[i].style.color = '$darkColor';
+        }
+
+        let elementsWithLightClass = document.getElementsByClassName('light');
+        for (var i = 0; i < elementsWithLightClass.length; i++) {
+            elementsWithLightClass[i].style.color = '$lightColor';
+        }
+    </script>";
+
     if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) {
         include '../db_connection.php';
         mysqli_select_db($con, 'user');

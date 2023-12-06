@@ -36,13 +36,13 @@
 <html>
 
 <head>
-    <title>Reports</title>
+    <title>Manage Content</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&family=Inter:wght@300; 400;500;600;700&family=Lato:wght@300;400;700;900&family=Poppins:wght@200;300;400;500;600;700&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="../styles/dashboardGlobal.css?v=16">
+    <link rel="stylesheet" href="../styles/dashboardGlobal.css?v=19">
     <link rel="stylesheet" href="../styles/global.css?v=1">
 </head>
 
@@ -145,44 +145,112 @@
                         <h2>Modify Customer Page</h2>
                     </div>
                 </div>
-                <div class="card-page">
-                    <h3>Logo</h3>
-                    <div class="card-content">
-                        <div>
-                            <div class="upload">
-                                <div>
-                                    <img src="../public/images/Upload.svg" alt="upload" class="uploadedImage">
-
+                <div class="card-page-two-column">
+                    <div class="card-page">
+                        <h3>Logo</h3>
+                        <div class="card-content">
+                            <div>
+                                <div class="upload">
+                                    <div id="uploadimage">
+                                        <img src="../public/images/Upload.svg" alt="upload" class="uploadedImage"
+                                            width="65">
+                                    </div>
+                                    <div>
+                                        <div class="upload-container">
+                                            <form action="upload-logo.php" id="upload-logo" method="POST"
+                                                enctype="multipart/form-data">
+                                                <input type="file" accept="image/png, image/gif, image/jpeg"
+                                                    name="LogoImage" id="logoImage">
+                                            </form>
+                                            <p class="action">Upload Photo</p>
+                                        </div>
+                                        <p class="note">Square images are best, max file size of 2MB. Only .jpg and
+                                            .png are supported</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <p class="action">Upload Photo</p>
-                                    <p class="note">Square images are best, max file size of 2MB. Only .jpg and
-                                        .png are supported</p>
-                                </div>
+                                <button onclick="uploadLogo()">Save</button>
                             </div>
-                            <button>Save</button>
+                            <?php
+                                mysqli_select_db($con, 'cms');
+                                $getLogo = "SELECT * FROM logo WHERE id = '1'";
+                                $logo = mysqli_query($con, $getLogo);
+                                while ($row = mysqli_fetch_array($logo)){
+                                    $image = $row['Image'];
+                                    echo "<img src='../public/images/$image' alt='Logo' height='120'>";
+                                }
+                            ?>
                         </div>
-                        <img src="../public/images/logo/logo.png" alt="Logo" height="120">
+                    </div>
+                    <div class="card-page">
+                        <h3>Font Color</h3>
+                        <div class="card-content">
+                            <div>
+                                <div class="color">
+                                    <form action="update-color.php" id="update-color" method="POST">
+                                        <?php
+                                            mysqli_select_db($con, 'cms');
+                                            $getColor = "SELECT * FROM color WHERE id = '1'";
+                                            $color = mysqli_query($con, $getColor);
+                                            while ($row = mysqli_fetch_array($color)){
+                                                $darkColor = $row['darkColor'];
+                                                $lightColor = $row['lightColor'];
+                                            }
+                                        ?>
+                                        <div class="input-color">
+                                            <p class="">For Dark Color text:</p>
+                                            <label for="color-picker">Color:</label>
+                                            <input type="color" value="<?php echo $darkColor?>" name="dark"
+                                                class="color-picker" id="dark-color" />
+                                        </div>
+                                        <div class="input-color">
+                                            <p class="">For Light Color text:</p>
+                                            <label for="color-picker">Color:</label>
+                                            <input type="color" value="<?php echo $lightColor?>" name="light"
+                                                class="color-picker" id="light-color" />
+                                        </div>
+                                    </form>
+                                </div>
+                                <button onclick="updateColor()">Save</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
                 <div class="card-page">
                     <h3>Background</h3>
                     <div class="card-content">
                         <div>
                             <div class="upload">
-                                <div>
-                                    <img src="../public/images/Upload.svg" alt="upload" class="uploadedImage">
-
+                                <div id="UploadedBackgroundImage">
+                                    <img src="../public/images/Upload.svg" alt="upload" class="" width="65">
                                 </div>
                                 <div>
-                                    <p class="action">Upload Photo</p>
+                                    <div class="upload-container">
+                                        <div class="upload-container">
+                                            <form action="upload-background.php" id="upload-background" method="POST"
+                                                enctype="multipart/form-data">
+                                                <input type="file" accept="image/png, image/gif, image/jpeg"
+                                                    name="backgroundImage" id="backgroundImage">
+                                            </form>
+                                            <p class="action">Upload Photo</p>
+                                        </div>
+                                    </div>
                                     <p class="note">Square images are best, max file size of 2MB. Only .jpg and
                                         .png are supported</p>
                                 </div>
                             </div>
-                            <button>Save</button>
+                            <button onclick="uploadBackground()">Save</button>
                         </div>
-                        <img src="../public/images/backgrounds/bg-2.png" alt="Logo" height="120">
+
+                        <?php
+                            mysqli_select_db($con, 'cms');
+                            $getLogo = "SELECT * FROM background WHERE id = '1'";
+                            $logo = mysqli_query($con, $getLogo);
+                            while ($row = mysqli_fetch_array($logo)){
+                                $image = $row['Image'];
+                                echo "<img src='../public/images/$image' alt='Logo' height='120' width='220'>";
+                            }
+                        ?>
                     </div>
                 </div>
                 <div class="card-page">
@@ -190,48 +258,61 @@
                     <div class="card-content">
                         <div>
                             <div class="upload">
-                                <div>
-                                    <img src="../public/images/Upload.svg" alt="upload" class="uploadedImage">
-
+                                <div id="uploadedImageSlideshow">
+                                    <img src="../public/images/Upload.svg" alt="upload" width="65">
                                 </div>
                                 <div>
-                                    <p class="action">Upload Photo</p>
+                                    <div class="upload-container">
+                                        <form action="upload-slideshow.php" id="upload-slideshow-image" method="POST"
+                                            enctype="multipart/form-data">
+                                            <input type="file" accept="image/png, image/gif, image/jpeg"
+                                                name="slideshowImage" id="slideshowImage">
+                                        </form>
+                                        <p class="action">Upload Photo</p>
+                                    </div>
                                     <p class="note">Square images are best, max file size of 2MB. Only .jpg and
-                                        .png are supported</p>
+                                        .png are supported. Maximum 3 photos</p>
                                 </div>
                             </div>
-                            <button>Save</button>
+                            <button onclick="uploadSlideShowImage()">Save</button>
                         </div>
-                        <div>
-                            <img src="../public/images/backgrounds/bg-2.png" alt="Logo" height="120">
-                            <img src="../public/images/backgrounds/bg-2.png" alt="Logo" height="120">
-                            <img src="../public/images/backgrounds/bg-2.png" alt="Logo" height="120">
-                        </div>
-                    </div>
-                </div>
-                <div class="card-page">
-                    <h3>Font Color</h3>
-                    <div class="card-content">
-                        <div class="color">
-                            <div class="input-color">
-                                <p class="">For Dark Color text:</p>
-                                <label for="color-picker">Color:</label>
-                                <input type="color" value="#172B4D" class="color-picker" id="color-picker" />
+                        <div class="slideshow-images">
+                            <?php
+                                mysqli_select_db($con, 'cms');
+                                $getLogo = "SELECT * FROM slideshow";
+                                $logo = mysqli_query($con, $getLogo);
+                                while ($row = mysqli_fetch_array($logo)){
+                                    $image = $row['Image']; 
+                                    $id = $row['id']
+                                    ?>
+                            <div class="slideshow-image-container">
+                                <div class="dark"></div>
+                                <img src='../public/images/<?php echo $image?>' alt='Logo' height='120' width="220">
+
+                                <form action="delete-slideshow-image.php" id="delete-slideshow-image-<?php echo $id ?>"
+                                    method="POST" hidden>
+                                    hidden>
+                                    <input type="text" name="id" id="slideshowId" value="<?php echo $id?>">
+                                </form>
+                                <div class="image-delete" onclick="deleteSlideShowImage(<?php echo $id ?>)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" width="25" class="">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                    </svg>
+                                </div>
                             </div>
-                            <div class="input-color">
-                                <p class="">For Light Color text:</p>
-                                <label for="color-picker">Color:</label>
-                                <input type="color" value="#172B4D" class="color-picker" id="color-picker" />
-                            </div>
+                            <?php } ?>
                         </div>
 
                     </div>
                 </div>
+
             </div>
         </div>
     </section>
 
-
+    <script src="../javascript/cms.js?v=1"></script>
 </body>
 
 </html>

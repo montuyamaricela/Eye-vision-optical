@@ -1,5 +1,6 @@
 <?php 
     session_start();
+    include '../db_connection.php';
     if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === FALSE || empty($_SESSION)) {
         echo "<script>
             location.href='index.php'
@@ -36,8 +37,15 @@
         <div class="navbar">
             <div>
                 <a href="index.php" class="logo">
-                    <img src="../public/images/logo/logo-no-bg.png" alt="" height="85px">
-                </a>
+                    <?php
+                        mysqli_select_db($con, 'cms');
+                        $getLogo = "SELECT * FROM logo WHERE id = '1'";
+                        $logo = mysqli_query($con, $getLogo);
+                        while ($row = mysqli_fetch_array($logo)){
+                            $image = $row['Image'];
+                            echo "<img src='../public/images/$image' alt='Logo' height='85px'>";
+                        }
+                    ?> </a>
             </div>
             <div class="nav-items">
                 <div class="dropdown">
@@ -162,11 +170,11 @@
     </section>
 
     <section style="padding: 40px;" class="container">
-        <h2 class="title">My Account</h2>
+        <h2 class="dark-text title">My Account</h2>
         <form action="my-account.php" enctype="multipart/form-data" method="POST">
             <div class="profile">
                 <div class="profileCard">
-                    <h3 class="header">USER INFORMATION</h3>
+                    <h3 class="dark-text header">USER INFORMATION</h3>
                     <div>
                         <div action="" class="profileForm">
                             <div class="profilepic">
@@ -193,7 +201,7 @@
                                     <img src="#" alt="Profile Picture" title="profile" class="profilePhoto" width="100"
                                         height="100">
                                 </div>
-                                <input type="file" name="image">
+                                <input type="file" accept="image/png, image/gif, image/jpeg" name="image">
 
                             </div>
                             <div class="form-input">
@@ -218,7 +226,7 @@
                     </div>
                 </div>
                 <div class="profileCard">
-                    <h3 class="header">Forgot password</h3>
+                    <h3 class="dark-text header">Forgot password</h3>
                     <div>
                         <div action="" class="profileForm">
                             <div class="form-input">
@@ -264,39 +272,46 @@
             <div class="footer-content">
                 <div class="footer-logo">
                     <a href="index.php">
-                        <img src="../public/images/logo/logo-no-bg.png" alt="" width="150">
-                    </a>
+                        <?php
+                        mysqli_select_db($con, 'cms');
+                        $getLogo = "SELECT * FROM logo WHERE id = '1'";
+                        $logo = mysqli_query($con, $getLogo);
+                        while ($row = mysqli_fetch_array($logo)){
+                            $image = $row['Image'];
+                            echo "<img src='../public/images/$image' alt='Logo' height='150'>";
+                        }
+                    ?> </a>
                 </div>
                 <div class="two-column">
                     <div>
-                        <h3>Products</h3>
+                        <h3 class="dark-text">Products</h3>
                         <div class="footer-item">
                             <a href="index.php">Shop</a>
                         </div>
                     </div>
                     <div>
-                        <h3>About</h3>
+                        <h3 class="dark-text">About</h3>
                         <div class="footer-item">
                             <a href="../about.php">About Us</a>
                         </div>
                     </div>
                 </div>
                 <div>
-                    <h3>Help</h3>
+                    <h3 class="dark-text">Help</h3>
                     <div class="footer-item">
-                        <a href="../appointment.php">Book an appointment</a>
+                        <a href="appointment.php">Book an appointment</a>
                         <a href="../contact.php">Ask a question</a>
                     </div>
                 </div>
                 <div class="two-column">
                     <div>
-                        <h3>Terms & Conditions</h3>
+                        <h3 class="dark-text">Terms & Conditions</h3>
                         <div class="footer-item">
                             <a href="">Terms & Conditions</a>
                         </div>
                     </div>
                     <div>
-                        <h3>Privacy Policy</h3>
+                        <h3 class="dark-text">Privacy Policy</h3>
                         <div class="footer-item">
                             <a href="">Privacy Policy</a>
                         </div>
@@ -318,6 +333,25 @@
 </html>
 
 <?php 
+    mysqli_select_db($con, 'cms');
+    $getColor = "SELECT * FROM color WHERE id = '1'";
+    $color = mysqli_query($con, $getColor);
+    while ($row = mysqli_fetch_array($color)){
+        $darkColor = $row['darkColor'];
+        $lightColor = $row['lightColor'];
+    }
+    echo "<script>
+        let elementsWithDarkClass = document.getElementsByClassName('dark-text');
+        for (var i = 0; i < elementsWithDarkClass.length; i++) {
+            elementsWithDarkClass[i].style.color = '$darkColor';
+        }
+
+        let elementsWithLightClass = document.getElementsByClassName('light');
+        for (var i = 0; i < elementsWithLightClass.length; i++) {
+            elementsWithLightClass[i].style.color = '$lightColor';
+        }
+    </script>";
+
     if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) {
         // $email = $_SESSION['email'];
         $ID = $_SESSION['user_id'];

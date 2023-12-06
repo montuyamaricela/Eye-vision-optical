@@ -80,8 +80,15 @@
         <div class="navbar">
             <div>
                 <a href="index.php" class="logo">
-                    <img src="../public/images/logo/logo-no-bg.png" alt="" height="85px">
-                </a>
+                    <?php
+                        mysqli_select_db($con, 'cms');
+                        $getLogo = "SELECT * FROM logo WHERE id = '1'";
+                        $logo = mysqli_query($con, $getLogo);
+                        while ($row = mysqli_fetch_array($logo)){
+                            $image = $row['Image'];
+                            echo "<img src='../public/images/$image' alt='Logo' height='85px'>";
+                        }
+                    ?> </a>
             </div>
             <div class="nav-items">
                 <div class="dropdown">
@@ -223,7 +230,7 @@
                     <img src="../public/images/<?php echo $row['Image']?>" alt="<?php echo $row['Name']?>" />
                 </div>
                 <div class="item-description">
-                    <h2 class="item-name"><?php echo $row['Name']?></h2>
+                    <h2 class="dark-text item-name"><?php echo $row['Name']?></h2>
                     <p class="detail-gray"> Availability:
                         <?php
                             if ($row['Stock'] == 0) {
@@ -322,7 +329,7 @@
                     </div>
                     <div class=" product-description">
                         <div id="desc-header" onclick="displayDescription(this)">
-                            <h4 class="description-header">Description</h4>
+                            <h4 id="dark" class="description-header">Description</h4>
                             <div>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" width="20" height="20"
                                     viewBox="0 0 24 24" stroke-width="3" stroke="#3F61AD" class="plus" id="svg">
@@ -352,44 +359,52 @@
             <div class="footer-content">
                 <div class="footer-logo">
                     <a href="index.php">
-                        <img src="../public/images/logo/logo-no-bg.png" alt="" width="150">
-                    </a>
+                        <?php
+                        mysqli_select_db($con, 'cms');
+                        $getLogo = "SELECT * FROM logo WHERE id = '1'";
+                        $logo = mysqli_query($con, $getLogo);
+                        while ($row = mysqli_fetch_array($logo)){
+                            $image = $row['Image'];
+                            echo "<img src='../public/images/$image' alt='Logo' height='150'>";
+                        }
+                    ?> </a>
                 </div>
                 <div class="two-column">
                     <div>
-                        <h3>Products</h3>
+                        <h3 class="dark-text">Products</h3>
                         <div class="footer-item">
-                            <a href="shop.php">Shop</a>
+                            <a href="index.php">Shop</a>
                         </div>
                     </div>
                     <div>
-                        <h3>About</h3>
+                        <h3 class="dark-text">About</h3>
                         <div class="footer-item">
                             <a href="../about.php">About Us</a>
                         </div>
                     </div>
                 </div>
                 <div>
-                    <h3>Help</h3>
+                    <h3 class="dark-text">Help</h3>
                     <div class="footer-item">
-                        <a href="../appointment.php">Book an appointment</a>
+                        <a href="appointment.php">Book an appointment</a>
                         <a href="../contact.php">Ask a question</a>
                     </div>
                 </div>
                 <div class="two-column">
                     <div>
-                        <h3>Terms & Conditions</h3>
+                        <h3 class="dark-text">Terms & Conditions</h3>
                         <div class="footer-item">
                             <a href="">Terms & Conditions</a>
                         </div>
                     </div>
                     <div>
-                        <h3>Privacy Policy</h3>
+                        <h3 class="dark-text">Privacy Policy</h3>
                         <div class="footer-item">
                             <a href="">Privacy Policy</a>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </footer>
@@ -405,6 +420,24 @@
 </body>
 
 <?php 
+    mysqli_select_db($con, 'cms');
+    $getColor = "SELECT * FROM color WHERE id = '1'";
+    $color = mysqli_query($con, $getColor);
+    while ($row = mysqli_fetch_array($color)){
+        $darkColor = $row['darkColor'];
+        $lightColor = $row['lightColor'];
+    }
+    echo "<script>
+        let elementsWithDarkClass = document.getElementsByClassName('dark-text');
+        for (var i = 0; i < elementsWithDarkClass.length; i++) {
+            elementsWithDarkClass[i].style.color = '$darkColor';
+        }
+
+        let elementsWithLightClass = document.getElementsByClassName('light');
+        for (var i = 0; i < elementsWithLightClass.length; i++) {
+            elementsWithLightClass[i].style.color = '$lightColor';
+        }
+    </script>";
     
     if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) {
         mysqli_select_db($con, 'user');

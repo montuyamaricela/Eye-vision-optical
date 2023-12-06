@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 04, 2023 at 03:03 PM
+-- Generation Time: Dec 06, 2023 at 04:06 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -17,6 +17,141 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
 
+--
+-- Database: `cms`
+--
+CREATE DATABASE IF NOT EXISTS `cms` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `cms`;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `background`
+--
+
+CREATE TABLE `background` (
+  `id` int(11) NOT NULL,
+  `Image` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `background`
+--
+
+INSERT INTO `background` (`id`, `Image`) VALUES
+(1, 'backgrounds/bg-2.png');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `color`
+--
+
+CREATE TABLE `color` (
+  `id` int(11) NOT NULL,
+  `darkColor` varchar(20) NOT NULL,
+  `lightColor` varchar(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `color`
+--
+
+INSERT INTO `color` (`id`, `darkColor`, `lightColor`) VALUES
+(1, '#353c44', '#ffffff');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `logo`
+--
+
+CREATE TABLE `logo` (
+  `id` int(11) NOT NULL,
+  `Image` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `logo`
+--
+
+INSERT INTO `logo` (`id`, `Image`) VALUES
+(1, 'logo/logo.png');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `slideshow`
+--
+
+CREATE TABLE `slideshow` (
+  `id` int(11) NOT NULL,
+  `Image` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `slideshow`
+--
+
+INSERT INTO `slideshow` (`id`, `Image`) VALUES
+(12, 'slideshowImages/sunwear.jpg'),
+(13, 'slideshowImages/virtual-tryon.jpg');
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `background`
+--
+ALTER TABLE `background`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `color`
+--
+ALTER TABLE `color`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `logo`
+--
+ALTER TABLE `logo`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `slideshow`
+--
+ALTER TABLE `slideshow`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `background`
+--
+ALTER TABLE `background`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `color`
+--
+ALTER TABLE `color`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `logo`
+--
+ALTER TABLE `logo`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `slideshow`
+--
+ALTER TABLE `slideshow`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 --
 -- Database: `contact`
 --
@@ -231,17 +366,17 @@ CREATE TABLE `products` (
 
 INSERT INTO `products` (`ID`, `Name`, `Price`, `Color`, `Category`, `Description`, `Stock`, `Image`) VALUES
 ('A-001', 'Eyeglasses Handcrafted Cord Balaan', '298', 'Clear/white', 'Accessories', 'Suitable for eyeglasses, reading glasses, sunglasses\r\nAnti-slip hooks for a secure and firm grip on your eyeglasses\r\n', 10, 'products/accessory1.jpg'),
-('A-002', 'Eyeglasses Cord Leather', '120', 'Brown', 'Accessories', 'Comfortable and stylish design Suitable for eyeglasses, reading glasses, sunglasses Anti-slip hooks for a secure and firm grip on your eyeglasses', 5, 'products/accessory2.jpg'),
-('A-003', 'Eyeglasses Cord Acrylic', '280', 'Pink', 'Accessories', 'Eyeglasses Cord E017 Acrylic’s modern-chic chain design is a perfect choice for your basic and funky outfit.', 5, 'products/accessory3.jpg'),
-('A-004', 'CL Case', '50', 'Pink', 'Accessories', 'A lightweight container designed to keep your contact lenses safe and secure, complete with a color label to avoid confusion.', 15, 'products/accessory4.jpg'),
-('A-005', 'Eyeglasses Cord', '190', 'Black', 'Accessories', 'Eyeglasses cord is the perfect way to add a pop of color or texture to your look. Designed specifically for keeping your eyeglasses and sunglasses within reach, this accessory will also add a statement piece to your outfit.', 7, 'products/accessory5.jpg'),
-('A-006', 'Eyeglasses Cord', '190', 'Orange', 'Accessories', 'Eyeglasses cord is the perfect way to add a pop of color or texture to your look. Designed specifically for keeping your eyeglasses and sunglasses within reach, this accessory will also add a statement piece to your outfit.', 8, 'products/accessory6.jpg'),
+('A-002', 'Eyeglasses Cord Leather', '120', 'Brown', 'Accessories', 'Comfortable and stylish design Suitable for eyeglasses, reading glasses, sunglasses Anti-slip hooks for a secure and firm grip on your eyeglasses', 4, 'products/accessory2.jpg'),
+('A-003', 'Eyeglasses Cord Acrylic', '280', 'Pink', 'Accessories', 'Eyeglasses Cord E017 Acrylic’s modern-chic chain design is a perfect choice for your basic and funky outfit.', 4, 'products/accessory3.jpg'),
+('A-004', 'CL Case', '50', 'Pink', 'Accessories', 'A lightweight container designed to keep your contact lenses safe and secure, complete with a color label to avoid confusion.', 13, 'products/accessory4.jpg'),
+('A-005', 'Eyeglasses Cord', '190', 'Black', 'Accessories', 'Eyeglasses cord is the perfect way to add a pop of color or texture to your look. Designed specifically for keeping your eyeglasses and sunglasses within reach, this accessory will also add a statement piece to your outfit.', 6, 'products/accessory5.jpg'),
+('A-006', 'Eyeglasses Cord', '190', 'Orange', 'Accessories', 'Eyeglasses cord is the perfect way to add a pop of color or texture to your look. Designed specifically for keeping your eyeglasses and sunglasses within reach, this accessory will also add a statement piece to your outfit.', 6, 'products/accessory6.jpg'),
 ('A-007', 'CL CASE ', '50', 'Clear/white', 'Accessories', 'A lightweight container designed to keep your contact lenses safe and secure, complete with a sturdy cover that perfectly seals.', 25, 'products/accessory7.jpg'),
-('A-008', 'Nosepads For Acetate Frame ', '100', 'Clear/white', 'Accessories', 'Eyeglasses Anti-Slip Silicone Nose Pad - 1 Pair\r\n\r\nSecure your eyewear with anti-slip! ', 2, 'products/accessory9.jpg'),
+('A-008', 'Nosepads For Acetate Frame ', '100', 'Clear/white', 'Accessories', 'Eyeglasses Anti-Slip Silicone Nose Pad - 1 Pair\n\nSecure your eyewear with anti-slip! ', 2, 'products/accessory9.jpg'),
 ('A-009', 'Anti Fog Eyeglasses Cleaning Cloth', '125', 'Black', 'Accessories', 'ANTIFOG Cleaning Cloth is perfect for any kind of lens in cold weather or moist environments. It features a special anti-fog formula that is embedded into the cloth.', 26, 'products/accessory8.jpg'),
 ('G-001', 'Glasses 1', '999', 'Black', 'Glasses', 'Eyestyles is a collection of eyewear designed with a minimalist and sophisticated style, making it a perfect addition to any outfit. The collection features a range of eyeglasses made with high-quality materials and attention to detail, ensuring both durability and comfort. Freebies: Hard case and wiper', 5, 'products/EO-EYEWEAR-removebg-preview (1).png'),
-('G-002', 'Glasses 2', '799', 'Silver', 'Glasses', 'Desc...', 6, 'products/VISUALITIES_HOVER.jpg'),
-('G-003', 'Glasses 3', '899', 'Black', 'Glasses', 'Description....', 7, 'products/EYESTYLES_HOVER.jpg'),
+('G-002', 'Glasses 2', '799', 'Silver', 'Glasses', 'Desc...', 4, 'products/VISUALITIES_HOVER.jpg'),
+('G-003', 'Glasses 3', '899', 'Black', 'Glasses', 'Description....', 4, 'products/EYESTYLES_HOVER.jpg'),
 ('G-004', 'Glasses 4', '999', 'Silver', 'Glasses', 'Description', 5, 'products/EO-EYEWEAR_HOVER.jpg');
 
 --
@@ -323,8 +458,42 @@ CREATE TABLE `cart` (
 --
 
 INSERT INTO `cart` (`ID`, `Product_ID`, `Product_name`, `Quantity`, `Total`, `User_id`, `User_name`) VALUES
-(31, 'A-004', 'CL Case', 1, 50, 2, 'Maricel Montuya'),
-(33, 'G-002', 'Glasses 2', 1, 799, 2, 'Maricel Montuya');
+(62, 'A-002', 'Eyeglasses Cord Leather', 1, 120, 2, 'Maricel Montuya'),
+(63, 'G-002', 'Glasses 2', 1, 799, 2, 'Maricel Montuya');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `orders`
+--
+
+CREATE TABLE `orders` (
+  `orderID` varchar(10) NOT NULL,
+  `Product_ID` varchar(10) NOT NULL,
+  `Product_name` varchar(50) NOT NULL,
+  `Quantity` int(11) NOT NULL,
+  `Price` varchar(5) NOT NULL,
+  `User_id` int(11) NOT NULL,
+  `User_name` varchar(50) NOT NULL,
+  `User_email` varchar(50) NOT NULL,
+  `Phone` varchar(15) NOT NULL,
+  `Address` text NOT NULL,
+  `Note` text NOT NULL,
+  `Status` varchar(15) NOT NULL,
+  `DateOrdered` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `orders`
+--
+
+INSERT INTO `orders` (`orderID`, `Product_ID`, `Product_name`, `Quantity`, `Price`, `User_id`, `User_name`, `User_email`, `Phone`, `Address`, `Note`, `Status`, `DateOrdered`) VALUES
+('7327136882', 'A-006', 'Eyeglasses Cord', 2, '380', 2, 'Maricel Montuya', 'montuyamaricela@gmail.com', '09276565832', '070, Mulawin street brgy Cupang', '', 'Order Pending', '2023-12-05 22:18:07'),
+('7327136882', 'G-003', 'Glasses 3', 2, '1798', 2, 'Maricel Montuya', 'montuyamaricela@gmail.com', '09276565832', '070, Mulawin street brgy Cupang', '', 'Order Pending', '2023-12-05 22:18:07'),
+('7502767158', 'A-004', 'CL Case', 1, '50', 2, 'Maricel Montuya', 'montuyamaricela@gmail.com', '09276565832', '070, Mulawin street brgy Cupang', '', 'Order Pending', '2023-12-05 22:27:28'),
+('6806277673', 'A-002', 'Eyeglasses Cord Leather', 3, '360', 2, 'Maricel Montuya', 'montuyamaricela@gmail.com', '09276565832', '070, Mulawin street brgy Cupang', '', 'Order Pending', '2023-12-06 16:55:02'),
+('3893729438', 'G-003', 'Glasses 3', 1, '899', 2, 'Maricel Montuya', 'montuyamaricela@gmail.com', '09276565832', '070, Mulawin street brgy Cupang', '', 'Order Pending', '2023-12-06 16:56:12'),
+('7514972724', 'G-002', 'Glasses 2', 1, '799', 2, 'Maricel Montuya', 'montuyamaricela@gmail.com', '09276565832', '070, Mulawin street brgy Cupang', '', 'Order Pending', '2023-12-06 16:56:41');
 
 -- --------------------------------------------------------
 
@@ -372,7 +541,8 @@ CREATE TABLE `wishlist` (
 
 INSERT INTO `wishlist` (`ID`, `Product_ID`, `Product_name`, `user_id`) VALUES
 (14, 'G-002', 'Glasses 2', 3),
-(15, 'A-004', 'CL Case', 3);
+(15, 'A-004', 'CL Case', 3),
+(17, 'G-004', 'Glasses 4', 2);
 
 --
 -- Indexes for dumped tables
@@ -416,7 +586,7 @@ ALTER TABLE `accounts`
 -- AUTO_INCREMENT for table `cart`
 --
 ALTER TABLE `cart`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
 
 --
 -- AUTO_INCREMENT for table `user_info`
@@ -428,7 +598,7 @@ ALTER TABLE `user_info`
 -- AUTO_INCREMENT for table `wishlist`
 --
 ALTER TABLE `wishlist`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

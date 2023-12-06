@@ -66,7 +66,7 @@
 
                 <div id="productImage" class=" image-upload">
                     <img src="#" width="100" height="100" class="product-img-upload">
-                    <input type="file" name="image" class="product-upload">
+                    <input type="file" name="image" accept="image/png, image/gif, image/jpeg" class="product-upload">
 
                 </div>
                 <div class="two-column-input">

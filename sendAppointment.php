@@ -1,3 +1,7 @@
+<?php
+    include 'db_connection.php';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -23,7 +27,15 @@
         <div class="navbar">
             <div>
                 <a href="index.php" class="logo">
-                    <img src="public/images/logo/logo-no-bg.png" alt="" height="85px">
+                    <?php
+                        mysqli_select_db($con, 'cms');
+                        $getLogo = "SELECT * FROM logo WHERE id = '1'";
+                        $logo = mysqli_query($con, $getLogo);
+                        while ($row = mysqli_fetch_array($logo)){
+                            $image = $row['Image'];
+                            echo "<img src='public/images/$image' alt='Logo' height='85px'>";
+                        }
+                    ?>
                 </a>
             </div>
             <div class="nav-items">
@@ -64,7 +76,7 @@
     <section class="container">
         <div class="book-appointment">
             <div class="">
-                <h2 class="section-title">Set An Appointment</h2>
+                <h2 class="dark-text section-title">Set An Appointment</h2>
                 <div class="contact-box">
                     <p>We will confirm your appointment schedule via email within 1-3 business days.</p>
                     <p>Thank you for trusting Eye Vision for your eye care & treatment needs.</p>
@@ -149,7 +161,7 @@
         <div class="container">
             <div class="footer-content">
                 <div>
-                    <h3>Products</h3>
+                    <h3 class="dark-text">Products</h3>
                     <div class="footer-item">
                         <a href="">Eyeglasses</a>
                         <a href="">Contact Lens & solutions </a>
@@ -157,7 +169,7 @@
                     </div>
                 </div>
                 <div>
-                    <h3>Help</h3>
+                    <h3 class="dark-text">Help</h3>
                     <div class="footer-item">
                         <a href="shop/appointment.php">Book an appointment</a>
                         <a href="about.php">About us </a>
@@ -167,20 +179,20 @@
                 </div>
                 <div class="two-column">
                     <div>
-                        <h3>Terms & Conditions</h3>
+                        <h3 class="dark-text">Terms & Conditions</h3>
                         <div class="footer-item">
                             <a href="">Terms & Conditions</a>
                         </div>
                     </div>
                     <div>
-                        <h3>Privacy Policy</h3>
+                        <h3 class="dark-text">Privacy Policy</h3>
                         <div class="footer-item">
                             <a href="">Privacy Policy</a>
                         </div>
                     </div>
                 </div>
                 <div>
-                    <h3>Social</h3>
+                    <h3 class="dark-text">Social</h3>
                     <div class="footer-item">
                         <a href="">Facebook</a>
                         <a href="">Instagram</a>
@@ -202,6 +214,27 @@
 </html>
 
 <?php
+
+
+mysqli_select_db($con, 'cms');
+$getColor = "SELECT * FROM color WHERE id = '1'";
+$color = mysqli_query($con, $getColor);
+while ($row = mysqli_fetch_array($color)){
+    $darkColor = $row['darkColor'];
+    $lightColor = $row['lightColor'];
+}
+echo "<script>
+    let elementsWithDarkClass = document.getElementsByClassName('dark-text');
+    for (var i = 0; i < elementsWithDarkClass.length; i++) {
+        elementsWithDarkClass[i].style.color = '$darkColor';
+    }
+
+    let elementsWithLightClass = document.getElementsByClassName('light');
+    for (var i = 0; i < elementsWithLightClass.length; i++) {
+        elementsWithLightClass[i].style.color = '$lightColor';
+    }
+</script>";
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;

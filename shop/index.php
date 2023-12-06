@@ -1,5 +1,6 @@
 <?php 
     session_start();
+    include '../db_connection.php';
     if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true ) {
         $user_id = $_SESSION['user_id'];
     } 
@@ -25,7 +26,7 @@
     <link rel="stylesheet" href="../styles/global.css?v=6" />
 
     <!-- swiper styles/css -->
-    <link rel="stylesheet" href="../styles/swiper.css" />
+    <link rel="stylesheet" href="../styles/swiper.css?v=2" />
 
     <!-- slider styles/css -->
     <link rel="stylesheet" href="../styles/SliderWithButton.css" />
@@ -36,7 +37,15 @@
         <div class="navbar">
             <div>
                 <a href="index.php" class="logo">
-                    <img src="../public/images/logo/logo-no-bg.png" alt="" height="85px">
+                    <?php
+                        mysqli_select_db($con, 'cms');
+                        $getLogo = "SELECT * FROM logo WHERE id = '1'";
+                        $logo = mysqli_query($con, $getLogo);
+                        while ($row = mysqli_fetch_array($logo)){
+                            $image = $row['Image'];
+                            echo "<img src='../public/images/$image' alt='Logo' height='85px'>";
+                        }
+                    ?>
                 </a>
             </div>
             <div class="nav-items">
@@ -165,15 +174,22 @@
     <section class="hero-section">
         <div class="swiper-container">
             <div class="swiper-wrapper">
-                <div class="swiper-slide active">
+                <?php
+                    mysqli_select_db($con, 'cms');
+                    $getLogo = "SELECT * FROM slideshow";
+                    $logo = mysqli_query($con, $getLogo);
+                    while ($row = mysqli_fetch_array($logo)){
+                        $image = $row['Image']; 
+                        $id = $row['id']
+                        ?>
+
+                <div class="swiper-slide">
                     <a href="products.php">
-                        <img src="../public/images/sunwear.jpg" alt="Image 1" />
+                        <img src="../public/images/<?php echo $image?>" alt="Image <?php echo $id?>" />
                     </a>
                 </div>
-                <div class="swiper-slide">
-                    <a href="/">
-                        <img src="../public/images/virtual-tryon.jpg" alt="Image 2" /></a>
-                </div>
+                <?php }?>
+
             </div>
             <div class="swiper-dots"></div>
         </div>
@@ -182,7 +198,7 @@
     <section id="whats-new">
         <div class="container">
             <div>
-                <h2 class="title">Always In Style With Our Best Picks</h2>
+                <h2 class="dark-text title">Always In Style With Our Best Picks</h2>
             </div>
             <div class="grid-container">
                 <div class="three-grid-image">
@@ -219,7 +235,7 @@
     </section>
 
     <section class="container">
-        <h2 class="title-bold">Testimonials</h2>
+        <h2 class="dark-text title-bold">Testimonials</h2>
         <div class="slider-container">
             <div class="slider">
                 <div class="slide">
@@ -290,7 +306,7 @@
     <section class="newsletter">
         <div class="container">
             <div class="newsletter-content">
-                <h2 class="title-bold">Subscribe Newsletter</h2>
+                <h2 class="dark-text title-bold">Subscribe Newsletter</h2>
                 <div>
                     <p class="subtitle">Join our community.</p>
                     <p class="subtitle">from the road once a month.</p>
@@ -307,55 +323,56 @@
 
     <footer>
         <div class="container">
-            <div class="backToTop">
-                <p onclick="scrollToTop()" class="scroll">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" width="20" width="auto" stroke-width="1.5"
-                        stroke="black">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
-                    </svg>
-                </p>
-            </div>
             <div class="footer-content">
                 <div class="footer-logo">
                     <a href="index.php">
-                        <img src="../public/images/logo/logo-no-bg.png" alt="" width="150">
+                        <?php
+                        mysqli_select_db($con, 'cms');
+                        $getLogo = "SELECT * FROM logo WHERE id = '1'";
+                        $logo = mysqli_query($con, $getLogo);
+                        while ($row = mysqli_fetch_array($logo)){
+                            $image = $row['Image'];
+                            echo "<img src='../public/images/$image' alt='Logo' height='150'>";
+                        }
+                    ?>
                     </a>
                 </div>
                 <div class="two-column">
                     <div>
-                        <h3>Products</h3>
+                        <h3 class="dark-text">Products</h3>
                         <div class="footer-item">
                             <a href="index.php">Shop</a>
                         </div>
                     </div>
                     <div>
-                        <h3>About</h3>
+                        <h3 class="dark-text">About</h3>
                         <div class="footer-item">
                             <a href="../about.php">About Us</a>
                         </div>
                     </div>
                 </div>
                 <div>
-                    <h3>Help</h3>
+                    <h3 class="dark-text">Help</h3>
                     <div class="footer-item">
-                        <a href="../appointment.php">Book an appointment</a>
+                        <a href="appointment.php">Book an appointment</a>
                         <a href="../contact.php">Ask a question</a>
                     </div>
                 </div>
                 <div class="two-column">
                     <div>
-                        <h3>Terms & Conditions</h3>
+                        <h3 class="dark-text">Terms & Conditions</h3>
                         <div class="footer-item">
                             <a href="">Terms & Conditions</a>
                         </div>
                     </div>
                     <div>
-                        <h3>Privacy Policy</h3>
+                        <h3 class="dark-text">Privacy Policy</h3>
                         <div class="footer-item">
                             <a href="">Privacy Policy</a>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </footer>
@@ -365,17 +382,34 @@
         </div>
     </div>
 
-    <script src="javascript/slider.js"></script>
+    <script src="../javascript/slider.js"></script>
     <script src="javascript/displayContent.js"></script>
 </body>
 
 </html>
 
 <?php 
-    
+    mysqli_select_db($con, 'cms');
+    $getColor = "SELECT * FROM color WHERE id = '1'";
+    $color = mysqli_query($con, $getColor);
+    while ($row = mysqli_fetch_array($color)){
+        $darkColor = $row['darkColor'];
+        $lightColor = $row['lightColor'];
+    }
+    echo "<script>
+        let elementsWithDarkClass = document.getElementsByClassName('dark-text');
+        for (var i = 0; i < elementsWithDarkClass.length; i++) {
+            elementsWithDarkClass[i].style.color = '$darkColor';
+        }
+
+        let elementsWithLightClass = document.getElementsByClassName('light');
+        for (var i = 0; i < elementsWithLightClass.length; i++) {
+            elementsWithLightClass[i].style.color = '$lightColor';
+        }
+    </script>";
+      
     if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) {
         $user_id = $_SESSION['user_id'];
-        echo $user_id;
         include '../db_connection.php';
         mysqli_select_db($con, 'user');
         $sql = "SELECT a.ID, a.Name, a.Email, a.Phone, a.Address, a.Avatar,b.Password, b.Status

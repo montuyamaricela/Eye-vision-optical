@@ -1,4 +1,6 @@
-<?php ?>
+<?php 
+  include 'db_connection.php';
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -24,7 +26,15 @@
         <div class="navbar">
             <div>
                 <a href="index.php" class="logo">
-                    <img src="public/images/logo/logo-no-bg.png" alt="" height="85px">
+                    <?php
+                        mysqli_select_db($con, 'cms');
+                        $getLogo = "SELECT * FROM logo WHERE id = '1'";
+                        $logo = mysqli_query($con, $getLogo);
+                        while ($row = mysqli_fetch_array($logo)){
+                            $image = $row['Image'];
+                            echo "<img src='public/images/$image' alt='Logo' height='85px'>";
+                        }
+                    ?>
                 </a>
             </div>
             <div class="nav-items">
@@ -50,7 +60,7 @@
         <div class="about-iems">
             <div class="about-item">
                 <div class="content">
-                    <h3 class="left">Our Company</h3>
+                    <h3 class="dark-text left">Our Company</h3>
                     <p class="about left">
                         Eye Vision is a leading and trusted eye care provider dedicated to enhancing and preserving the
                         gift of sight for individuals of all ages. Founded in 2000,
@@ -72,7 +82,7 @@
                     <img class="about-image" src="public/images/backgrounds/bg-1.jpg" alt="company" />
                 </div>
                 <div class="content">
-                    <h3 class="right">Mission</h3>
+                    <h3 class="dark-text right">Mission</h3>
                     <p class="about right">
                         Our mission at Eye Vision is to provide the highest quality eye care services with compassion,
                         integrity, and a commitment to improving the vision and overall
@@ -93,7 +103,7 @@
         <div class="container">
             <div class="bordered-text">
                 <div class="header">
-                    <h2 class="">Why Choose Us?</h2>
+                    <h2 class="dark-text">Why Choose Us?</h2>
                     <p>When you choose Eye Vision, you are selecting a trusted partner in preserving and enhancing your
                         vision.
                         Our dedication to your eye health and overall well-being sets us apart, and we look forward to
@@ -110,7 +120,7 @@
                             < /svg>
             </div>
             <div>
-              <h2 class="bordered-title">Expertise and Experience:</h2>
+              <h2 class="dark-text bordered-title">Expertise and Experience:</h2>
               <p class="bordered-description">Our team of experienced ophthalmologists and optometrists 
                 is highly skilled in providing comprehensive eye care services. 
                 With years of experience and continuous training, we are experts 
@@ -132,7 +142,7 @@
             < /svg>
             </div>
             <div>
-              <h2 class="bordered-title">Patient-Centered Care:</h2>
+              <h2 class="dark-text bordered-title">Patient-Centered Care:</h2>
               <p class="bordered-description">At Eye Vision, 
                 we prioritize your well-being. We believe in building a 
                 personal relationship with each patient, ensuring that you 
@@ -155,7 +165,7 @@
             < /svg>
             </div>
             <div>
-              <h2 class="bordered-title">Commitment to Education:</h2>
+              <h2 class="dark-text bordered-title">Commitment to Education:</h2>
               <p class="bordered-description">We believe in educating our patients 
                 about their eye health. We take the time to explain your condition, 
                 treatment options, and answer any questions you may have, 
@@ -177,7 +187,7 @@
             < /svg>
             </div>
             <div>
-              <h2 class="bordered-title">Positive Reputation:</h2>
+              <h2 class=" dark-text bordered-title">Positive Reputation:</h2>
               <p class="bordered-description">We have built a strong reputation for excellence 
                 in eye care, earning the trust and loyalty of our patients. 
                 Our commitment to quality care and outstanding results speaks 
@@ -354,7 +364,7 @@
     <section class="newsletter">
       <div class="container">
         <div class="newsletter-content">
-          <h2 class="title-bold">Subscribe Newsletter</h2>
+          <h2 class="dark-text title-bold">Subscribe Newsletter</h2>
           <div>
             <p class="subtitle">Join our eye community.</p>
             <p class="subtitle">from the road once a month.</p>
@@ -382,25 +392,33 @@
             <div class="footer-content">
                 <div class="footer-logo">
                     <a href="index.php">
-                        <img src="public/images/logo/logo-no-bg.png" alt="" width="150">
+                    <?php
+                        mysqli_select_db($con, 'cms');
+                        $getLogo = "SELECT * FROM logo WHERE id = '1'";
+                        $logo = mysqli_query($con, $getLogo);
+                        while ($row = mysqli_fetch_array($logo)){
+                            $image = $row['Image'];
+                            echo "<img src='public/images/$image' alt='Logo' height='150px'>";
+                        }
+                    ?>                    
                     </a>
                 </div>
                 <div class="two-column">
                     <div>
-                        <h3>Products</h3>
+                        <h3 class="dark-text">Products</h3>
                         <div class="footer-item">
                             <a href="shop/index.php">Shop</a>
                         </div>
                     </div>
                     <div>
-                        <h3>About</h3>
+                        <h3 class="dark-text">About</h3>
                         <div class="footer-item">
                             <a href="about.php">About Us</a>
                         </div>
                     </div>
                 </div>
                 <div>
-                    <h3>Help</h3>
+                    <h3 class="dark-text">Help</h3>
                     <div class="footer-item">
                         <a href="shop/appointment.php">Book an appointment</a>
                         <a href="contact.php">Ask a question</a>
@@ -408,13 +426,13 @@
                 </div>
                 <div class="two-column">
                     <div>
-                        <h3>Terms & Conditions</h3>
+                        <h3 class="dark-text">Terms & Conditions</h3>
                         <div class="footer-item">
                             <a href="">Terms & Conditions</a>
                         </div>
                     </div>
                     <div>
-                        <h3>Privacy Policy</h3>
+                        <h3 class="dark-text">Privacy Policy</h3>
                         <div class="footer-item">
                             <a href="">Privacy Policy</a>
                         </div>
@@ -433,3 +451,25 @@
     <script src="javascript/displayContent.js"></script>
   </body>
 </html>
+<?php
+    mysqli_select_db($con, 'cms');
+    $getColor = "SELECT * FROM color WHERE id = '1'";
+    $color = mysqli_query($con, $getColor);
+    while ($row = mysqli_fetch_array($color)){
+        $darkColor = $row['darkColor'];
+        $lightColor = $row['lightColor'];
+    }
+    echo "<script>
+        let elementsWithDarkClass = document.getElementsByClassName('dark-text');
+        for (var i = 0; i < elementsWithDarkClass.length; i++) {
+            elementsWithDarkClass[i].style.color = '$darkColor';
+        }
+
+        let elementsWithLightClass = document.getElementsByClassName('light');
+        for (var i = 0; i < elementsWithLightClass.length; i++) {
+            elementsWithLightClass[i].style.color = '$lightColor';
+        }
+    </script>";
+
+
+?>
