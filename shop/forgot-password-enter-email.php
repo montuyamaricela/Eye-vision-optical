@@ -10,7 +10,7 @@
 
     $mail = new PHPMailer(true);
 
-    if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) {
+    if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true ) {
         echo "<script>
             alert('You are already logged in!');
             location.href='index.php'

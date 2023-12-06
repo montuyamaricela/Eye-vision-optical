@@ -1,5 +1,6 @@
 <?php 
     session_start();
+    
     $user_id = $_SESSION['user_id'];
     include '../db_connection.php';
     mysqli_select_db($con, 'user');
@@ -32,16 +33,21 @@
             </script>"; 
         }
     }
-    if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] != true) {
+    
+    if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] != true || empty($_SESSION)) {
+    
         echo "<script>
             alert('You need to login first');
             location.href='login.php'
         </script>";
     } else {
+        
         if (isset($_POST['data'])) {
             $jsonData = $_POST['data'];
             $data = json_decode($jsonData, true);
-            if ($data !== null) {
+            // echo $jsonData;
+            if ($data != null) {
+
                 // Initialize arrays for product IDs and quantities
                 $productIds = [];
                 $quantities = [];
@@ -62,11 +68,9 @@
                 $products = "Select Product_ID, Product_name,  Price, User_id, Stock from product.products a join user.cart b on a.ID = b.Product_ID WHERE b.User_id = '$user_id' AND Product_ID IN ($idsToCheckout)";
                 $checkedoutItem = mysqli_query($con, $products);
 
-
             } else {
                 echo "Invalid JSON format";
             }
-
         } else {
             setDirectCheckout(true);
             $itemID = $_POST['id'];
@@ -81,6 +85,8 @@
             $checkedoutItem = mysqli_query($con, $products);
         }
     }
+
+
 ?>
 
 <!DOCTYPE html>
