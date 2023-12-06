@@ -76,7 +76,6 @@
 
             mysqli_select_db($con, 'product');
 
-            echo  $itemQuantity . $itemPrice;
             $products = "Select ID, Name,  Price, Stock from products WHERE ID = '$itemID'";
             $checkedoutItem = mysqli_query($con, $products);
         }
@@ -284,7 +283,7 @@
                         <div>
                             <table>
                                 <tr>
-                                    <th>Product</th>
+                                    <th width="160px">Product</th>
                                     <th>Quantity</th>
                                     <th>Amount</th>
                                 </tr>
@@ -299,12 +298,10 @@
                                     </div>
                                 </div>";
                             } else { ?>
-                                <?php while ($row = mysqli_fetch_array($checkedoutItem)){
-
+                                <?php for($index = 0; $row = mysqli_fetch_array($checkedoutItem); $index++){
                                     // check if the product is direct checkout or came from cart 
                                     if (!getMyBoolean()){
-                                        $index = array_search($productId, $productIds);
-                                        $quantity = ($index !== false) ? $quantities[$index] : 0;  
+                                        $quantity = $quantities[$index];  
                                         $productId = $row['Product_ID']; // Get the product ID from the current row
                                         $totalPrice = $row['Price'] * $quantity;
                                         $productName = $row['Product_name'];
@@ -329,10 +326,6 @@
                             // Add the shipping fee
                             
                             ?>
-                                <!-- <tr class="totalOrder">
-                                <td colspan=2>Total</td>
-                                <td><?php echo $totalCheckout?></td>
-                            </tr> -->
                             </table>
 
                         </div>
@@ -345,11 +338,15 @@
                         <div class="divider-checkout"></div>
                         <div class="price-checkout">
                             <div>
+                                <p class="detail-gray">Total:</p>
+                                <p class="detail-black">₱<?php echo $totalCheckout?></p>
+                            </div>
+                            <div>
                                 <p class="detail-gray">Shipping Fee:</p>
                                 <p class="detail-black">₱200.00</p>
                             </div>
                             <div class="checkout-total">
-                                <p class="detail-gray">Total:</p>
+                                <p class="detail-gray">Grand Total:</p>
                                 <p class="detail-black total-checkout">₱<?php echo $totalCheckout + 200?>
                                 </p>
                             </div>

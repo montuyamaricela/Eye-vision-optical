@@ -11,8 +11,13 @@
     mysqli_select_db($con, 'user');
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $id = $_POST['prodid'];
-        $removeCartItem = "DELETE FROM cart WHERE Product_ID = '$id'";
+        $jsonData = $_POST['item-data'];
+        $data = json_decode($jsonData, true);
+        $productsToDelete = implode(', ', array_map(fn($id) => "'$id'", $data));
+        echo $productsToDelete;
+
+        // $id = $_POST['prodid'];
+        $removeCartItem = "DELETE FROM cart WHERE Product_ID in ($productsToDelete)";
         if(mysqli_query($con, $removeCartItem)){
             echo "<script>
                 alert('Successfully Removed!')
@@ -39,7 +44,7 @@
     <link rel="stylesheet" href="../styles/global.css?v=2" />
 
     <!-- cart page styles/css -->
-    <link rel="stylesheet" href="../styles/cart.css?v=7" />
+    <link rel="stylesheet" href="../styles/cart.css?v=8" />
 
 </head>
 
@@ -189,51 +194,44 @@
             } else { ?>
             <div class="cart-container">
                 <div class="cart-products">
-                    <!-- <table>
-                        <tr>
-                            <th class="">
-                                <input type="checkbox" id="header-checkbox">
-                                <p>products</p>
-                            </th>
+                    <div class="cart-actions">
+                        <div class="selectAll">
+                            <input type="checkbox" id="header-checkbox">
+                            <p class="selectAllP">Select All Products</p>
+                        </div>
+                        <div>
+                            <form action="cart.php" id="delete-item" method="POST">
+                                <input type="hidden" id="item-data" name="item-data" value="">
+                            </form>
+                            <button class="deleteCart" onclick="deleteProducts()">Delete</button>
 
-                        </tr>
-                    </table> -->
-                    <?php while ($row = mysqli_fetch_array($res)){?>
+                        </div>
+                    </div>
                     <form action="checkout.php" method="POST" id="checkoutItems">
+                        <input type="hidden" id="data-field" name="data" value="">
 
-
+                        <?php while ($row = mysqli_fetch_array($res)) { ?>
                         <div class="product cart-items">
                             <div class="card-item">
-                                <input type="checkbox" class="data-checkbox" data-id="<?php echo $row[
-                                            'Product_ID'
-                                        ]; ?>">
-                                <input type="hidden" id="data-field" name="data" value="">
+                                <input type="checkbox" class="data-checkbox"
+                                    data-id="<?php echo $row['Product_ID']; ?>">
 
-                                <div class="remove-cart" onclick="removeItem(this)">
-                                    <svg xmlns=" http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" height="25px">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
-                                    <form class="remove-form" method="POST" action="cart.php">
-                                        <input type="text" class="product-id" hidden id="wishid"
-                                            value="<?php echo $row['Product_ID']?>" name="prodid">
-                                    </form>
-                                </div>
+                                <!-- The div with the class remove-cart is removed -->
 
                                 <div class="card-image">
                                     <?php
-                                    $product_image = $row['Image'];
-                                    echo "<img src='../public/images/$product_image' height='250px'></img>";
-                                ?>
+                                        $product_image = $row['Image'];
+                                        echo "<img src='../public/images/$product_image' height='150px'></img>";
+                                    ?>
                                 </div>
                                 <div class="cart-detail">
-                                    <h2><?php echo $row['Product_name']?></h2>
-                                    <input type="text" id="idCart" value="<?php echo $row['Product_ID']?>" hidden>
+                                    <h2><?php echo $row['Product_name']; ?></h2>
+                                    <input type="text" id="idCart" value="<?php echo $row['Product_ID']; ?>" hidden>
                                     <div>
                                         <p class="detail-gray">Color:</p>
                                         <div class="row-item">
-                                            <p class="detail-black"><?php echo $row['Color']?></p>
-                                            <p class="detail-black initial-price"><?php echo "₱".$row['Price']?></p>
+                                            <p class="detail-black"><?php echo $row['Color']; ?></p>
+                                            <p class="detail-black initial-price"><?php echo "₱" . $row['Price']; ?></p>
                                         </div>
                                     </div>
 
@@ -251,8 +249,8 @@
                                                     </svg>
                                                 </span>
                                                 <input type="number" class="quantity-input" id="quantity"
-                                                    name="quantity" value="<?php echo $row['Quantity']?>"
-                                                    max="<?php echo $row['Stock']?>" onkeydown="disableEnterNumber()">
+                                                    name="quantity" value="<?php echo $row['Quantity']; ?>"
+                                                    max="<?php echo $row['Stock']; ?>" onkeydown="disableEnterNumber()">
                                                 <span style="cursor: pointer" id="add-button">
                                                     <svg xmlns=" http://www.w3.org/2000/svg" fill="none"
                                                         viewBox="0 0 24 24" stroke-width="1.5" stroke="#3f61ad"
@@ -260,28 +258,23 @@
                                                         <path stroke-linecap="round" stroke-linejoin="round"
                                                             d="M12 6v12m6-6H6" />
                                                     </svg>
-
                                                 </span>
                                             </div>
                                             <div>
                                                 <p class="detail-gray" id="grand-total"> Grand Total:
                                                     <span
-                                                        class="detail-black grand-total"><?php echo "₱".$row['Price']?></span>
+                                                        class="detail-black grand-total"><?php echo "₱" . $row['Price']; ?></span>
                                                 </p>
                                             </div>
                                         </div>
-
                                     </div>
                                 </div>
-
                             </div>
                         </div>
-                        <?php 
-                        }
-                        
-                    ?>
-                    </form>
+                        <?php } ?>
+                        <div class="divider"></div>
 
+                    </form>
                 </div>
                 <?php if(mysqli_num_rows($res) != 0){ ?>
 
@@ -354,7 +347,7 @@
         </div>
     </div>
 
-    <script src="../javascript/cart.js?v=30"></script>
+    <script src="../javascript/cart.js?v=32"></script>
     <script src="../javascript/global.js?v=2"></script>
 
 
