@@ -37,7 +37,15 @@
         <div class="navbar">
             <div>
                 <a href="index.php" class="logo">
-                    <img src="../public/images/logo/logo-no-bg.png" alt="" height="85px">
+                    <?php
+                        mysqli_select_db($con, 'cms');
+                        $getLogo = "SELECT * FROM logo WHERE id = '1'";
+                        $logo = mysqli_query($con, $getLogo);
+                        while ($row = mysqli_fetch_array($logo)){
+                            $image = $row['Image'];
+                            echo "<img src='../public/images/$image' alt='Logo' height='85px'>";
+                        }
+                    ?>
                 </a>
             </div>
             <div class="nav-items">
@@ -185,7 +193,7 @@
     <section class="container">
         <div class="book-appointment">
             <div class="">
-                <h2 class="section-title">Set An Appointment</h2>
+                <h2 class="dark-text section-title">Set An Appointment</h2>
                 <div class="contact-box">
                     <p>We will confirm your appointment schedule via email within 1-3 business days.</p>
                     <p>Thank you for trusting Eye Vision for your eye care & treatment needs.</p>
@@ -271,25 +279,32 @@
             <div class="footer-content">
                 <div class="footer-logo">
                     <a href="index.php">
-                        <img src="../public/images/logo/logo-no-bg.png" alt="" width="150">
-                    </a>
+                        <?php
+                        mysqli_select_db($con, 'cms');
+                        $getLogo = "SELECT * FROM logo WHERE id = '1'";
+                        $logo = mysqli_query($con, $getLogo);
+                        while ($row = mysqli_fetch_array($logo)){
+                            $image = $row['Image'];
+                            echo "<img src='../public/images/$image' alt='Logo' height='150'>";
+                        }
+                    ?> </a>
                 </div>
                 <div class="two-column">
                     <div>
-                        <h3>Products</h3>
+                        <h3 class="dark-text">Products</h3>
                         <div class="footer-item">
                             <a href="index.php">Shop</a>
                         </div>
                     </div>
                     <div>
-                        <h3>About</h3>
+                        <h3 class="dark-text">About</h3>
                         <div class="footer-item">
                             <a href="../about.php">About Us</a>
                         </div>
                     </div>
                 </div>
                 <div>
-                    <h3>Help</h3>
+                    <h3 class="dark-text">Help</h3>
                     <div class="footer-item">
                         <a href="appointment.php">Book an appointment</a>
                         <a href="../contact.php">Ask a question</a>
@@ -297,18 +312,19 @@
                 </div>
                 <div class="two-column">
                     <div>
-                        <h3>Terms & Conditions</h3>
+                        <h3 class="dark-text">Terms & Conditions</h3>
                         <div class="footer-item">
                             <a href="">Terms & Conditions</a>
                         </div>
                     </div>
                     <div>
-                        <h3>Privacy Policy</h3>
+                        <h3 class="dark-text">Privacy Policy</h3>
                         <div class="footer-item">
                             <a href="">Privacy Policy</a>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </footer>
@@ -324,10 +340,26 @@
 </html>
 
 <?php 
-    
+    mysqli_select_db($con, 'cms');
+    $getColor = "SELECT * FROM color WHERE id = '1'";
+    $color = mysqli_query($con, $getColor);
+    while ($row = mysqli_fetch_array($color)){
+        $darkColor = $row['darkColor'];
+        $lightColor = $row['lightColor'];
+    }
+    echo "<script>
+        let elementsWithDarkClass = document.getElementsByClassName('dark-text');
+        for (var i = 0; i < elementsWithDarkClass.length; i++) {
+            elementsWithDarkClass[i].style.color = '$darkColor';
+        }
+
+        let elementsWithLightClass = document.getElementsByClassName('light');
+        for (var i = 0; i < elementsWithLightClass.length; i++) {
+            elementsWithLightClass[i].style.color = '$lightColor';
+        }
+    </script>";
     if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) {
         $user_id = $_SESSION['user_id'];
-        echo $user_id;
         mysqli_select_db($con, 'user');
         $sql = "SELECT a.ID, a.Name, a.Email, a.Phone, a.Address, a.Avatar,b.Password, b.Status
 			FROM user_info a, accounts b

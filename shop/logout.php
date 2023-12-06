@@ -6,8 +6,9 @@ if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) {
     // Unset or destroy the session variables
     $_SESSION['is_logged_in'] = false;
     $_SESSION['user_id'] = null;
+    session_unset();
     // or session_destroy(); // This will destroy the whole session, use with caution
-    session_destroy();
+    // session_destroy();
     echo "<script>
         location.href='index.php'
     </script>";

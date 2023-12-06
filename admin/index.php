@@ -18,7 +18,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&family=Inter:wght@300; 400;500;600;700&family=Lato:wght@300;400;700;900&family=Poppins:wght@200;300;400;500;600;700&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="../styles/dashboardGlobal.css?v=17">
+    <link rel="stylesheet" href="../styles/dashboardGlobal.css?v=18">
     <link rel="stylesheet" href="../styles/global.css?v=1">
 </head>
 
@@ -142,8 +142,8 @@
                                 <p class="stat-number"><?php echo $userCount?></p>
                             </div>
                             <div class="stat-card" onclick="directTo('payment-history.php')">
-                                <?php $getNumberOfAccounts = 'SELECT COUNT(*) as orderCount FROM orders';
-                                    $result = mysqli_query($con, $getNumberOfAccounts);
+                                <?php $getNumberOfOrders = 'SELECT COUNT(*) as orderCount FROM orders';
+                                    $result = mysqli_query($con, $getNumberOfOrders);
                                     $row = mysqli_fetch_assoc($result);
                                     $orderCount = $row['orderCount'];
                                 ?>
@@ -187,34 +187,19 @@
                                     <th>Quantity</th>
                                 </tr>
                                 <tbody>
-                                    <tr>
-                                        <td>332344</td>
-                                        <td>johndoe@gmail.com</td>
+                                    <?php 
+                                        $getRecentOrders = 'SELECT orderID, User_email, Product_name, Quantity, DateOrdered FROM orders ORDER BY DateOrdered DESC LIMIT 4';
+                                        $result = mysqli_query($con, $getRecentOrders);
+                                        while ($row = mysqli_fetch_array($result)){ ?>
 
-                                        <td>Glasses 1</td>
-                                        <td>1</td>
-                                    </tr>
                                     <tr>
-                                        <td>332344</td>
-                                        <td>johndoe@gmail.com</td>
+                                        <td><?php echo $row['orderID']?></td>
+                                        <td><?php echo $row['User_email']?></td>
 
-                                        <td>Glasses 1</td>
-                                        <td>1</td>
+                                        <td><?php echo $row['Product_name']?></td>
+                                        <td><?php echo $row['Quantity']?>1</td>
                                     </tr>
-                                    <tr>
-                                        <td>332344</td>
-                                        <td>johndoe@gmail.com</td>
-
-                                        <td>Glasses 1</td>
-                                        <td>1</td>
-                                    </tr>
-                                    <tr>
-                                        <td>332344</td>
-                                        <td>johndoe@gmail.com</td>
-
-                                        <td>Glasses 1</td>
-                                        <td>1</td>
-                                    </tr>
+                                    <?php } ?>
                                 </tbody>
                             </table>
                         </div>

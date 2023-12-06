@@ -8,7 +8,6 @@ if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) {
 } 
 
 
-
 $filter_category = isset($_GET['category']) ? $_GET['category'] : '';
 $limit = 6;
 
@@ -84,7 +83,15 @@ $result = mysqli_query($con, $sql);
         <div class="navbar">
             <div>
                 <a href="index.php" class="logo">
-                    <img src="../public/images/logo/logo-no-bg.png" alt="" height="85px">
+                    <?php
+                        mysqli_select_db($con, 'cms');
+                        $getLogo = "SELECT * FROM logo WHERE id = '1'";
+                        $logo = mysqli_query($con, $getLogo);
+                        while ($row = mysqli_fetch_array($logo)){
+                            $image = $row['Image'];
+                            echo "<img src='../public/images/$image' alt='Logo' height='85px'>";
+                        }
+                    ?>
                 </a>
             </div>
             <div class="nav-items">
@@ -92,6 +99,8 @@ $result = mysqli_query($con, $sql);
                     <a>Products</a>
                     <div class=" dropdown-content">
                         <?php
+                            mysqli_select_db($con, 'product');
+
                             $sql = "SELECT * FROM Category";
                             $res = mysqli_query($con, $sql);
                 
@@ -146,7 +155,7 @@ $result = mysqli_query($con, $sql);
                                 <img src="#" alt="" id="navbarProfile">
                                 <p id="userName">Name</p>
                             </div>
-                            <p id="user" ">My Account</p>
+                            <p id="user">My Account</p>
                         </div>
                         <div class=" dropdown-content">
                             <div id='op2'>
@@ -173,7 +182,7 @@ $result = mysqli_query($con, $sql);
 
                 <div class="sidebar-item">
                     <div onclick="filterHandler(this)" class="category">
-                        <h2 class="">Price range</h2>
+                        <h2 class="dark-text">Price range</h2>
                         <div>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" fill="currentColor"
                                 stroke-width="1.5">
@@ -197,7 +206,7 @@ $result = mysqli_query($con, $sql);
                 </div>
                 <div class="sidebar-item">
                     <div onclick="filterHandler(this)" class="category">
-                        <h2 class="">Color</h2>
+                        <h2 class="dark-text">Color</h2>
                         <div>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" fill="currentColor"
                                 stroke-width="1.5">
@@ -231,7 +240,7 @@ $result = mysqli_query($con, $sql);
                 <div class="product-items-container">
                     <div class="product-items">
                         <?php if (mysqli_num_rows($result) == 0){
-                            echo "<h2>Products Not Found/unavailable</h2>";
+                            echo "<h2 class='dark-text'>Products Not Found/unavailable</h2>";
                         }
                         ?>
                         <?php while ($row = mysqli_fetch_array($result)){ ?>
@@ -242,7 +251,7 @@ $result = mysqli_query($con, $sql);
                                     height="220" />
                             </div>
                             <div class="product-details">
-                                <h3><?php echo $row['Name']?></h3>
+                                <h3 class="dark-text"><?php echo $row['Name']?></h3>
                                 <p>₱<?php echo $row['Price']?></p>
                             </div>
                         </a>
@@ -294,55 +303,55 @@ $result = mysqli_query($con, $sql);
 
     <footer>
         <div class="container">
-            <div class="backToTop">
-                <p onclick="scrollToTop()" class="scroll">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" width="20" width="auto" stroke-width="1.5"
-                        stroke="black">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
-                    </svg>
-                </p>
-            </div>
             <div class="footer-content">
                 <div class="footer-logo">
                     <a href="index.php">
-                        <img src="../public/images/logo/logo-no-bg.png" alt="" width="150">
-                    </a>
+                        <?php
+                        mysqli_select_db($con, 'cms');
+                        $getLogo = "SELECT * FROM logo WHERE id = '1'";
+                        $logo = mysqli_query($con, $getLogo);
+                        while ($row = mysqli_fetch_array($logo)){
+                            $image = $row['Image'];
+                            echo "<img src='../public/images/$image' alt='Logo' height='150'>";
+                        }
+                    ?> </a>
                 </div>
                 <div class="two-column">
                     <div>
-                        <h3>Products</h3>
+                        <h3 class="dark-text">Products</h3>
                         <div class="footer-item">
-                            <a href="shop.php">Shop</a>
+                            <a href="index.php">Shop</a>
                         </div>
                     </div>
                     <div>
-                        <h3>About</h3>
+                        <h3 class="dark-text">About</h3>
                         <div class="footer-item">
                             <a href="../about.php">About Us</a>
                         </div>
                     </div>
                 </div>
                 <div>
-                    <h3>Help</h3>
+                    <h3 class="dark-text">Help</h3>
                     <div class="footer-item">
-                        <a href="../appointment.php">Book an appointment</a>
+                        <a href="appointment.php">Book an appointment</a>
                         <a href="../contact.php">Ask a question</a>
                     </div>
                 </div>
                 <div class="two-column">
                     <div>
-                        <h3>Terms & Conditions</h3>
+                        <h3 class="dark-text">Terms & Conditions</h3>
                         <div class="footer-item">
                             <a href="">Terms & Conditions</a>
                         </div>
                     </div>
                     <div>
-                        <h3>Privacy Policy</h3>
+                        <h3 class="dark-text">Privacy Policy</h3>
                         <div class="footer-item">
                             <a href="">Privacy Policy</a>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </footer>
@@ -358,6 +367,26 @@ $result = mysqli_query($con, $sql);
 </html>
 
 <?php 
+    mysqli_select_db($con, 'cms');
+    $getColor = "SELECT * FROM color WHERE id = '1'";
+    $color = mysqli_query($con, $getColor);
+    while ($row = mysqli_fetch_array($color)){
+        $darkColor = $row['darkColor'];
+        $lightColor = $row['lightColor'];
+    }
+    echo "<script>
+        let elementsWithDarkClass = document.getElementsByClassName('dark-text');
+        for (var i = 0; i < elementsWithDarkClass.length; i++) {
+            elementsWithDarkClass[i].style.color = '$darkColor';
+        }
+
+        let elementsWithLightClass = document.getElementsByClassName('light');
+        for (var i = 0; i < elementsWithLightClass.length; i++) {
+            elementsWithLightClass[i].style.color = '$lightColor';
+        }
+    </script>";
+
+    
     if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) {
         include '../db_connection.php';
         mysqli_select_db($con, 'user');

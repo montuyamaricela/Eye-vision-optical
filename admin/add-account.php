@@ -101,7 +101,7 @@
                     <div class="circle" id="profileImage" style="display:block">
                         <img src="#" class="profilePhoto" width="100" height="100">
                     </div>
-                    <input type="file" name="image">
+                    <input type="file" name="image" accept="image/png, image/gif, image/jpeg">
 
                 </div>
                 <div class="form-input">

@@ -46,8 +46,7 @@
                 VALUES ('$orderID', '$productId', '$productName', '$quantity', '$totalPrice', '$user_id', '$userEmail', '$name', '$phone', '$address', '$note', 'Order Pending')";
             if(mysqli_query($con, $addOrder)){
                 echo "<script>
-                    alert('Order complete');
-                    location.href='order-track.php'
+                    location.href='order-track.php?order-id=$orderID'
                 </script>";
 
                 mysqli_select_db($con, 'product');

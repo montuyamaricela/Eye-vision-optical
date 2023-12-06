@@ -1,3 +1,8 @@
+<?php
+    include 'db_connection.php';
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -19,7 +24,16 @@
 <body>
     <section>
         <div class="logo">
-            <img src="public/images/logo/logo.png" alt="Logo" height="150">
+            <?php
+                mysqli_select_db($con, 'cms');
+                $getLogo = "SELECT * FROM logo WHERE id = '1'";
+                $logo = mysqli_query($con, $getLogo);
+                while ($row = mysqli_fetch_array($logo)){
+                    $image = $row['Image'];
+                    echo "<img src='public/images/$image' alt='Logo' height='150px'>";
+                }
+            ?>
+            <!-- <img src="public/images/logo/logo.png" alt="Logo" height="150"> -->
         </div>
         <div>
             <p class="description">Welcome to Eye vision! Your privacy is important to us, and we are committed to

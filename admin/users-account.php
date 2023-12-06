@@ -108,7 +108,7 @@
                         <img src="#" alt="Profile Picture" title="profile" class="profilePhoto" width="100"
                             height="100">
                     </div>
-                    <input type="file" name="image">
+                    <input type="file" accept="image/png, image/gif, image/jpeg" name="image">
 
                 </div>
                 <div class="form-input">

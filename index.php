@@ -1,5 +1,7 @@
-<?php ?>
+<?php
+    include 'db_connection.php';
 
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -14,7 +16,7 @@
         rel="stylesheet" />
 
     <!-- homepage styles/css -->
-    <link rel="stylesheet" href="styles/index.css?v=2" />
+    <link rel="stylesheet" href="styles/index.css?v=3" />
 
     <!-- global styles/css -->
     <link rel="stylesheet" href="styles/global.css?v=1" />
@@ -32,7 +34,15 @@
         <div class="navbar">
             <div>
                 <a href="index.php" class="logo">
-                    <img src="public/images/logo/logo-no-bg.png" alt="" height="85px">
+                    <?php
+                        mysqli_select_db($con, 'cms');
+                        $getLogo = "SELECT * FROM logo WHERE id = '1'";
+                        $logo = mysqli_query($con, $getLogo);
+                        while ($row = mysqli_fetch_array($logo)){
+                            $image = $row['Image'];
+                            echo "<img src='public/images/$image' alt='Logo' height='85px'>";
+                        }
+                    ?>
                 </a>
             </div>
             <div class="nav-items">
@@ -51,20 +61,32 @@
         </div>
     </section>
 
-    <section class="hero-section-landing">
+
+    <section class="hero-section-landing" id="hero-section-landing">
+
         <div class="dark"></div>
         <div class="hero">
-            <h1 class="">Personalized Eye Care for you and your family</h1>
+            <h1 class="light">Personalized Eye Care for you and your family</h1>
             <button class="hero-btn" onclick="scrollToAbout()">See More</button>
         </div>
     </section>
-
+    <?php
+        mysqli_select_db($con, 'cms');
+        $getLogo = "SELECT * FROM background WHERE id = '1'";
+        $logo = mysqli_query($con, $getLogo);
+        while ($row = mysqli_fetch_array($logo)){
+            $image = $row['Image'];
+            echo "<script>
+                document.getElementById('hero-section-landing').style.backgroundImage = 'url(\'public/images/$image\')';
+            </script>";
+        }
+    ?>
     <section id="about">
         <div class="container about-cont">
             <div class="about-desc">
-                <h2 class="section-header">ABOUT</h2>
+                <h2 class="dark-text section-header">ABOUT</h2>
                 <div class="">
-                    <h3 class="about-header">Eye Vision: Your Vision, Our Passion</h3>
+                    <h3 class="dark-text about-header">Eye Vision: Your Vision, Our Passion</h3>
                     <p class="about-description">
                         At Eye Vision Clinic, we believe in the transformative power of clear vision.
                         Our journey began with a simple but profound mission: to provide exceptional
@@ -90,7 +112,7 @@
     <section id="testimonials">
         <div class="container">
             <p class="section-title">TESTIMONIALS</p>
-            <h2 class="title-bold">Real People. Real Talk. <br>
+            <h2 class="dark-text title-bold">Real People. Real Talk. <br>
                 Eye Care Like No Other Defined.
             </h2>
             <div class="slider-container">
@@ -106,7 +128,7 @@
                                 </p>
                             </div>
                             <div class="customerName">
-                                <h2>John M.</h2>
+                                <h2 class="dark-text">John M.</h2>
                             </div>
                         </div>
                     </div>
@@ -121,7 +143,7 @@
                                 </p>
                             </div>
                             <div class="customerName">
-                                <h2>John M.</h2>
+                                <h2 class="dark-text">John M.</h2>
                             </div>
                         </div>
                     </div>
@@ -136,7 +158,7 @@
                                 </p>
                             </div>
                             <div class="customerName">
-                                <h2>John M.</h2>
+                                <h2 class="dark-text">John M.</h2>
                             </div>
                         </div>
                     </div>
@@ -150,7 +172,7 @@
                                 </p>
                             </div>
                             <div class="customerName">
-                                <h2>John M.</h2>
+                                <h2 class="dark-text">John M.</h2>
                             </div>
                         </div>
                     </div>
@@ -165,7 +187,7 @@
                                 </p>
                             </div>
                             <div class="customerName">
-                                <h2>John M.</h2>
+                                <h2 class="dark-text">John M.</h2>
                             </div>
                         </div>
                     </div>
@@ -179,7 +201,7 @@
                                 </p>
                             </div>
                             <div class="customerName">
-                                <h2>John M.</h2>
+                                <h2 class="dark-text">John M.</h2>
                             </div>
                         </div>
                     </div>
@@ -211,9 +233,9 @@
                 <img src="public/images/about.jpg" alt="" />
             </div>
             <div class="shop-desc">
-                <h2 class="section-header">SHOP</h2>
+                <p class="section-header">SHOP</p>
                 <div class="">
-                    <h3 class="shop-header">Shop Now for Clear Vision</h3>
+                    <h3 class="dark-text shop-header">Shop Now for Clear Vision</h3>
                     <p class="shop-description">
                         Elevate your vision and style with our exclusive online store.
                         At Eye Vision, we've made it easy for you to access premium eyewear,
@@ -236,7 +258,7 @@
                 </div>
                 <div class="appointment-banner-content">
                     <p class="section-title">ELEVATE YOUR EYE CARE EXPERIENCE</p>
-                    <h2 class="">Experience Eye Care Like No Other.</h2>
+                    <h2 class="light">Experience Eye Care Like No Other.</h2>
                     <p>Take charge of your health. Don’t delay, book your eye check-up now
                         and discover exceptional eye care with us.
                     </p>
@@ -259,25 +281,33 @@
             <div class="footer-content">
                 <div class="footer-logo">
                     <a href="index.php">
-                        <img src="public/images/logo/logo-no-bg.png" alt="" width="150">
+                        <?php
+                        mysqli_select_db($con, 'cms');
+                        $getLogo = "SELECT * FROM logo WHERE id = '1'";
+                        $logo = mysqli_query($con, $getLogo);
+                        while ($row = mysqli_fetch_array($logo)){
+                            $image = $row['Image'];
+                            echo "<img src='public/images/$image' alt='Logo' height='150px'>";
+                        }
+                    ?>
                     </a>
                 </div>
                 <div class="two-column">
                     <div>
-                        <h3>Products</h3>
+                        <h3 class="dark-text">Products</h3>
                         <div class="footer-item">
                             <a href="shop/index.php">Shop</a>
                         </div>
                     </div>
                     <div>
-                        <h3>About</h3>
+                        <h3 class="dark-text">About</h3>
                         <div class="footer-item">
                             <a href="about.php">About Us</a>
                         </div>
                     </div>
                 </div>
                 <div>
-                    <h3>Help</h3>
+                    <h3 class="dark-text">Help</h3>
                     <div class="footer-item">
                         <a href="shop/appointment.php">Book an appointment</a>
                         <a href="contact.php">Ask a question</a>
@@ -285,13 +315,13 @@
                 </div>
                 <div class="two-column">
                     <div>
-                        <h3>Terms & Conditions</h3>
+                        <h3 class="dark-text">Terms & Conditions</h3>
                         <div class="footer-item">
                             <a href="">Terms & Conditions</a>
                         </div>
                     </div>
                     <div>
-                        <h3>Privacy Policy</h3>
+                        <h3 class="dark-text">Privacy Policy</h3>
                         <div class="footer-item">
                             <a href="">Privacy Policy</a>
                         </div>
@@ -312,3 +342,24 @@
 </body>
 
 </html>
+
+<?php
+    mysqli_select_db($con, 'cms');
+    $getColor = "SELECT * FROM color WHERE id = '1'";
+    $color = mysqli_query($con, $getColor);
+    while ($row = mysqli_fetch_array($color)){
+        $darkColor = $row['darkColor'];
+        $lightColor = $row['lightColor'];
+    }
+    echo "<script>
+        let elementsWithDarkClass = document.getElementsByClassName('dark-text');
+        for (var i = 0; i < elementsWithDarkClass.length; i++) {
+            elementsWithDarkClass[i].style.color = '$darkColor';
+        }
+
+        let elementsWithLightClass = document.getElementsByClassName('light');
+        for (var i = 0; i < elementsWithLightClass.length; i++) {
+            elementsWithLightClass[i].style.color = '$lightColor';
+        }
+    </script>";
+?>

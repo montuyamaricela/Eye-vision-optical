@@ -6,7 +6,7 @@
             location.href='login.php'
         </script>";
     }
-// Connect to the database
+    // Connect to the database
     include '../db_connection.php';
     mysqli_select_db($con, 'product');
 
@@ -62,7 +62,8 @@
 
                 <div id="productImage" class=" image-upload">
                     <img src="#" width="100" height="100" class="product-img-upload">
-                    <input type="file" name="image" class="product-upload" required>
+                    <input type="file" name="image" class="product-upload" accept="image/png, image/gif, image/jpeg"
+                        required>
 
                 </div>
                 <div class="two-column-input">
