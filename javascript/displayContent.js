@@ -55,6 +55,8 @@ document.addEventListener("DOMContentLoaded", function () {
       .textContent.replace(/[^\d.]/g, "")
   );
   document.getElementById("quantityTotal").value = quantityInput.value;
+  document.getElementById("checkoutQuantity").value = quantityInput.value;
+
   document.getElementById("grandTotal").value = initialPrice;
 
   function updateGrandTotal() {
@@ -76,7 +78,8 @@ document.addEventListener("DOMContentLoaded", function () {
   function addQuantity() {
     let value = parseInt(quantityInput.value);
     let maxValue = parseInt(quantityInput.max);
-
+    document.getElementById("checkoutQuantity").value = value + 1;
+    console.log(document.getElementById("checkoutQuantity").value);
     if (value < maxValue) {
       value++;
       quantityInput.value = value;
@@ -89,6 +92,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function minusQuantity() {
     let value = parseInt(quantityInput.value);
+    document.getElementById("checkoutQuantity").value = value - 1;
+    console.log(document.getElementById("checkoutQuantity").value);
     if (quantityInput.value > 1) {
       value--;
       quantityInput.value = value;

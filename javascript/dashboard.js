@@ -245,3 +245,7 @@ function deleteProducts() {
   // Submit the form
   document.getElementById("products-list-form").submit();
 }
+
+function directTo(link) {
+  location.href = link;
+}

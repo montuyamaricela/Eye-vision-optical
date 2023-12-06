@@ -1,11 +1,11 @@
 <?php
     session_start();
     
-    if (isset($_SESSION['adminLoggedin']) && $_SESSION['adminLoggedin'] === false) {
+    if (isset($_SESSION['adminLoggedin']) && $_SESSION['adminLoggedin'] === false || empty($_SESSION) || empty($_SESSION['adminLoggedin'])) {
         echo "<script>
             location.href='login.php'
         </script>";
-    } 
+    }
     include '../db_connection.php';
     mysqli_select_db($con, 'product');
 
@@ -138,9 +138,9 @@
                 <img src="../public/images/icons/warning.png" alt="warning">
             </div>
             <div>
-                <h2 id="popupHeader">Are you sure you want to cancel?</h2>
+                <h2 id="popupHeader">Are you sure you want to delete?</h2>
                 <div class="buttonRow" id="buttonRow">
-                    <button class=" buttonYes" onclick="cancelAppointments()">Yes</button>
+                    <button class=" buttonYes" onclick="deleteProducts()">Yes</button>
                     <button class="buttonNo" onclick="closePopup()">No</button>
                 </div>
             </div>
@@ -277,7 +277,7 @@
                                 Add Products
                             </button>
                         </a>
-                        <button class="button" onclick="deleteProducts()">Delete</button>
+                        <button class="button" onclick="checkAndDisplayPopup()">Delete</button>
                     </div>
 
                 </div>
@@ -401,7 +401,7 @@
         </div>
     </section>
     <!-- Add JavaScript code to handle checkbox functionality -->
-    <script src="../javascript/dashboard.js?v=25"></script>
+    <script src="../javascript/dashboard.js?v=26"></script>
 
 </body>
 

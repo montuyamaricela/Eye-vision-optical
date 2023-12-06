@@ -2,7 +2,7 @@
     session_start();
     include '../db_connection.php';
 
-    if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) {
+    if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true || empty($_SESSION)) {
         $user_id = $_SESSION['user_id'];
         $loggedIn = true;
     } else {

@@ -1,6 +1,6 @@
 <?php 
     session_start();
-    if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === FALSE) {
+    if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === FALSE || empty($_SESSION)) {
         echo "<script>
             location.href='index.php'
         </script>";

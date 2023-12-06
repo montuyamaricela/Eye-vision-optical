@@ -2,11 +2,11 @@
 
     session_start();
     
-    if (isset($_SESSION['adminLoggedin']) && $_SESSION['adminLoggedin'] === false) {
+    if (isset($_SESSION['adminLoggedin']) && $_SESSION['adminLoggedin'] === false || empty($_SESSION) || empty($_SESSION['adminLoggedin'])) {
         echo "<script>
             location.href='login.php'
         </script>";
-    } 
+    }
     // connect chuchu eklavush, palitan niyo nalang 'to hehe
     include '../db_connection.php';
     mysqli_select_db($con, 'Contact');

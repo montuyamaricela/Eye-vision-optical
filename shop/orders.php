@@ -2,7 +2,7 @@
     session_start();
     $user_id = $_SESSION['user_id'];
     include '../db_connection.php';
-      if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] != true) {
+      if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] != true || empty($_SESSION)) {
         echo "<script>
             alert('You need to login first');
             location.href='login.php'
@@ -18,6 +18,18 @@
                 alert('Successfully Removed!')
                 location.href='cart.php'
             </script>";
+        }
+    }
+    function getStatusColorClass($status){
+        switch ($status) {
+            case 'Order Pending':
+                return 'orange-text';
+            case 'Delivered':
+                return 'green-text';
+            case 'Cancelled':
+                return 'red-text';
+            default:
+                return '';
         }
     }
 ?>
@@ -39,8 +51,7 @@
     <link rel="stylesheet" href="../styles/global.css?v=2" />
 
     <!-- cart page styles/css -->
-    <link rel="stylesheet" href="../styles/orders.css?v=6" />
-
+    <link rel="stylesheet" href="../styles/orders.css?v=10" />
 </head>
 
 <body>
@@ -153,7 +164,7 @@
                                 <img src="#" alt="" id="navbarProfile">
                                 <p id="userName">Name</p>
                             </div>
-                            <p id="user" ">My Account</p>
+                            <p id="user">My Account</p>
                         </div>
                         <div class=" dropdown-content">
                             <div id='op2'>
@@ -176,10 +187,10 @@
     <section class="order-container">
         <div class="">
             <?php
-                $checkCart = "Select Product_ID, Product_name, Color, Image, Price, Quantity, User_id, Stock from product.products a join user.cart b on a.ID = b.Product_ID WHERE b.User_id = '$user_id'";
-                $res = mysqli_query($con, $checkCart);
+                $getOrderDetails = "SELECT orderID, Product_ID, Product_name, Quantity, a.Price as origPrice, b.Price, Color, Image, User_id, User_name, User_email, Phone, Address, Note, Status FROM product.products a join user.orders b on a.ID = b.Product_ID WHERE User_id = '$user_id'";          
+                $result = mysqli_query($con, $getOrderDetails);
             ?>
-            <?php if(mysqli_num_rows($res) === 0){
+            <?php if(mysqli_num_rows($result) === 0){
                 echo " <div class='no-items'>
                             <h2>My Orders</h2>
                             <div class='order-card'>
@@ -190,24 +201,28 @@
             <div class="">
                 <div class="">
                     <h2 class="header">My Orders</h2>
-                    <?php while ($row = mysqli_fetch_array($res)){?>
+                    <?php while ($row = mysqli_fetch_array($result)){?>
                     <div class="divider"></div>
-                    <a href="order-track.php" class="order-item">
+                    <a href="order-track.php?order-id=<?php echo $row['orderID']?>" class="order-item">
 
                         <div class="item-image">
-                            <img src="../public/images/Glasses/EO-EYEWEAR.jpg" alt="" height="150">
+                            <img src="../public/images/<?php echo $row['Image']?>"
+                                alt="<?php echo $row['Product_name']?>" height="100">
                         </div>
                         <div class="order-detail">
-                            <p>Glasses 1</p>
+                            <p><?php echo $row['Product_name']?></p>
                             <p>
-                                Black
+                                <?php echo $row['Color']?>
                             </p>
                         </div>
                         <div class="order-detail-2">
-                            <p class="status">Delivered</p>
-                            <p class="price">₱999.00</p>
-                            <p class="quantity">Qty: 1</p>
-                            <p class="total">Order Total: <span class="total-price"> ₱999.00</span></p>
+                            <p class="status <?php echo getStatusColorClass($row['Status']); ?>">
+                                <?php echo $row['Status']?>
+                            </p>
+                            <p class="price">₱<?php echo $row['origPrice']?></p>
+                            <p class="quantity">Qty: <?php echo $row['Quantity']?></p>
+                            <p class="total">Order Total: <span class="total-price"> ₱<?php echo $row['Price']?></span>
+                            </p>
                         </div>
                     </a>
 
@@ -219,6 +234,7 @@
             <?php }?>
         </div>
     </section>
+
 
     <footer>
         <div class="container">

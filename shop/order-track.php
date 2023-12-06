@@ -2,7 +2,7 @@
     session_start();
     $user_id = $_SESSION['user_id'];
     include '../db_connection.php';
-      if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] != true) {
+      if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] != true || empty($_SESSION)) {
         echo "<script>
             alert('You need to login first');
             location.href='login.php'
@@ -20,6 +20,21 @@
             </script>";
         }
     }
+
+    $orderID = isset($_GET['order-id']) ? $_GET['order-id'] : '';
+    function getStatusColorClass($status){
+        switch ($status) {
+            case 'Order Pending':
+                return 'orange-text';
+            case 'Delivered':
+                return 'green-text';
+            case 'Cancelled':
+                return 'red-text';
+            default:
+                return '';
+        }
+    }
+
 ?>
 
 <!DOCTYPE html>
@@ -36,10 +51,10 @@
         rel="stylesheet" />
 
     <!-- global styles/css -->
-    <link rel="stylesheet" href="../styles/global.css?v=2" />
+    <link rel="stylesheet" href="../styles/global.css?v=10" />
 
     <!-- cart page styles/css -->
-    <link rel="stylesheet" href="../styles/orders.css?v=5" />
+    <link rel="stylesheet" href="../styles/orders.css?v=11" />
 
 </head>
 
@@ -176,66 +191,127 @@
     <section class="order-container">
         <div class="">
             <?php
-                $checkCart = "Select Product_ID, Product_name, Color, Image, Price, Quantity, User_id, Stock from product.products a join user.cart b on a.ID = b.Product_ID WHERE b.User_id = '$user_id'";
-                $res = mysqli_query($con, $checkCart);
+                $getOrderDetails = "SELECT orderID, Product_ID, Product_name, Quantity, b.Price, Color, Image, User_id, User_name, User_email, Phone, Address, Note, Status FROM product.products a join user.orders b on a.ID = b.Product_ID WHERE orderID = $orderID AND User_id = '$user_id'";          
+                $result = mysqli_query($con, $getOrderDetails);
             ?>
-            <?php if(mysqli_num_rows($res) === 0){
+            <?php if(mysqli_num_rows($result) === 0){
                 echo " <div class='no-items'>
                             <h2>My Orders</h2>
                             <div class='order-card'>
                             <p>No order(s) to track.</p>
                         </div>
                         </div>";
-            } else { ?>
-            <div class="">
-                <div class="">
-                    <h2 class="header">Order <span>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="4"
-                                stroke="currentColor" height="15" width="15">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                            </svg>
+            } else if (mysqli_num_rows($result) >= 2){ ?>
+            <h2 class="header">Order<span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="4"
+                        stroke="currentColor" height="15" width="15">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                    </svg>
+                </span> <span id="orderID"></span>
+            </h2>
 
-                        </span> 334902461</h2>
-                    <div class="divider"></div>
-                    <div class="order-item">
+            <div class="divider"></div>
 
-                        <div class="item-image">
-                            <img src="../public/images/Glasses/EO-EYEWEAR.jpg" alt="" height="150">
-                        </div>
-                        <div class="order-detail">
-                            <p>Glasses 1</p>
-                            <p>
-                                Black
-                            </p>
-                        </div>
-                        <div class="order-detail-2">
-                            <p class="status">Delivered</p>
+            <?php  while ($row = mysqli_fetch_array($result)) { 
+                $Address = $row['Address'];
+                $phone = $row['Phone'];
+                $name = $row['User_name'];
+                $id = $row['orderID'];
+                echo "<script>
+                    document.getElementById('orderID').innerHTML = $id;
+                </script>";
+            ?>
 
-                            <p class="price">₱999.00</p>
-                            <p class="quantity">Qty: 1</p>
+            <div>
 
-                        </div>
+
+                <div class="order-item">
+                    <div class="item-image">
+                        <img src="../public/images/<?php echo $row['Image']?>" alt="" height="100">
                     </div>
+                    <div class="order-detail">
+                        <p><?php echo $row['Product_name']?></p>
+                        <p>
+                            <?php echo $row['Color']?>
+                        </p>
+                    </div>
+                    <div class="order-detail-2">
+                        <p class="status <?php echo getStatusColorClass($row['Status']); ?>">
+                            <?php echo $row['Status']?>
+                        </p>
+                        <p class="price">₱<?php echo $row['Price']?></p>
+                        <p class="quantity">Qty: <?php echo $row['Quantity']?></p>
 
-                    <div class="divider"></div>
-                    <div class="order-info">
-                        <div>
-                            <p class="darktext">Payment</p>
-                            <p class="semibold">Cash on Delivery </p>
-                        </div>
-                        <div>
-                            <p class="darktext ">Delivery</p>
-                            <p class="semibold">Address</p>
-                            <p class="lighttext">Cupang Pandi</p>
-                            <p class="lighttext">09276565832</p>
-                            <p class="lighttext">Maricel Montuya</p>
-                        </div>
+                    </div>
+                </div>
+                <?php }?>
+                <div class="divider"></div>
+                <div class="order-info">
+                    <div>
+                        <p class="darktext">Payment</p>
+                        <p class="semibold">Cash on Delivery </p>
+                    </div>
+                    <div>
+                        <p class="darktext ">Delivery</p>
+                        <p class="semibold">Address</p>
+                        <p class="lighttext"><?php echo $Address?></p>
+                        <p class="lighttext"><?php echo $phone?></p>
+                        <p class="lighttext"><?php echo $name ?></p>
                     </div>
                 </div>
 
+                <?php } else { while ($row = mysqli_fetch_array($result)) {?>
+                <div class="">
+                    <div class="">
+                        <h2 class="header">Order<span>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="4"
+                                    stroke="currentColor" height="15" width="15">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                                </svg>
+
+                            </span> <?php echo $row['orderID']?></h2>
+                        <div class="divider"></div>
+                        <div class="order-item">
+
+                            <div class="item-image">
+                                <img src="../public/images/<?php echo $row['Image']?>" alt="" height="100">
+                            </div>
+                            <div class="order-detail">
+                                <p><?php echo $row['Product_name']?></p>
+                                <p>
+                                    <?php echo $row['Color']?>
+                                </p>
+                            </div>
+                            <div class="order-detail-2">
+                                <p class="status <?php echo getStatusColorClass($row['Status']); ?>">
+                                    <?php echo $row['Status']?>
+                                </p>
+                                <p class="price">₱<?php echo $row['Price']?></p>
+                                <p class="quantity">Qty: <?php echo $row['Quantity']?></p>
+
+                            </div>
+                        </div>
+
+                        <div class="divider"></div>
+                        <div class="order-info">
+                            <div>
+                                <p class="darktext">Payment</p>
+                                <p class="semibold">Cash on Delivery </p>
+                            </div>
+                            <div>
+                                <p class="darktext ">Delivery</p>
+                                <p class="semibold">Address</p>
+                                <p class="lighttext"><?php echo $row['Address']?></p>
+                                <p class="lighttext"><?php echo $row['Phone']?></p>
+                                <p class="lighttext"><?php echo $row['User_name']?></p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <?php }}?>
             </div>
-            <?php }?>
-        </div>
     </section>
 
     <footer>
