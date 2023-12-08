@@ -9,16 +9,6 @@
     include '../db_connection.php';
     mysqli_select_db($con, 'product');
 
-    // $limit = 10;
-
-    // if (isset($_GET['page'])) {
-    //     $page_number = $_GET['page'];
-    // } else {
-    //     $page_number = 1;
-    // }
-
-    // $initial_page = ($page_number - 1) * $limit;
-
     $filter_category = isset($_GET['category']) ? $_GET['category'] : '';
     $search_item = isset($_GET['product-name']) ? $_GET['product-name'] : '';
 
@@ -267,7 +257,9 @@
                                         <p>Total</p>
                                         <p id="total">₱0</p>
                                     </div>
-                                    <form action="">
+                                    <form action="transaction-success.php" method="POST" id="transaction-success">
+                                        <input type="hidden" id="data-field" name="data" value="">
+
                                         <div class="row">
                                             <p>Payment</p>
                                             <input type="number" id="paymentInput" min="0">
@@ -300,10 +292,7 @@
         </div>
     </section>
 
-    <script src="../javascript/POS.js?v=8"></script>
-
-
-
+    <script src="../javascript/point-of-sales.js?v=11"></script>
 </body>
 
 </html>

@@ -252,10 +252,19 @@ function checkoutProduct() {
     return {
       productId: product.productID,
       quantity: product.ProductQuantity,
-      price: product.productPrice * product.ProductQuantity,
     };
   });
 
   // Log the simplifiedProducts array to see the result
   console.log(simplifiedProducts);
+  // Set the JSON data as a value of a hidden input field
+  document.querySelector("#data-field").value =
+    JSON.stringify(simplifiedProducts);
+
+  // Submit the form
+  document.getElementById("transaction-success").submit();
+  selectedProducts = [];
+
+  // Update the checkout table to reflect the changes
+  updateCheckoutTable();
 }
