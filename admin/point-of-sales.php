@@ -9,29 +9,25 @@
     include '../db_connection.php';
     mysqli_select_db($con, 'product');
 
-    $limit = 10;
-
-    if (isset($_GET['page'])) {
-        $page_number = $_GET['page'];
-    } else {
-        $page_number = 1;
-    }
-
-    $initial_page = ($page_number - 1) * $limit;
-
-    $filter_category = isset($_GET['filterByCategory']) ? $_GET['filterByCategory'] : '';
+    $filter_category = isset($_GET['category']) ? $_GET['category'] : '';
+    $search_item = isset($_GET['product-name']) ? $_GET['product-name'] : '';
 
     $sql = "SELECT * FROM products";
-    
+
     // Add condition to filter by category if selected
     if (!empty($filter_category)) {
         $sql .= " WHERE Category = '$filter_category'";
     }
 
-    $sql .= " LIMIT $initial_page, $limit";
+    // Add condition to filter by product name if provided
+    if (!empty($search_item)) {
+        // If there is already a WHERE clause, use AND; otherwise, add WHERE
+        $sql .= empty($filter_category) ? " WHERE" : " AND";
+        $sql .= " Name = '$search_item'";
+    }
 
     $result = mysqli_query($con, $sql);
-    
+
 ?>
 <html>
 
@@ -42,11 +38,37 @@
     <link
         href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&family=Inter:wght@300; 400;500;600;700&family=Lato:wght@300;400;700;900&family=Poppins:wght@200;300;400;500;600;700&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="../styles/dashboardGlobal.css?v=24">
+    <link rel="stylesheet" href="../styles/dashboardGlobal.css?v=38">
     <link rel="stylesheet" href="../styles/global.css?v=1">
 </head>
 
 <body>
+    <section id="darkbg"></section>
+    <section id="confirmation">
+        <div class="box-content">
+            <div>
+                <img src="../public/images/icons/warning.png" alt="warning">
+            </div>
+            <div>
+                <h2 id="popupHeader">Do you want void items?</h2>
+                <div id="enterPassword" style="display:none">
+                    <p class="popuptext">Please enter admin password</p>
+                    <form action="point-of-sales.php" id="verify-admin" method="POST">
+                        <div class="form-input">
+                            <label class="error" id="error"></label>
+                            <input type="password" name="password" id="password" required>
+                        </div>
+                    </form>
+
+                </div>
+
+                <div class="buttonRow" id="buttonRow">
+                    <button class="buttonYes" id="buttonSubmit" onclick="submit()" style="display:none">Submit</button>
+                    <button class="buttonYes" id="buttonYes" onclick="verifyAdmin()">Yes</button>
+                    <button class="buttonNo" id="buttonNo" onclick="closePopup()">No</button>
+                </div>
+            </div>
+    </section>
     <section id="dashboard">
         <!-- <div class="sidebar">
             <div class="logo">
@@ -142,128 +164,69 @@
             <div class="main-content">
                 <div class="content-header">
                     <div class="pos">
-
                         <!-- items -->
                         <div class="pos-item">
                             <!-- search bar -->
                             <div class="upper">
-                                <p>
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="2.5" stroke="currentColor" width="20">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6" />
-                                    </svg>
-                                    Add New Item
-                                </p>
-                                <div class="search-item">
-                                    <input type="text" placeholder="Search items here..">
-                                    <div class="search-prod">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" width="20">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-                                        </svg>
+                                <form action="point-of-sales.php" method="GET">
+                                    <div class="search-item">
+                                        <input type="text" name="product-name" placeholder="Search items here..">
+                                        <button type="submit" class="search-prod">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="1.5" stroke="currentColor" width="20">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                                            </svg>
+                                        </button>
                                     </div>
-                                </div>
+                                </form>
+
                             </div>
 
                             <!-- filters -->
                             <div class="filterSection">
                                 <p class="section-header">Filters</p>
                                 <div class="filters">
-                                    <p class="active">
-                                        Glasses
-                                    </p>
-                                    <p class="">
-                                        Contact Lens
-                                    </p>
-                                    <p class="">
-                                        Accessories
-                                    </p>
+                                    <a href="point-of-sales.php"
+                                        class="<?php echo empty($_GET['category']) ? 'active' : ''?>">All</a>
+
+                                    <?php
+                                        $getCategories = "SELECT * FROM category";
+                                        $categories = mysqli_query($con, $getCategories);
+                                        while ($row = mysqli_fetch_array($categories)) { 
+                                            $categoryName = $row['Category_name'];
+                                            $isActive = isset($_GET['category']) && $_GET['category'] == $categoryName;
+                                            ?>
+
+                                    <a href=" point-of-sales.php?category=<?php echo $row['Category_name']?>"
+                                        class="<?php echo $isActive ? 'active' : ''; ?>">
+                                        <?php echo $row['Category_name']?>
+                                    </a>
+
+                                    <?php } ?>
+
                                 </div>
                             </div>
 
                             <!-- products -->
                             <div class="product-list">
+                                <?php if (mysqli_num_rows($result) === 0){
+                                    echo "<h3>Product Not Available</h3>";
 
+                                }?>
                                 <!-- eto na 'yung naka while loop -->
-                                <div class="product-card">
+                                <?php while($row = mysqli_fetch_array($result)){ ?>
+                                <div class="product-card"
+                                    onclick="addProductToCheckout('<?php echo $row['ID']; ?>', '<?php echo $row['Name']; ?>', <?php echo $row['Price']; ?>, <?php echo $row['Stock']; ?>)">
                                     <div>
-                                        <img src="../public/images/Glasses/EO-EYEWEAR.jpg" alt="glasses">
+                                        <img src="../public/images/<?php echo $row['Image']?>" alt="glasses">
                                     </div>
-                                    <p class="product-name">Glasses 1</p>
-                                    <p class="product-price">₱799.00</p>
-                                </div>
-                                <div class="product-card">
-                                    <div>
-                                        <img src="../public/images/Glasses/EO-EYEWEAR.jpg" alt="glasses">
-                                    </div>
-                                    <p class="product-name">Glasses 1</p>
-                                    <p class="product-price">₱799.00</p>
-                                </div>
-                                <div class="product-card">
-                                    <div>
-                                        <img src="../public/images/Glasses/EO-EYEWEAR.jpg" alt="glasses">
-                                    </div>
-                                    <p class="product-name">Glasses 1</p>
-                                    <p class="product-price">₱799.00</p>
-                                </div>
-                                <div class="product-card">
-                                    <div>
-                                        <img src="../public/images/Glasses/EO-EYEWEAR.jpg" alt="glasses">
-                                    </div>
-                                    <p class="product-name">Glasses 1</p>
-                                    <p class="product-price">₱799.00</p>
-                                </div>
-                                <div class="product-card">
-                                    <div>
-                                        <img src="../public/images/Glasses/EO-EYEWEAR.jpg" alt="glasses">
-                                    </div>
-                                    <p class="product-name">Glasses 1</p>
-                                    <p class="product-price">₱799.00</p>
-                                </div>
-                                <div class="product-card">
-                                    <div>
-                                        <img src="../public/images/Glasses/EO-EYEWEAR.jpg" alt="glasses">
-                                    </div>
-                                    <p class="product-name">Glasses 1</p>
-                                    <p class="product-price">₱799.00</p>
-                                </div>
-                                <div class="product-card">
-                                    <div>
-                                        <img src="../public/images/Glasses/EO-EYEWEAR.jpg" alt="glasses">
-                                    </div>
-                                    <p class="product-name">Glasses 1</p>
-                                    <p class="product-price">₱799.00</p>
-                                </div>
-                                <div class="product-card">
-                                    <div>
-                                        <img src="../public/images/Glasses/EO-EYEWEAR.jpg" alt="glasses">
-                                    </div>
-                                    <p class="product-name">Glasses 1</p>
-                                    <p class="product-price">₱799.00</p>
-                                </div>
-                                <div class="product-card">
-                                    <div>
-                                        <img src="../public/images/Glasses/EO-EYEWEAR.jpg" alt="glasses">
-                                    </div>
-                                    <p class="product-name">Glasses 1</p>
-                                    <p class="product-price">₱799.00</p>
-                                </div>
-                                <div class="product-card">
-                                    <div>
-                                        <img src="../public/images/Glasses/EO-EYEWEAR.jpg" alt="glasses">
-                                    </div>
-                                    <p class="product-name">Glasses 1</p>
-                                    <p class="product-price">₱799.00</p>
-                                </div>
-                                <div class="product-card">
-                                    <div>
-                                        <img src="../public/images/Glasses/EO-EYEWEAR.jpg" alt="glasses">
-                                    </div>
-                                    <p class="product-name">Glasses 1</p>
-                                    <p class="product-price">₱799.00</p>
+                                    <p class="product-name"><?php echo $row['Name']?></p>
+                                    <p class="product-price">₱<?php echo $row['Price']?></p>
                                 </div>
 
+
+                                <?php } ?>
 
                             </div>
 
@@ -278,148 +241,13 @@
 
                                     <table>
                                         <tr>
-                                            <th width="10px"></th>
-                                            <th>Name</th>
+                                            <th width="50px">&nbsp; </th>
+                                            <th width="180px">Name</th>
                                             <th>Quantity</th>
                                             <th>Price</th>
                                         </tr>
-                                        <tbody>
-                                            <tr>
-                                                <td>
-                                                    <button class="remove-item">
-                                                        <svg xmlns=" http://www.w3.org/2000/svg" fill="none"
-                                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                            width="17">
-                                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                                d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                                                        </svg>
-                                                    </button>
-                                                </td>
-                                                <td>
-                                                    Glasses 1
-                                                </td>
-                                                <td>1</td>
-                                                <td>₱799.00</td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <button class="remove-item">
-                                                        <svg xmlns=" http://www.w3.org/2000/svg" fill="none"
-                                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                            width="17">
-                                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                                d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                                                        </svg>
-                                                    </button>
-                                                </td>
-                                                <td>
-                                                    Glasses 1
-                                                </td>
-                                                <td>1</td>
-                                                <td>₱799.00</td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <button class="remove-item">
-                                                        <svg xmlns=" http://www.w3.org/2000/svg" fill="none"
-                                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                            width="17">
-                                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                                d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                                                        </svg>
-                                                    </button>
-                                                </td>
-                                                <td>
-                                                    Glasses 1
-                                                </td>
-                                                <td>1</td>
-                                                <td>₱799.00</td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <button class="remove-item">
-                                                        <svg xmlns=" http://www.w3.org/2000/svg" fill="none"
-                                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                            width="17">
-                                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                                d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                                                        </svg>
-                                                    </button>
-                                                </td>
-                                                <td>
-                                                    Glasses 1
-                                                </td>
-                                                <td>1</td>
-                                                <td>₱799.00</td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <button class="remove-item">
-                                                        <svg xmlns=" http://www.w3.org/2000/svg" fill="none"
-                                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                            width="17">
-                                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                                d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                                                        </svg>
-                                                    </button>
-                                                </td>
-                                                <td>
-                                                    Glasses 1
-                                                </td>
-                                                <td>1</td>
-                                                <td>₱799.00</td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <button class="remove-item">
-                                                        <svg xmlns=" http://www.w3.org/2000/svg" fill="none"
-                                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                            width="17">
-                                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                                d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                                                        </svg>
-                                                    </button>
-                                                </td>
-                                                <td>
-                                                    Glasses 1
-                                                </td>
-                                                <td>1</td>
-                                                <td>₱799.00</td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <button class="remove-item">
-                                                        <svg xmlns=" http://www.w3.org/2000/svg" fill="none"
-                                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                            width="17">
-                                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                                d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                                                        </svg>
-                                                    </button>
-                                                </td>
-                                                <td>
-                                                    Glasses 1
-                                                </td>
-                                                <td>1</td>
-                                                <td>₱799.00</td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <button class="remove-item">
-                                                        <svg xmlns=" http://www.w3.org/2000/svg" fill="none"
-                                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                            width="17">
-                                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                                d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                                                        </svg>
-                                                    </button>
-                                                </td>
-                                                <td>
-                                                    Glasses 1
-                                                </td>
-                                                <td>1</td>
-                                                <td>₱799.00</td>
-                                            </tr>
+                                        <tbody id="checkout-table-body">
+
                                         </tbody>
 
                                     </table>
@@ -427,21 +255,28 @@
                                 <div class="transaction">
                                     <div class="row-total">
                                         <p>Total</p>
-                                        <p>₱1,598.00</p>
+                                        <p id="total">₱0</p>
                                     </div>
-                                    <form action="">
+                                    <form action="transaction-success.php" method="POST" id="transaction-success">
+                                        <input type="hidden" id="data-field" name="data" value="">
+
                                         <div class="row">
                                             <p>Payment</p>
-                                            <input type="number" min="0">
+                                            <input type="number" id="paymentInput" min="0">
                                         </div>
                                         <div class="row">
                                             <p>Change</p>
-                                            <input type="number" value="0" disabled>
+                                            <input id="changeInput" placeholder="0" readonly>
                                         </div>
                                         <div class="row">
-                                            <button class="button">Void
+                                            <button class="button" type="button" onclick="displayPopup()">Void
                                             </button>
-                                            <button class="button" type="submit">Print Receipt
+                                            <button class="button" type="button" id="calculate"
+                                                onclick="calculateChange()">Calculate
+                                                Change</button>
+
+                                            <button class="button" id="print" type="button"
+                                                onclick="checkoutProduct()">Print Receipt
                                             </button>
                                         </div>
                                     </form>
@@ -456,6 +291,28 @@
             </div>
         </div>
     </section>
+
+    <script src="../javascript/point-of-sales.js?v=11"></script>
 </body>
 
 </html>
+
+<?php
+    if ($_SERVER['REQUEST_METHOD'] == 'POST'){
+        $password = $_POST['password'];
+        if ($password === 'password123'){
+            echo "<script>
+            voidTransaction();
+            </script>";
+        } else {
+            echo "<script>
+            displayPopup();
+            verifyAdmin();
+            document.getElementById('error').style.display='block';
+            document.getElementById('error').innerHTML='Incorrect password! Please try again';
+
+            </script>";
+        }
+    }
+
+?>

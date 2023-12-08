@@ -260,7 +260,6 @@
                                 stroke="#3f61ad" height="20px">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6" />
                             </svg>
-
                         </span>
                     </div>
                     <div class="divider"></div>

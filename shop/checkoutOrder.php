@@ -60,7 +60,7 @@
 
             $deleteItemFromCart = "DELETE FROM cart WHERE Product_ID = '$productId'";
             mysqli_query($con, $deleteItemFromCart);
-    }
+        }
         
     }
 ?>
