@@ -6,6 +6,9 @@
         $sql = "UPDATE Accounts SET Status = 'Verified' WHERE Email = '$userEmail'";
         mysqli_query($con, $sql);
         mysqli_close($con);
-        echo "<script>window.location.href='http://localhost/optical/shop/index.php'</script>";
+        echo "<script>
+        alert('Account Successfully Verified!');
+        location.href='http://localhost/optical/shop/login.php'
+        </script>";
     }
 ?>

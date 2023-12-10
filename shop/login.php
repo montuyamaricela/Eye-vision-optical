@@ -225,6 +225,20 @@
             <a href="https://www.gmail.com" target="_blank">Check Here</a>
         </div>
     </section>
+    <section class="container success" id="userBlocked">
+        <div class="">
+            <a href="login.php" class="closeBlocked" id="closeIcon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </a>
+            <img src="../public/images/icons/warning.png" alt="warning">
+            <h2 class="dark-text title">Your Account is currently Blocked</h2>
+            <p>We have sent an email to you.</p>
+            <a href="https://www.gmail.com" target="_blank">Check Here</a>
+        </div>
+    </section>
     <section class="container success" id="notverified">
         <div class="">
             <a href="login.php" class="closeBlocked" id="closeIcon">
@@ -369,9 +383,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     mysqli_query($con, $sql_block_account);  
                     echo "<script>
                         document.getElementById('dark').style.display = 'flex';
-                        document.getElementById('blocked').style.display = 'flex';
-                    </script>";       
-                } else if ($customerPassword === $row['Password']){
+                        document.getElementById('userBlocked').style.display = 'flex';
+                    </script>";                   
+                }else if ($customerPassword === $row['Password']){
                     $_SESSION['user_id'] = $row['ID'];
                     $_SESSION['is_logged_in'] = true;
                     $resetLoginAttempt = "UPDATE accounts SET LoginAttempt = '0' WHERE ID = " . $row['ID'];

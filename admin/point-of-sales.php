@@ -298,9 +298,15 @@
 </html>
 
 <?php
+    $getAdminInfo = "SELECT * FROM user.admin WHERE ID = 1";
+    $admin = mysqli_query($con, $getAdminInfo);
+    if ($row = mysqli_fetch_array($admin)){
+                        
+        $adminPassword = $row['Password'];
+    }
     if ($_SERVER['REQUEST_METHOD'] == 'POST'){
         $password = $_POST['password'];
-        if ($password === 'password123'){
+        if ($password === $adminPassword){
             echo "<script>
             voidTransaction();
             </script>";
@@ -310,7 +316,6 @@
             verifyAdmin();
             document.getElementById('error').style.display='block';
             document.getElementById('error').innerHTML='Incorrect password! Please try again';
-
             </script>";
         }
     }

@@ -18,7 +18,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&family=Inter:wght@300; 400;500;600;700&family=Lato:wght@300;400;700;900&family=Poppins:wght@200;300;400;500;600;700&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="../styles/dashboardGlobal.css?v=18">
+    <link rel="stylesheet" href="../styles/dashboardGlobal.css?v=25">
     <link rel="stylesheet" href="../styles/global.css?v=1">
 </head>
 
@@ -116,7 +116,36 @@
 
         </div>
         <div class="content">
-            <!-- <div class="topbar">Top bar</div> -->
+            <div class="topbar">
+                <?php 
+                    $getAdminInfo = "SELECT * FROM admin WHERE ID = 1";
+                    $admin = mysqli_query($con, $getAdminInfo);
+                    if ($row = mysqli_fetch_array($admin)){
+                        
+                        $AdminName = $row['Name'];
+                        $adminProfile = $row['Profile'];
+                    }
+                ?>
+                <div class="dropdown">
+                    <div class="currentlyLoggedin">
+                        <img src="../public/images/<?php echo $adminProfile; ?>" alt="<?php echo $AdminName;?>"
+                            width="45">
+                        <p><?php echo $AdminName;?></p>
+                        <div>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                                stroke="currentColor" height="15">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                            </svg>
+
+                        </div>
+                    </div>
+
+                    <div class="dropdown-content">
+                        <a href="account-setting.php">Account Settings</a>
+                        <a href="logout.php">Logout</a>
+                    </div>
+                </div>
+            </div>
             <div class="main-content">
                 <div class="dashboard-landing">
                     <h1>Eye Vision Dashboard</h1>
@@ -197,7 +226,7 @@
                                         <td><?php echo $row['User_email']?></td>
 
                                         <td><?php echo $row['Product_name']?></td>
-                                        <td><?php echo $row['Quantity']?>1</td>
+                                        <td><?php echo $row['Quantity']?></td>
                                     </tr>
                                     <?php } ?>
                                 </tbody>

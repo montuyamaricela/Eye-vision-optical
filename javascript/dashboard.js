@@ -249,3 +249,4 @@ function deleteProducts() {
 function directTo(link) {
   location.href = link;
 }
+

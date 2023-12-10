@@ -62,7 +62,7 @@ body {
 }
 
 .dashboard-landing {
-  height: 89vh;
+  height: 80vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -154,6 +154,34 @@ h1 {
 .topbar {
   background-color: white;
   height: 75px;
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  padding-right: 20px;
+  font-family: "Poppins", sans-serif !important;
+}
+
+.currentlyLoggedin {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.dropdown-content a {
+  font-size: 14px !important;
+  text-transform: capitalize !important;
+  font-weight: 500;
+}
+.dropdown-content {
+  color: #353c44 !important;
+  right: 0px;
+}
+
+.currentlyLoggedin img {
+  border-radius: 100%;
 }
 
 .logo {
@@ -199,12 +227,12 @@ a svg {
 }
 
 .productsDiv form {
-  height: 575px !important;
+  height: 515px !important;
   overflow-y: scroll !important;
 }
 
 .tablediv form {
-  height: 650px !important;
+  height: 590px !important;
   overflow-y: scroll !important;
 }
 
@@ -288,6 +316,7 @@ input[type="checkbox"] {
   align-items: center;
   text-transform: uppercase;
   cursor: pointer;
+  border: none;
 }
 
 /* Status */
@@ -768,7 +797,6 @@ input[type="file"] {
 .card-content {
   display: flex;
   justify-content: space-between;
-  margin-top: 20px;
 }
 
 .upload {
@@ -1132,4 +1160,37 @@ form {
   margin-bottom: 10px;
   font-weight: 600;
   font-size: 15px;
+}
+
+/* admin account settings  */
+.account-settings {
+  display: flex;
+  flex-direction: column;
+  width: 70%;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.account-setting-card {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 45%;
+}
+
+.admin-image {
+  width: 200px;
+  margin: auto;
+  position: relative;
+}
+
+.admin-image input {
+  height: 200px;
+  width: 200px;
+}
+
+.admin-image img {
+  line-height: 0px;
+  border-radius: 100%;
+  margin-bottom: 20px;
 }
