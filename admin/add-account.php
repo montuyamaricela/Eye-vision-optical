@@ -241,7 +241,36 @@
 
         </div>
         <div class="content">
-            <!-- <div class="topbar">Top bar</div> -->
+            <div class="topbar">
+                <?php 
+                    $getAdminInfo = "SELECT * FROM admin WHERE ID = 1";
+                    $admin = mysqli_query($con, $getAdminInfo);
+                    if ($row = mysqli_fetch_array($admin)){
+                        
+                        $AdminName = $row['Name'];
+                        $adminProfile = $row['Profile'];
+                    }
+                ?>
+                <div class="dropdown">
+                    <div class="currentlyLoggedin">
+                        <img src="../public/images/<?php echo $adminProfile; ?>" alt="<?php echo $AdminName;?>"
+                            width="45">
+                        <p><?php echo $AdminName;?></p>
+                        <div>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                                stroke="currentColor" height="15">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                            </svg>
+
+                        </div>
+                    </div>
+
+                    <div class="dropdown-content">
+                        <a href="account-setting.php">Account Settings</a>
+                        <a href="logout.php">Logout</a>
+                    </div>
+                </div>
+            </div>
             <div class="main-content">
                 <div class="content-header">
                     <div>

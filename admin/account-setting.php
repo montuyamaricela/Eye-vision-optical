@@ -1,66 +1,39 @@
 <?php
     session_start();
-    
-    if (isset($_SESSION['adminLoggedin']) && $_SESSION['adminLoggedin'] === false || empty($_SESSION) || empty($_SESSION['adminLoggedin'])) {
-        echo "<script>
-            location.href='login.php'
-        </script>";
-    }
     include '../db_connection.php';
     mysqli_select_db($con, 'user');
-
-    $limit = 10;
-
-    if (isset($_GET['page'])) {
-        $page_number = $_GET['page'];
-    } else {
-        $page_number = 1;
+          
+    $getAdminInfo = "SELECT * FROM admin WHERE ID = 1";
+    $admin = mysqli_query($con, $getAdminInfo);
+    if ($row = mysqli_fetch_array($admin)){
+        $AdminName = $row['Name'];
+        $adminProfile = $row['Profile'];
+        $adminUserName = $row['User_name'];
+        $adminPassword = $row['Password'];
     }
-
-    $initial_page = ($page_number - 1) * $limit;
-
-    $filterID = isset($_GET['transactionID']) ? $_GET['transactionID'] : '';
-
-    $sql = "SELECT * FROM orders";
-    
-    // Add condition to filter by category if selected
-    if (!empty($filterID)) {
-        $sql .= " WHERE orderID = '$filterID'";
+            
+    if (isset($_SESSION['adminLoggedin']) && $_SESSION['adminLoggedin'] === false || empty($_SESSION) ||
+        empty($_SESSION['adminLoggedin'])) {
+            echo "<script>
+            location.href = 'login.php'
+            </script>";
     }
-
-    $sql .= " LIMIT $initial_page, $limit";
-
-    $result = mysqli_query($con, $sql);
-
-    function getStatusColorClass($status){
-        switch ($status) {
-            case 'Order Pending':
-                return 'orange-bg';
-            case 'Delivered':
-                return 'green-bg';
-            case 'Cancelled':
-                return 'red-bg';
-            default:
-                return '';
-        }
-
-    }
-    
 ?>
 <html>
 
 <head>
-    <title>Payment History</title>
+    <title>Admin Account Settings</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&family=Inter:wght@300; 400;500;600;700&family=Lato:wght@300;400;700;900&family=Poppins:wght@200;300;400;500;600;700&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="../styles/dashboardGlobal.css?v=14">
+    <link rel="stylesheet" href="../styles/dashboardGlobal.css?v=27">
     <link rel="stylesheet" href="../styles/global.css?v=1">
 </head>
 
 <body>
+
     <section id="dashboard">
         <div class="sidebar">
             <div class="logo">
@@ -97,8 +70,8 @@
 
                 </a>
                 <a href="payment-history.php">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="activeSvg" fill="none" viewBox="0 0 24 24"
-                        stroke-width="1.5" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" />
                     </svg>
@@ -141,6 +114,7 @@
                             d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25" />
                     </svg>
                 </a>
+
                 <a href="logout.php" class="logout-admin">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor">
@@ -153,15 +127,6 @@
         </div>
         <div class="content">
             <div class="topbar">
-                <?php 
-                    $getAdminInfo = "SELECT * FROM user.admin WHERE ID = 1";
-                    $admin = mysqli_query($con, $getAdminInfo);
-                    if ($row = mysqli_fetch_array($admin)){
-                        
-                        $AdminName = $row['Name'];
-                        $adminProfile = $row['Profile'];
-                    }
-                ?>
                 <div class="dropdown">
                     <div class="currentlyLoggedin">
                         <img src="../public/images/<?php echo $adminProfile; ?>" alt="<?php echo $AdminName;?>"
@@ -184,178 +149,116 @@
             </div>
             <div class="main-content">
                 <div class="content-header">
-                    <div>
-                        <h2>Payment History</h2>
-                        <p>View a comprehensive list of all payment history in the system.</p>
-                    </div>
+                    <h2>Admin Account Setting</h2>
                 </div>
-                <div class="filterAdd">
-                    <form action="">
-                        <div class="filterBy">
-                            <input class="search" name="transactionID" type="text" placeholder="Enter transaction ID">
-                            <button class="search-button">
-                                Search
-                            </button>
+                <div>
+                    <form action="account-setting.php" method="POST" enctype="multipart/form-data">
+                        <div class="account-settings">
+                            <div class="account-setting-card">
+                                <div class="admin-image" id="admin-image">
+                                    <img src="../public/images/<?php echo $adminProfile; ?>"
+                                        alt="<?php echo $AdminName;?>" width="200" height="200">
+                                    <input type="file" name="image" accept="image/png, image/gif, image/jpeg">
 
+                                </div>
+                                <div class="form-input">
+                                    <Label>Name</Label>
+                                    <input type="text" name="name" id="name" value="<?php echo $AdminName; ?>" required>
+                                </div>
+                            </div>
+                            <div class="account-setting-card">
+                                <div class="form-input">
+                                    <Label>User Name</Label>
+                                    <input type="text" name="userName" id="userName"
+                                        value="<?php echo $adminUserName; ?>">
+                                </div>
+
+                                <div class=" form-input">
+                                    <p class="error" id="errorOldPassword">Old password does not match with the old
+                                        password </p>
+                                    <Label>Old Password</Label>
+                                    <input type="password" minlength="8" name="oldpassword" id="oldpassword">
+                                </div>
+                                <div class="form-input">
+                                    <Label>New Password</Label>
+                                    <input type="password" minlength="8" name="newpassword" id="newpassword">
+                                </div>
+                                <div class="form-input">
+                                    <p class="error" id="error">Password does not match. Please Try Again</p>
+                                    <Label>Confirm Password</Label>
+                                    <input type="password" minlength="8" name="confirmpassword" id="confirmpassword">
+                                </div>
+                            </div>
                         </div>
+
+                        <button class="button">Submit</button>
                     </form>
                 </div>
-                <div class="productsDiv">
-                    <form action="">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th width="150px">Transaction ID</th>
-                                    <th width="150px">Date</th>
-                                    <th>User Email</th>
-                                    <th>Product</th>
-                                    <th>Quantity</th>
-                                    <th>Price</th>
-                                    <th width="150px">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php if (mysqli_num_rows($result) == 0) {
-                                echo "<td colspan='11'>No records found!</td>";
-                            }?>
-                                <?php while (
-                                $row = mysqli_fetch_array($result)
-                            ) { ?>
-                                <tr>
-                                    <td><?php echo $row['orderID']?></td>
-                                    <td><?php echo $row['DateOrdered']?></td>
-                                    <td><?php echo $row['User_email']?></td>
 
-                                    <td><?php echo $row['Product_name']?></td>
-                                    <td><?php echo $row['Quantity']?></td>
-                                    <td><?php echo $row['Price']?></td>
-                                    <td>
-                                        <p class="<?php echo getStatusColorClass(
-                                            $row['Status']
-                                        ); ?>">
-                                            <?php echo $row['Status']?>
-                                        </p>
-                                    </td>
-                                </tr>
-                                <?php } ?>
-                            </tbody>
-                        </table>
-                    </form>
-
-                </div>
-                <div class="pagination">
-                    <div>
-                        <?php
-                        $getQuery = 'SELECT COUNT(*) FROM orders';
-                        $result = mysqli_query($con, $getQuery);
-                        $row = mysqli_fetch_row($result);
-                        $total_rows = $row[0];
-                        echo '<br>';
-
-                        // get the required number of pages
-                        $total_pages = ceil($total_rows / $limit);
-                        $pageURL = '';
-                        if ($page_number >= 2) {
-                            echo "<a href='payment-history.php?page=" .
-                                ($page_number - 1) .
-                                "'> Prev </a>";
-                        }
-                        for ($curpage = 1; $curpage <= $total_pages; $curpage++) {
-                            if ($curpage == $page_number) {
-                                $pageURL .=
-                                    "<a class = 'active' href='payment-history.php?page=" .
-                                    $curpage .
-                                    "'>" .
-                                    $curpage .
-                                    ' </a>';
-                            } else {
-                                $pageURL .=
-                                    "<a href='payment-history.php?page=" .
-                                    $curpage .
-                                    "'>" .
-                                    $curpage .
-                                    ' </a>';
-                            }
-                        }
-                        echo $pageURL;
-
-                        if ($page_number < $total_pages) {
-                            echo "<a href='payment-history.php?page=" .
-                                ($page_number + 1) .
-                                "'> Next </a>";
-                        }
-                    ?>
-                    </div>
-                    <div>
-                        <a class="export">Export to CSV</a>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
     <!-- Add JavaScript code to handle checkbox functionality -->
-    <script src="../javascript/dashboard.js?v=25"></script>
+    <script src="../javascript/admin-settings.js"></script>
 
 </body>
 
 </html>
 
-<?php 
-// if ($_SERVER["REQUEST_METHOD"] == 'POST') {
-//     include '../db_connection.php';
-//     mysqli_select_db($con, 'product');
+<?php
+     if ($_SERVER["REQUEST_METHOD"] == 'POST'){
+        $name = $_POST['name'];
+        $userName = $_POST['userName'];
+        $oldPass = $_POST['oldpassword'];
+        $newPassword = $_POST['newpassword'];
+        $confirmPassword = $_POST['confirmpassword'];
+		$imageName = $_FILES['image']['name'];
+		$tmp_name=$_FILES['image']['tmp_name'];
+        
+        if($imageName){
+			$location = "userProfile/$imageName";
+			$destination = "../public/images/$location";
+			move_uploaded_file($tmp_name,$destination);
+			$query = mysqli_query($con, "UPDATE admin set Profile='$location' where ID = 1");
+        } 
+                
+        $updateInfo = "UPDATE admin set Name = '$name', User_name = '$userName'Where ID = 1";
+        $queryInfo = mysqli_query($con, $updateInfo);
+       
+                
+        if ($oldPass != '' || $newPassword != '' || $confirmPassword != ''){
+            if ($oldPass === $adminPassword){
+                if ($newPassword === $confirmPassword){
+                    $updatePassword = "UPDATE admin set Password='$newPassword' where ID = 1";
+                    $query = mysqli_query($con, $updatePassword);
+                    echo "<script>
+                        location.href='account-setting.php';
+                        alert('Successfully changed Information!')
+                    </script>";
 
-//     $prodID = $_POST['id'];
-//     $prodcode = $_POST['code'];
-//     $prodname = $_POST['name'];
-//     $prodprice = $_POST['price'];
-//     $prodcolor = $_POST['color'];
-//     $prodcategory = $_POST['category'];
-//     $prodstock = $_POST['stock'];
-//     $proddescription = $_POST['description'];
+                } else {
+                echo "<script>
+                alert('dif');
+                    document.getElementById('oldpassword').value='$oldPass'
+                    document.getElementById('newpassword').value='$newPassword'
+                    document.getElementById('confirmpassword').value='$confirmPassword'
+                    document.getElementById('error').style.display='block'
+                    document.getElementById('errorOldPassword').style.display='none'
 
-//     $imageName = $_FILES['image']['name'];
-//     $tmp_name = $_FILES['image']['tmp_name'];
-
-//     // Check if the product with the new code already exists
-//     $checkProduct = "SELECT * FROM products WHERE ID = '$prodID'";
-//     $prod = mysqli_query($con, $checkProduct);
-
-//     if (mysqli_num_rows($prod) > 0) {
-//         // If the product code exists, update the details
-//         if ($imageName) {
-//             $location = "products/$imageName";
-//             $destination = "../public/images/$location";
-//             move_uploaded_file($tmp_name, $destination);
-
-//             $updateProduct = "UPDATE products SET 
-//                 Name = '$prodname',
-//                 Price = '$prodprice',
-//                 Color = '$prodcolor',
-//                 Category = '$prodcategory',
-//                 Description = '$proddescription',
-//                 Stock = '$prodstock',
-//                 Image = '$location'
-//                 WHERE ID = '$prodID'";
-//         } else {
-//             // If no new image, update without changing the image
-//             $updateProduct = "UPDATE products SET 
-//                 Name = '$prodname',
-//                 Price = '$prodprice',
-//                 Color = '$prodcolor',
-//                 Category = '$prodcategory',
-//                 Description = '$proddescription',
-//                 Stock = '$prodstock'
-//                 WHERE ID = '$prodID'";
-//         }
-
-//         mysqli_query($con, $updateProduct);
-//         echo "<script>
-//                 location.href='success-add-product.php'
-//             </script>";
-//     }
-
-//     mysqli_close($con);
-// }
+                </script>";
+                }
+            } else {
+                echo "<script>
+                    document.getElementById('errorOldPassword').style.display='block'
+                </script>";
+            }
+        } else {
+            echo "<script>
+                location.href='account-setting.php';
+                alert('Successfully changed Information!')
+            </script>";
+        }
+            mysqli_close($con);
+    }
 
 ?>

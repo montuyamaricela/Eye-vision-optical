@@ -1,6 +1,8 @@
 <?php
     session_start();
-    
+    include '../db_connection.php';
+    mysqli_select_db($con, 'user');
+
     if (isset($_SESSION['adminLoggedin']) && $_SESSION['adminLoggedin'] === true) {
         echo "<script>
             location.href='index.php'
@@ -149,19 +151,24 @@
 <?php
 
     // admin credentials
-    $user = "admin123";
-    $userPassword = "password123";
+    $getAdminCredentials = "SELECT User_name, Password FROM admin WHERE ID = 1";
+    $adminCredentials = mysqli_query($con, $getAdminCredentials);
+    while ($row = mysqli_fetch_array($adminCredentials)){
+        $adminUser = $row['User_name'];
+        $adminPassword = $row['Password'];
+        $adminName = $row['Name'];
+    }
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST'){
         $username = $_POST['username'];
         $password = $_POST['password'];
 
-        if ($user === $username){
+        if ($adminUser === $username){
    
-            if ($userPassword === $password) {
+            if ($adminPassword === $password) {
                 $_SESSION['adminLoggedin'] = true;
                 echo "<script>
-                    alert('Welcome!')
+                    alert('Welcome, $adminName!')
                     location.href='index.php'
                     document.getElementById('username').value='$username';
                     document.getElementById('password').value='$password';
