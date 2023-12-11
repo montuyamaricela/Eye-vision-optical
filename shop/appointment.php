@@ -9,7 +9,42 @@
     } else if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) {
         $user_id = $_SESSION['user_id'];
     } 
+
+    $getDate =  isset($_GET['date']) ? $_GET['date'] : '' ;
+
+    // Convert the date string to a DateTime object
+    $dateObject = new DateTime($getDate);
+    // Format the date as needed
+    $formattedDate = $dateObject->format('Y-m-d');
+    // Set the start and end hours
+    $startHour = 10;
+    $endHour = 16;
+
+    // Initialize an array to store the hours
+    $hoursList = array();
+
+    // Loop through the hours and add them to the array
+    for ($hour = $startHour; $hour <= $endHour; $hour++) {
+        // Convert to 12-hour format
+        $hour12 = ($hour % 12 == 0) ? 12 : $hour % 12;
+
+        // Determine whether it's AM or PM
+        $period = ($hour < 12) ? 'AM' : 'PM';
+
+        // Create a formatted time string
+        $timeString = "$hour12:00$period";
+
+        // Print or use the formatted time string
+        $hoursList[] = $timeString;
+    }
+    $appointment = "SELECT Schedule, Time FROM contact.appointments WHERE Schedule = '$formattedDate'";
+    $appointmentSchedule = mysqli_query($con, $appointment);
+
+    $formattedDateWithDay = $dateObject->format('D, F j, Y');
+
 ?>
+
+
 
 
 <!DOCTYPE html>
@@ -30,6 +65,10 @@
 
     <!-- global styles/css -->
     <link rel="stylesheet" href="../styles/global.css?v=2" />
+
+    <!-- Appointment page styles/css -->
+    <link rel="stylesheet" href="../styles/appointment.css?v=10" />
+
 </head>
 
 <body>
@@ -190,86 +229,76 @@
     </section>
 
 
-    <section class="container">
-        <div class="book-appointment">
-            <div class="">
-                <h2 class="dark-text section-title">Set An Appointment</h2>
-                <div class="contact-box">
-                    <p>We will confirm your appointment schedule via email within 1-3 business days.</p>
-                    <p>Thank you for trusting Eye Vision for your eye care & treatment needs.</p>
+    <section class="container appointment-container">
+        <div class="appointment">
+            <div class="appointmentDetails">
+                <p class="name">Maricel Montuya</p>
+                <h2>Appointment</h2>
+                <div class="appointment-duration">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" width="25px">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <p>1 hour</p>
                 </div>
             </div>
-            <div>
-                <form name="appointmentForm" action="sendAppointment.php" method="POST">
-                    <div class="two-column-input">
-                        <div class="form-input">
-                            <label for="name">First Name <span class="required">*</span></label>
-                            <input type="text" id="firstName" name="firstName" required />
+            <div class="appointmentCalendar">
+                <div class="calendar">
+                    <div class="month">
+                        <div class="prev">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                                stroke="currentColor" height="20px">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                            </svg>
                         </div>
-                        <div class="form-input">
-                            <label for="name">Last Name <span class="required">*</span></label>
-                            <input type="text" id="lastName" name="lastName" required />
-                        </div>
-                    </div>
-                    <div class="two-column-input">
-                        <div class="form-input">
-                            <label for="name">Birthday <span class="required">*</span></label>
-                            <input type="date" id="birthday" name="birthday" max="3000-01-01"
-                                onfocus="this.max=new Date().toISOString().split('T')[0]" required />
-                        </div>
-                        <div class="form-input">
-                            <label for="name">Gender <span class="required">*</span></label>
-                            <select name="gender" id="gender" required>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="two-column-input">
-                        <div class="form-input">
-                            <label for="name">Email Address <span class="required">*</span></label>
-                            <input type="email" id="email" name="email" required />
-                        </div>
-                        <div class="form-input">
-                            <label for="name">Phone <span class="required">*</span></label>
-                            <input type="number" id="phone" name="phone" required />
-                        </div>
-                    </div>
-                    <div class="form-input">
-                        <label for="name">Purpose of Visit <span class="required">*</span></label>
-                        <select name="purposeOfVisit" id="purposeOfVisit" required>
-                            <option value="General Eye Check Up">General Eye Check Up</option>
-                            <option value="Lasik Screening">Lasik Screening</option>
-                            <option value="Optical and Contact Lens Services">Optical and Contact Lens Services</option>
-                            <option value="Other">Other</option>
 
-                        </select>
-                    </div>
-                    <div class="form-input">
-                        <label for="name">Other</label>
-                        <input type="text" id="other" name="other" />
-                    </div>
-                    <p class="text">Indicate preferred schedules <span class="required">*</span></p>
-                    <div class="two-column-input">
-                        <div class="form-input">
-                            <label for="name">Option 1 <span class="required">*</span></label>
-                            <input type="date" id="schedule1" name="schedule1" min="2050-01-01"
-                                onfocus="this.min=new Date().toISOString().split('T')[0]" required />
-                        </div>
-                        <div class="form-input">
-                            <label for="name">Option 2:</label>
-                            <input type="date" id="schedule2" name="schedule2" min="2050-01-01"
-                                onfocus="this.min=new Date().toISOString().split('T')[0]" />
+                        <div class="date">december 2015</div>
+                        <div class="next">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                                stroke="currentColor" height="20px">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                            </svg>
+
                         </div>
                     </div>
-
-                    <div class="form-input">
-                        <label for="name">Message:</label>
-                        <textarea name="message" rows="15" cols="50" id="message" name="message"></textarea>
+                    <div class="weekdays">
+                        <div>Sun</div>
+                        <div>Mon</div>
+                        <div>Tue</div>
+                        <div>Wed</div>
+                        <div>Thu</div>
+                        <div>Fri</div>
+                        <div>Sat</div>
                     </div>
+                    <div class="days"></div>
+                </div>
+            </div>
+            <div class="time" id="time-list">
 
-                    <button class="submit">Submit</button>
-                </form>
+                <h4 id="clickedDate"><?php echo $formattedDateWithDay?></h4>
+                <div class="time-list">
+                    <?php
+                        $occupiedSched = [];
+                        $occupiedTime = [];
+                        while ($row = mysqli_fetch_array($appointmentSchedule)){
+                            $occupiedSched[] = $row['Schedule'];
+                            $occupiedTime[] = $row['Time'];
+                    
+                        }
+                    
+                        foreach ($hoursList as $timeString) {
+                            // Check if the current time matches the specified time
+                             if (in_array($timeString, $occupiedTime)) {
+                                continue; // Skip to the next iteration
+                            }
+
+                            // Continue generating HTML
+                            echo '<div class="time-container">' . $timeString . '</div>';
+                        }
+                    ?>
+
+                </div>
             </div>
         </div>
     </section>
@@ -334,7 +363,7 @@
         </div>
     </div>
     <script src="javascript/global.js"></script>
-
+    <script src="../javascript/Calendar.js?v=25"></script>
 </body>
 
 </html>

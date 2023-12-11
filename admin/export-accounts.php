@@ -11,7 +11,7 @@
     include '../db_connection.php';
     mysqli_select_db($con, 'user');
 
-    $sql = "SELECT * FROM accounts";
+    $sql = "SELECT ID, Name, Email, Status, LoginAttempt, DateCreated FROM accounts";
     $result = mysqli_query($con, $sql);
 
     if (mysqli_num_rows($result) > 0) {
@@ -20,10 +20,11 @@
 
         $output = fopen('php://output', 'w');
         // replace niyo re mga ID chuchu don sa column name sa db niyo
-        $header = array("ID", "Name", "Email", "Password", "Status", "Login Attempt"); // Replace with your actual column names
+        $header = array("ID", "Name", "Email", "Status", "Login Attempt", "Date Created"); // Replace with your actual column names
         fputcsv($output, $header);
 
         while ($row = mysqli_fetch_assoc($result)) {
+            $row['DateCreated'] = '"' . $row['DateCreated'] . '"'; 
 
             fputcsv($output, $row);
         }

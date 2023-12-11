@@ -9,6 +9,11 @@ document
     }
   });
 
+function confirmCancel() {
+  document.getElementById("confirmation").style.display = "none";
+  document.getElementById("deleteConfirmation").style.display = "flex";
+}
+
 function cancelAppointments() {
   const dataCheckboxes = document.querySelectorAll(".data-checkbox:checked");
   const allData = [];
@@ -40,7 +45,7 @@ function checkAndDisplayPopup() {
   } else {
     document.getElementById("popupHeader").innerHTML = "No Selected Row/s";
     document.getElementById("buttonRow").innerHTML =
-      "<button class='buttonYes' onclick='closePopup()'>Close</button>";
+      "<button class='buttonYes' type='button' onclick='closePopup()'>Close</button>";
     displayPopup();
   }
 }
@@ -53,6 +58,8 @@ function displayPopup() {
 function closePopup() {
   document.getElementById("darkbg").style.display = "none";
   document.getElementById("confirmation").style.display = "none";
+  document.getElementById("deleteConfirmation").style.display = "none";
+
   location.reload();
 }
 
@@ -121,8 +128,18 @@ function displayUserDetails(button) {
   });
 }
 
-function deleteAccount(id) {
-  location.href = "delete-user-account.php?id=" + id;
+function confirmDelete(id) {
+  document.getElementById("confirmation").style.display = "none";
+  document.getElementById("deleteConfirmation").style.display = "flex";
+  document.getElementById("delete").value = id;
+}
+
+function deleteAccount() {
+  const form = document.getElementById("delete-user-account-form");
+  let password = document.getElementById("adminPassword").value;
+  if (password) {
+    form.submit();
+  }
 }
 
 function displayConfirmation(button) {
@@ -131,10 +148,9 @@ function displayConfirmation(button) {
 
   let row = button.closest("tr"); // Get the row associated with the clicked button
   let id = row.querySelector("td:first-child").innerText; // Get the text from the first cell in the row
-
   // Implement a confirmation action, for example, with an "onclick" event on a confirm button in the confirmation dialog
   document.getElementById("confirmButton").onclick = function () {
-    deleteAccount(id);
+    confirmDelete(id);
   };
 }
 
@@ -161,15 +177,24 @@ function displayCategoryDeleteConfirmation(button) {
 
   let row = button.closest("tr"); // Get the row associated with the clicked button
   let id = row.querySelector("td:first-child").innerText; // Get the text from the first cell in the row
-
   // Implement a confirmation action, for example, with an "onclick" event on a confirm button in the confirmation dialog
   document.getElementById("confirmButton").onclick = function () {
-    deleteCategory(id);
+    confirmDeleteCategory(id);
   };
 }
 
-function deleteCategory(id) {
-  location.href = "delete-category.php?id=" + id;
+function confirmDeleteCategory(id) {
+  document.getElementById("confirmation").style.display = "none";
+  document.getElementById("deleteConfirmation").style.display = "flex";
+  document.getElementById("delete").value = id;
+}
+
+function deleteCategory() {
+  const form = document.getElementById("delete-user-account-form");
+  let password = document.getElementById("adminPassword").value;
+  if (password) {
+    form.submit();
+  }
 }
 
 function displayProductsDetails(button) {
@@ -228,7 +253,13 @@ function displayProductsDetails(button) {
   });
 }
 
+function confirmDeleteCategory() {
+  document.getElementById("confirmation").style.display = "none";
+  document.getElementById("deleteConfirmation").style.display = "flex";
+}
+
 function deleteProducts() {
+  confirmDeleteCategory();
   const dataCheckboxes = document.querySelectorAll(".data-checkbox:checked");
   const allData = [];
   for (const checkbox of dataCheckboxes) {
@@ -236,8 +267,6 @@ function deleteProducts() {
     const rowData = row.querySelector("td:nth-child(2)").textContent;
 
     allData.push(rowData);
-
-    console.log(allData);
   }
 
   // Set the JSON data as a value of a hidden input field
@@ -249,4 +278,3 @@ function deleteProducts() {
 function directTo(link) {
   location.href = link;
 }
-

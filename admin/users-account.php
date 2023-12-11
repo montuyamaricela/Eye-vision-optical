@@ -62,7 +62,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&family=Inter:wght@300; 400;500;600;700&family=Lato:wght@300;400;700;900&family=Poppins:wght@200;300;400;500;600;700&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="../styles/dashboardGlobal.css?v=22">
+    <link rel="stylesheet" href="../styles/dashboardGlobal.css?v=25">
     <link rel="stylesheet" href="../styles/global.css?v=1">
 </head>
 
@@ -76,8 +76,30 @@
             <div>
                 <h2 id="popupHeader">Are you sure you want to Delete?</h2>
                 <div class="buttonRow" id="buttonRow">
-                    <button class="buttonYes" id="confirmButton" onclick="deleteAccount()">Yes</button>
+                    <button class="buttonYes" id="confirmButton" onclick="confirmDelete()">Yes</button>
                     <button class="buttonNo" onclick="closePopup()">No</button>
+                </div>
+            </div>
+    </section>
+    <section id="deleteConfirmation" style="display:none">
+        <div class="box-content">
+            <div>
+                <img src="../public/images/icons/warning.png" alt="warning">
+            </div>
+            <div>
+                <p class="popuptext">Please enter admin password</p>
+
+                <form action="delete-user-account.php" id="delete-user-account-form" method="POST">
+                    <input type="hidden" id="delete" name="delete" value="">
+
+                    <div class="form-input">
+                        <label class="error" id="error"></label>
+                        <input type="password" name="adminPassword" id="adminPassword" required>
+                    </div>
+                </form>
+                <div class="buttonRow" id="buttonRow">
+                    <button class="buttonYes" onclick="deleteAccount()">Submit</button>
+                    <button class="buttonNo" onclick="closePopup()">Cancel</button>
                 </div>
             </div>
     </section>
@@ -412,14 +434,29 @@
                     ?>
                     </div>
                     <div>
-                        <a href="export-accounts.php" class="export">Export to CSV</a>
+                        <form action="user-accounts-report.php" method="POST">
+                            <div class="filterBy">
+                                <div class="input-field">
+                                    <label for="">Start Date: </label>
+                                    <input type="date" class="date" name="startDate">
+                                </div>
+                                <div class="input-field">
+                                    <label for="">End Date: </label>
+                                    <input type="date" class="date" name="endDate">
+                                </div>
+                                <button class="export">
+                                    Export
+                                </button>
+                            </div>
+                        </form>
+                        <!-- <a href="export-accounts.php" class="export">Export to CSV</a> -->
                     </div>
                 </div>
             </div>
         </div>
     </section>
     <!-- Add JavaScript code to handle checkbox functionality -->
-    <script src="../javascript/dashboard.js?v=24"></script>
+    <script src="../javascript/dashboard.js?v=35"></script>
 
 </body>
 
