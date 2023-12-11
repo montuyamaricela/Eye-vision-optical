@@ -20,6 +20,11 @@ It serves as a school project, showcasing the integration of online shopping fun
   - Experience a virtual try-on for eyewear products.
   - Upload a photo and virtually try on different glasses.
 
+- **Book an Appointment:**
+  - Schedule an appointment with our optometrists.
+  - Choose a preferred date and time.
+  - Receive a confirmation email with appointment details.
+
 ## Technologies Used
 
 - **PHP:** Server-side scripting language.
