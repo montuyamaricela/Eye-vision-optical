@@ -10,38 +10,52 @@
         $user_id = $_SESSION['user_id'];
     } 
 
-    $getDate =  isset($_GET['date']) ? $_GET['date'] : '' ;
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        // Retrieve the clicked date from the POST data
+        $clickedDate = $_POST['clickedDate'];
 
-    // Convert the date string to a DateTime object
-    $dateObject = new DateTime($getDate);
-    // Format the date as needed
-    $formattedDate = $dateObject->format('Y-m-d');
-    // Set the start and end hours
-    $startHour = 10;
-    $endHour = 16;
+        // Format the date as needed
+        $formattedDate = date('Y-m-d', strtotime($clickedDate));
 
-    // Initialize an array to store the hours
-    $hoursList = array();
+        // Use mysqli_query to execute the query
+        $query = "SELECT Schedule, Time FROM contact.appointments WHERE Schedule = '$formattedDate'";
+        $result = mysqli_query($con, $query);
 
-    // Loop through the hours and add them to the array
-    for ($hour = $startHour; $hour <= $endHour; $hour++) {
-        // Convert to 12-hour format
-        $hour12 = ($hour % 12 == 0) ? 12 : $hour % 12;
+        // Check if the query was successful
+        if ($result) {
+            // Initialize arrays to store the data
+            $schedules = [];
+            $times = [];
 
-        // Determine whether it's AM or PM
-        $period = ($hour < 12) ? 'AM' : 'PM';
+            // Fetch appointments
+            while ($row = mysqli_fetch_assoc($result)) {
+                $schedules[] = $row['Schedule'];
+                $times[] = $row['Time'];
+            }
 
-        // Create a formatted time string
-        $timeString = "$hour12:00$period";
+            // Free the result set
+            mysqli_free_result($result);
 
-        // Print or use the formatted time string
-        $hoursList[] = $timeString;
+            // Close the database connection
+            mysqli_close($con);
+
+            // Combine data into an associative array
+            $appointmentsData = [
+                'schedules' => $schedules,
+                'times' => $times,
+            ];
+
+            // Convert the array to JSON and echo to send it to JavaScript
+            echo json_encode($appointmentsData);
+            exit; // Terminate the script after sending the response
+        } else {
+            // Handle the case where the query was not successful
+            echo "Error executing query: " . mysqli_error($con);
+        }
+
+        // Close the database connection
+        mysqli_close($con);
     }
-    $appointment = "SELECT Schedule, Time FROM contact.appointments WHERE Schedule = '$formattedDate'";
-    $appointmentSchedule = mysqli_query($con, $appointment);
-
-    $formattedDateWithDay = $dateObject->format('D, F j, Y');
-
 ?>
 
 
@@ -67,7 +81,7 @@
     <link rel="stylesheet" href="../styles/global.css?v=2" />
 
     <!-- Appointment page styles/css -->
-    <link rel="stylesheet" href="../styles/appointment.css?v=10" />
+    <link rel="stylesheet" href="../styles/appointment.css?v=12" />
 
 </head>
 
@@ -232,7 +246,7 @@
     <section class="container appointment-container">
         <div class="appointment">
             <div class="appointmentDetails">
-                <p class="name">Maricel Montuya</p>
+                <p class="name" id="name"></p>
                 <h2>Appointment</h2>
                 <div class="appointment-duration">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -242,8 +256,54 @@
                     </svg>
                     <p>1 hour</p>
                 </div>
+                <div class="appointment-form" id="appointment-form">
+                    <form action="sendAppointment.php" method="POST">
+                        <div class="form-input">
+                            <label for="name">Full Name <span class="required">*</span></label>
+                            <input type="text" id="fullName" name="fullName" readonly />
+                        </div>
+
+                        <div class="form-input">
+                            <label for="name">Email Address <span class="required">*</span></label>
+                            <input type="email" id="email" name="email" readonly />
+                        </div>
+                        <div class="form-input">
+                            <label for="name">Phone <span class="required">*</span></label>
+                            <input type="number" id="phone" name="phone" required />
+                        </div>
+                        <div class="form-input">
+                            <label for="name">Purpose of Visit <span class="required">*</span></label>
+                            <select name="purposeOfVisit" id="purposeOfVisit" required>
+                                <option value="General Eye Check Up">General Eye Check Up</option>
+                                <option value="Lasik Screening">Lasik Screening</option>
+                                <option value="Optical and Contact Lens Services">Optical and Contact Lens Services
+                                </option>
+                                <option value="Other">Other</option>
+
+                            </select>
+                        </div>
+                        <div class="form-input">
+                            <label for="name">Other</label>
+                            <input type="text" id="other" name="other" />
+                        </div>
+                        <div class="two-column-input">
+                            <div class="form-input">
+                                <label for="name">Appointment Date <span class="required">*</span></label>
+                                <input type="text" id="appointmentDate" name="appointmentDate" readonly />
+                            </div>
+                            <div class="form-input">
+                                <label for="name">Appointment Time <span class="required">*</span></label>
+                                <input type="text" id="appointmentTime" name="appointmentTime" readonly />
+                            </div>
+                        </div>
+
+
+                        <button class="submit">Submit</button>
+
+                    </form>
+                </div>
             </div>
-            <div class="appointmentCalendar">
+            <div class="appointmentCalendar" id="appointmentCalendar">
                 <div class="calendar">
                     <div class="month">
                         <div class="prev">
@@ -274,30 +334,11 @@
                     <div class="days"></div>
                 </div>
             </div>
+
             <div class="time" id="time-list">
-
-                <h4 id="clickedDate"><?php echo $formattedDateWithDay?></h4>
-                <div class="time-list">
-                    <?php
-                        $occupiedSched = [];
-                        $occupiedTime = [];
-                        while ($row = mysqli_fetch_array($appointmentSchedule)){
-                            $occupiedSched[] = $row['Schedule'];
-                            $occupiedTime[] = $row['Time'];
-                    
-                        }
-                    
-                        foreach ($hoursList as $timeString) {
-                            // Check if the current time matches the specified time
-                             if (in_array($timeString, $occupiedTime)) {
-                                continue; // Skip to the next iteration
-                            }
-
-                            // Continue generating HTML
-                            echo '<div class="time-container">' . $timeString . '</div>';
-                        }
-                    ?>
-
+                <h4 id="clickedDate"></h4>
+                <div class="time-list" id="timeList">
+                    <div class="time-container">test</div>
                 </div>
             </div>
         </div>
@@ -363,7 +404,7 @@
         </div>
     </div>
     <script src="javascript/global.js"></script>
-    <script src="../javascript/Calendar.js?v=25"></script>
+    <script src="../javascript/Calendar.js?v=35"></script>
 </body>
 
 </html>
@@ -399,6 +440,7 @@
             $row = mysqli_fetch_array($result);
             $Profile = $row['Avatar'];
             $name = $row['Name'];
+            $email = $row['Email'];
             if (!$row['Avatar']){
                 $first_character = substr($name, 0, 1);
                 echo "<script>
@@ -417,7 +459,11 @@
                     navProfile.src = '../public/images/$Profile'
                 </script>";
             }
-            echo "<script>
+            echo "<script>fullName
+                document.getElementById('name').innerHTML = '$name';
+                document.getElementById('fullName').value = '$name';
+                document.getElementById('email').value = '$email';
+
                 document.getElementById('user').innerHTML = '$name';
                 document.getElementById('op1').style.display='none';
                 document.getElementById('op2').style.display='block';

@@ -4,13 +4,17 @@ const calendar = document.querySelector(".calendar"),
   prev = document.querySelector(".prev"),
   next = document.querySelector(".next"),
   dateClicked = document.getElementById("clickedDate"),
-  timelist = document.getElementById("time-list");
+  timelist = document.getElementById("time-list"),
+  appointmentCalendar = document.getElementById("appointmentCalendar"),
+  appointmentForm = document.getElementById("appointment-form");
 
 let today = new Date();
 let activeDay;
 let month = today.getMonth();
 let year = today.getFullYear();
 let clickedDate;
+let occupiedDate;
+let occupiedTime;
 
 const months = [
   "January",
@@ -94,6 +98,27 @@ next.addEventListener("click", nextMonth);
 
 initCalendar();
 
+// Function to send the clicked date to PHP
+function sendClickedDateToPHP(clickedDate) {
+  fetch("appointment.php", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: "clickedDate=" + encodeURIComponent(clickedDate),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      // Handle the response from the PHP script
+      occupiedDate = data.schedules;
+      occupiedTime = data.times;
+      displayTimeSlots(occupiedTime);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+}
+
 function addListner() {
   const days = document.querySelectorAll(".day");
 
@@ -101,9 +126,6 @@ function addListner() {
     day.addEventListener("click", (e) => {
       const clickedDay = parseInt(e.target.innerHTML, 10);
       const currentDate = new Date();
-
-      clickedDate = new Date();
-      clickedDate.setHours(0, 0, 0, 0); // Set hours to beginning of the day for accurate comparison
 
       if (e.target.classList.contains("prev-date")) {
         const updatedDate = new Date(year, month, clickedDay);
@@ -122,7 +144,34 @@ function addListner() {
           nextMonth();
         }
       }
+
       displayTimeList(updatedDate);
+      // const formattedClickedDate = updatedDate
+      //   .toLocaleDateString("en-US", {
+      //     year: "numeric",
+      //     month: "numeric",
+      //     day: "numeric",
+      //   })
+      //   .replace(/\//g, "-"); // Replace slashes with dashes
+      const formattedClickedDate = `${updatedDate.getUTCFullYear()}-${(
+        updatedDate.getUTCMonth() + 1
+      )
+        .toString()
+        .padStart(2, "0")}-${updatedDate
+        .getUTCDate()
+        .toString()
+        .padStart(2, "0")}`;
+
+      sendClickedDateToPHP(formattedClickedDate);
+      const formattedDateWithDay = updatedDate.toLocaleDateString("en-US", {
+        weekday: "short",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+      clickedDate = formattedClickedDate;
+
+      dateClicked.innerHTML = formattedDateWithDay;
 
       // Remove 'active' class from all days
       days.forEach((d) => {
@@ -131,34 +180,8 @@ function addListner() {
 
       // Add 'active' class to the clicked day
       e.target.classList.add("active");
-
-      // Use history.pushState to update the URL with only the date
-      updateURL(updatedDate);
     });
   });
-}
-
-function updateURL(date) {
-  const formattedDate = date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  });
-  const formattedDateWithDay = date.toLocaleDateString("en-US", {
-    weekday: "short",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-  const newURL =
-    window.location.origin +
-    window.location.pathname +
-    "?date=" +
-    formattedDate;
-  window.history.replaceState({ path: newURL }, "", newURL);
-  dateClicked.innerHTML = formattedDateWithDay;
-  document.cookie = "updatedDate=" + encodeURIComponent(newURL) + "; path=/";
-  // location.href = newURL;
 }
 
 function displayTimeList(clickedDate) {
@@ -174,5 +197,55 @@ function displayTimeList(clickedDate) {
     timelist.style.display = "block";
   } else {
     timelist.style.display = "none";
+    appointmentForm.style.display = "none";
   }
+}
+
+function displayTimeSlots(occupiedTime) {
+  const timeList = document.getElementById("timeList");
+  const startHour = 10;
+  const endHour = 16;
+
+  // Clear existing content in the timeList div
+  timeList.innerHTML = "";
+
+  // Loop through the hours and add time slots to the timeList div
+  for (let hour = startHour; hour <= endHour; hour++) {
+    // Convert to 12-hour format
+    const hour12 = hour % 12 === 0 ? 12 : hour % 12;
+
+    // Determine whether it's AM or PM
+    const period = hour < 12 ? "AM" : "PM";
+
+    // Create a formatted time string
+    const timeString = `${hour12}:00${period}`;
+    // Skip displaying occupied times
+    if (occupiedTime.includes(timeString)) {
+      continue;
+    }
+
+    // Create a new time container div
+    const timeContainer = document.createElement("div");
+    timeContainer.className = "time-container";
+    timeContainer.textContent = timeString;
+    timeContainer.onclick = function () {
+      displayForm(timeString);
+    };
+
+    // Append the time container to the timeList div
+    timeList.appendChild(timeContainer);
+  }
+}
+
+const appointmentDate = document.getElementById("appointmentDate"),
+  appointmentTime = document.getElementById("appointmentTime");
+
+function displayForm(selectedTime) {
+  // alert("Form will be displayed for: " + selectedTime);
+  appointmentForm.style.display = "block";
+  timelist.style.display = "none";
+  console.log(clickedDate);
+  appointmentDate.value = clickedDate;
+  appointmentTime.value = selectedTime;
+  // You can replace the alert with your code to display the form
 }

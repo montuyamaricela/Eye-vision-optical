@@ -256,16 +256,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <input type="checkbox" id="header-checkbox">
                                     </th>
                                     <th>ID</th>
-                                    <th>First Name</th>
-                                    <th>Last Name</th>
-                                    <th>Gender</th>
+                                    <th>Name</th>
                                     <th>Email</th>
                                     <th>Phone</th>
                                     <th>Purpose Of Visit</th>
                                     <th>Schedule</th>
                                     <th>Time</th>
                                     <th>Status</th>
-
                                 </tr>
                             </thead>
                             <tbody>
@@ -282,9 +279,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         ]; ?>">
                                     </td>
                                     <td><?php echo $row['ID']; ?></td>
-                                    <td><?php echo $row['FirstName']; ?></td>
-                                    <td><?php echo $row['LastName']; ?></td>
-                                    <td><?php echo $row['Gender']; ?></td>
+                                    <td><?php echo $row['FullName']; ?></td>
                                     <td><?php echo $row['EmailAddress']; ?></td>
                                     <td><?php echo $row['Phone']; ?></td>
                                     <td><?php echo $row[

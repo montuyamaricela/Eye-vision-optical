@@ -9,10 +9,16 @@
   display: flex;
 }
 
+.two-column-input .form-input {
+  width: 47.5% !important;
+}
+
 .appointmentDetails {
-  width: 50%;
+  width: 60%;
   padding: 30px;
   border-right: 1px solid #e8e8e8;
+  max-height: 450px;
+  overflow-y: scroll;
 }
 
 .name {
@@ -35,8 +41,27 @@ h4 {
 }
 
 .appointmentCalendar {
-  width: 60%;
+  width: 55%;
   padding: 30px;
+}
+
+.appointment-form {
+  display: none;
+}
+
+.submit {
+  width: 200px;
+  padding: 10px 0;
+  border-radius: 5px;
+  background-color: #527092;
+  color: white;
+  border: 2px solid transparent;
+  cursor: pointer;
+  margin: 10px auto 0 auto;
+}
+
+.submit:hover {
+  background-color: #527092;
 }
 
 .time {
@@ -55,14 +80,17 @@ h4 {
 }
 
 /* nice scroll bar */
-.time::-webkit-scrollbar {
+.time::-webkit-scrollbar,
+.appointmentDetails::-webkit-scrollbar {
   width: 10px;
 }
-.time::-webkit-scrollbar-track {
+.time::-webkit-scrollbar-track,
+.appointmentDetails::-webkit-scrollbar-track {
   background: #f5f5f5;
   border-radius: 50px;
 }
-.time::-webkit-scrollbar-thumb {
+.time::-webkit-scrollbar-thumb,
+.appointmentDetails::-webkit-scrollbar-thumb {
   background: var(--primary-clr);
   border-radius: 50px;
 }
