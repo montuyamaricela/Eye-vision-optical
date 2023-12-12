@@ -6,24 +6,29 @@
             location.href='login.php'
         </script>";
     }
-    $ID = $_GET['id'];
-
-    include '../db_connection.php';
-    mysqli_select_db($con, 'product');
+    $ID = $_POST['delete'];
+    $password = $_POST['adminPassword'];
+    $adminPassword = "";
     
-    $checkCategory = "SELECT * FROM category WHERE ID = '$ID'";
-    $result = mysqli_query($con, $checkCategory);
-    if (mysqli_num_rows($result) > 0){
-        $row = mysqli_fetch_array($result);
-        $sqlDeleteCategory = "DELETE FROM category WHERE ID=$ID";
-        mysqli_query($con, $sqlDeleteCategory);
-        $categoryName = $row['Category_name'];
-        // echo $categoryName;
+    include '../db_connection.php';
+    $getAdminInfo = "SELECT * FROM user.admin WHERE ID = 1";
+    $admin = mysqli_query($con, $getAdminInfo);
+    if ($row = mysqli_fetch_array($admin)){        
+        $adminPassword = $row['Password'];
     }
-    // $sqlDeleteAccountInfo = "DELETE FROM user_info WHERE id=$ID";
 
-    echo "<script>
+    if ($password === $adminPassword){
+        $sqlDeleteCategory = "DELETE FROM product.category WHERE ID=$ID";
+        mysqli_query($con, $sqlDeleteCategory);
+        echo "<script>
             location.href='success-add-category.php';
         </script>";
+    } else {
+        echo "<script>
+            alert('incorrect Password');
+            location.href='products-category.php';
+        </script>";    
+    }
+    
     mysqli_close($con);
 ?>

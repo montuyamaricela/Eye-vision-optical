@@ -47,10 +47,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ids = json_decode($jsonData, true);
  
     $idsToCancel = implode(', ', array_map(fn($id) => "'$id'", $ids));
+    $password = $_POST['adminPassword'];
+    $adminPassword = "";
     
-    $sql = "UPDATE Appointments SET Status='Cancelled' WHERE ID IN ($idsToCancel)";
-    mysqli_query($con, $sql);
-    $result = mysqli_query($con, $getQuery);
+    $getAdminInfo = "SELECT * FROM user.admin WHERE ID = 1";
+    $admin = mysqli_query($con, $getAdminInfo);
+    if ($row = mysqli_fetch_array($admin)){        
+        $adminPassword = $row['Password'];
+    }
+
+    if ($password === $adminPassword){
+        $sql = "UPDATE Appointments SET Status='Cancelled' WHERE ID IN ($idsToCancel)";
+        mysqli_query($con, $sql);
+        $result = mysqli_query($con, $getQuery);
+    } else {
+        echo "<script>
+            alert('incorrect Password');
+            location.href='appointment.php'
+        </script>";   
+    }
+
 }
 ?>
 
@@ -77,8 +93,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div>
                 <h2 id="popupHeader">Are you sure you want to cancel?</h2>
                 <div class="buttonRow" id="buttonRow">
-                    <button class=" buttonYes" onclick="cancelAppointments()">Yes</button>
+                    <button class=" buttonYes" onclick="confirmCancel()">Yes</button>
                     <button class="buttonNo" onclick="closePopup()">No</button>
+                </div>
+            </div>
+    </section>
+    <section id="deleteConfirmation" style="display:none">
+        <div class="box-content">
+            <div>
+                <img src="../public/images/icons/warning.png" alt="warning">
+            </div>
+            <div>
+                <p class="popuptext">Please enter admin password</p>
+
+                <form id="appointments-form" method="POST" action="appointment.php">
+                    <input type="hidden" id="data-field" name="data" value="">
+
+                    <div class="form-input">
+                        <label class="error" id="error"></label>
+                        <input type="password" name="adminPassword" id="adminPassword" required>
+                    </div>
+                </form>
+                <div class="buttonRow" id="buttonRow">
+                    <button class="buttonYes" onclick="cancelAppointments()">Submit</button>
+                    <button class="buttonNo" onclick="closePopup()">Cancel</button>
                 </div>
             </div>
     </section>
@@ -210,10 +248,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <button class="button" onclick="checkAndDisplayPopup()">Cancel Appointment</button>
                 </div>
                 <div class="tablediv">
-                    <form id="appointments-form" method="POST" action="appointment.php">
-
-                        <input type="hidden" id="data-field" name="data" value="">
-
+                    <form>
                         <table>
                             <thead>
                                 <tr>
@@ -221,16 +256,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <input type="checkbox" id="header-checkbox">
                                     </th>
                                     <th>ID</th>
-                                    <th>First Name</th>
-                                    <th>Last Name</th>
-                                    <th>Gender</th>
+                                    <th>Name</th>
                                     <th>Email</th>
                                     <th>Phone</th>
                                     <th>Purpose Of Visit</th>
-                                    <th>Date of submission</th>
                                     <th>Schedule</th>
+                                    <th>Time</th>
                                     <th>Status</th>
-
                                 </tr>
                             </thead>
                             <tbody>
@@ -247,21 +279,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         ]; ?>">
                                     </td>
                                     <td><?php echo $row['ID']; ?></td>
-                                    <td><?php echo $row['FirstName']; ?></td>
-                                    <td><?php echo $row['LastName']; ?></td>
-                                    <td><?php echo $row['Gender']; ?></td>
+                                    <td><?php echo $row['FullName']; ?></td>
                                     <td><?php echo $row['EmailAddress']; ?></td>
                                     <td><?php echo $row['Phone']; ?></td>
                                     <td><?php echo $row[
                                         'PurposeOfVisit'
                                     ]; ?></td>
                                     <td><?php echo $row[
-                                        'SubmissionDate'
+                                        'Schedule'
                                     ]; ?></td>
                                     <td>
                                         <?php
-                                        echo $row['PreferredSchedule1'] . ' | ';
-                                        echo $row['PreferredSchedule2'];
+                                        echo $row['Time'];
                                         ?>
                                     </td>
                                     <td>
@@ -327,7 +356,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </section>
     <!-- Add JavaScript code to handle checkbox functionality -->
-    <script src="../javascript/dashboard.js"></script>
+    <script src="../javascript/dashboard.js?v=10"></script>
 
 </body>
 

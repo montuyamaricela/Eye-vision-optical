@@ -287,7 +287,25 @@
                     ?>
                     </div>
                     <div>
-                        <a class="export">Export to CSV</a>
+                        <form action="sales-report.php" method="POST">
+                            <!-- Existing date filter fields -->
+                            <div class="filterBy">
+                                <div class="input-field">
+                                    <label for="">Start Date: </label>
+                                    <input type="date" class="date" name="startDate">
+                                </div>
+                                <div class="input-field">
+                                    <label for="">End Date: </label>
+                                    <input type="date" class="date" name="endDate">
+                                </div>
+
+                                <button class="export">
+                                    Export
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- <a href="export-accounts.php" class="export">Export to CSV</a> -->
                     </div>
                 </div>
             </div>

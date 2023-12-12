@@ -9,7 +9,56 @@
     } else if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) {
         $user_id = $_SESSION['user_id'];
     } 
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        // Retrieve the clicked date from the POST data
+        $clickedDate = $_POST['clickedDate'];
+
+        // Format the date as needed
+        $formattedDate = date('Y-m-d', strtotime($clickedDate));
+
+        // Use mysqli_query to execute the query
+        $query = "SELECT Schedule, Time FROM contact.appointments WHERE Schedule = '$formattedDate'";
+        $result = mysqli_query($con, $query);
+
+        // Check if the query was successful
+        if ($result) {
+            // Initialize arrays to store the data
+            $schedules = [];
+            $times = [];
+
+            // Fetch appointments
+            while ($row = mysqli_fetch_assoc($result)) {
+                $schedules[] = $row['Schedule'];
+                $times[] = $row['Time'];
+            }
+
+            // Free the result set
+            mysqli_free_result($result);
+
+            // Close the database connection
+            mysqli_close($con);
+
+            // Combine data into an associative array
+            $appointmentsData = [
+                'schedules' => $schedules,
+                'times' => $times,
+            ];
+
+            // Convert the array to JSON and echo to send it to JavaScript
+            echo json_encode($appointmentsData);
+            exit; // Terminate the script after sending the response
+        } else {
+            // Handle the case where the query was not successful
+            echo "Error executing query: " . mysqli_error($con);
+        }
+
+        // Close the database connection
+        mysqli_close($con);
+    }
 ?>
+
+
 
 
 <!DOCTYPE html>
@@ -30,6 +79,10 @@
 
     <!-- global styles/css -->
     <link rel="stylesheet" href="../styles/global.css?v=2" />
+
+    <!-- Appointment page styles/css -->
+    <link rel="stylesheet" href="../styles/appointment.css?v=12" />
+
 </head>
 
 <body>
@@ -190,86 +243,103 @@
     </section>
 
 
-    <section class="container">
-        <div class="book-appointment">
-            <div class="">
-                <h2 class="dark-text section-title">Set An Appointment</h2>
-                <div class="contact-box">
-                    <p>We will confirm your appointment schedule via email within 1-3 business days.</p>
-                    <p>Thank you for trusting Eye Vision for your eye care & treatment needs.</p>
+    <section class="container appointment-container">
+        <div class="appointment">
+            <div class="appointmentDetails">
+                <p class="name" id="name"></p>
+                <h2>Appointment</h2>
+                <div class="appointment-duration">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" width="25px">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <p>1 hour</p>
                 </div>
-            </div>
-            <div>
-                <form name="appointmentForm" action="sendAppointment.php" method="POST">
-                    <div class="two-column-input">
+                <div class="appointment-form" id="appointment-form">
+                    <form action="sendAppointment.php" method="POST">
                         <div class="form-input">
-                            <label for="name">First Name <span class="required">*</span></label>
-                            <input type="text" id="firstName" name="firstName" required />
+                            <label for="name">Full Name <span class="required">*</span></label>
+                            <input type="text" id="fullName" name="fullName" readonly />
                         </div>
-                        <div class="form-input">
-                            <label for="name">Last Name <span class="required">*</span></label>
-                            <input type="text" id="lastName" name="lastName" required />
-                        </div>
-                    </div>
-                    <div class="two-column-input">
-                        <div class="form-input">
-                            <label for="name">Birthday <span class="required">*</span></label>
-                            <input type="date" id="birthday" name="birthday" max="3000-01-01"
-                                onfocus="this.max=new Date().toISOString().split('T')[0]" required />
-                        </div>
-                        <div class="form-input">
-                            <label for="name">Gender <span class="required">*</span></label>
-                            <select name="gender" id="gender" required>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="two-column-input">
+
                         <div class="form-input">
                             <label for="name">Email Address <span class="required">*</span></label>
-                            <input type="email" id="email" name="email" required />
+                            <input type="email" id="email" name="email" readonly />
                         </div>
                         <div class="form-input">
                             <label for="name">Phone <span class="required">*</span></label>
                             <input type="number" id="phone" name="phone" required />
                         </div>
-                    </div>
-                    <div class="form-input">
-                        <label for="name">Purpose of Visit <span class="required">*</span></label>
-                        <select name="purposeOfVisit" id="purposeOfVisit" required>
-                            <option value="General Eye Check Up">General Eye Check Up</option>
-                            <option value="Lasik Screening">Lasik Screening</option>
-                            <option value="Optical and Contact Lens Services">Optical and Contact Lens Services</option>
-                            <option value="Other">Other</option>
-
-                        </select>
-                    </div>
-                    <div class="form-input">
-                        <label for="name">Other</label>
-                        <input type="text" id="other" name="other" />
-                    </div>
-                    <p class="text">Indicate preferred schedules <span class="required">*</span></p>
-                    <div class="two-column-input">
                         <div class="form-input">
-                            <label for="name">Option 1 <span class="required">*</span></label>
-                            <input type="date" id="schedule1" name="schedule1" min="2050-01-01"
-                                onfocus="this.min=new Date().toISOString().split('T')[0]" required />
+                            <label for="name">Purpose of Visit <span class="required">*</span></label>
+                            <select name="purposeOfVisit" id="purposeOfVisit" required>
+                                <option value="General Eye Check Up">General Eye Check Up</option>
+                                <option value="Lasik Screening">Lasik Screening</option>
+                                <option value="Optical and Contact Lens Services">Optical and Contact Lens Services
+                                </option>
+                                <option value="Other">Other</option>
+
+                            </select>
                         </div>
                         <div class="form-input">
-                            <label for="name">Option 2:</label>
-                            <input type="date" id="schedule2" name="schedule2" min="2050-01-01"
-                                onfocus="this.min=new Date().toISOString().split('T')[0]" />
+                            <label for="name">Other</label>
+                            <input type="text" id="other" name="other" />
+                        </div>
+                        <div class="two-column-input">
+                            <div class="form-input">
+                                <label for="name">Appointment Date <span class="required">*</span></label>
+                                <input type="text" id="appointmentDate" name="appointmentDate" readonly />
+                            </div>
+                            <div class="form-input">
+                                <label for="name">Appointment Time <span class="required">*</span></label>
+                                <input type="text" id="appointmentTime" name="appointmentTime" readonly />
+                            </div>
+                        </div>
+
+
+                        <button class="submit">Submit</button>
+
+                    </form>
+                </div>
+            </div>
+            <div class="appointmentCalendar" id="appointmentCalendar">
+                <div class="calendar">
+                    <div class="month">
+                        <div class="prev">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                                stroke="currentColor" height="20px">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                            </svg>
+                        </div>
+
+                        <div class="date">december 2015</div>
+                        <div class="next">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                                stroke="currentColor" height="20px">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                            </svg>
+
                         </div>
                     </div>
-
-                    <div class="form-input">
-                        <label for="name">Message:</label>
-                        <textarea name="message" rows="15" cols="50" id="message" name="message"></textarea>
+                    <div class="weekdays">
+                        <div>Sun</div>
+                        <div>Mon</div>
+                        <div>Tue</div>
+                        <div>Wed</div>
+                        <div>Thu</div>
+                        <div>Fri</div>
+                        <div>Sat</div>
                     </div>
+                    <div class="days"></div>
+                </div>
+            </div>
 
-                    <button class="submit">Submit</button>
-                </form>
+            <div class="time" id="time-list">
+                <h4 id="clickedDate"></h4>
+                <div class="time-list" id="timeList">
+                    <div class="time-container">test</div>
+                </div>
             </div>
         </div>
     </section>
@@ -334,7 +404,7 @@
         </div>
     </div>
     <script src="javascript/global.js"></script>
-
+    <script src="../javascript/Calendar.js?v=35"></script>
 </body>
 
 </html>
@@ -370,6 +440,7 @@
             $row = mysqli_fetch_array($result);
             $Profile = $row['Avatar'];
             $name = $row['Name'];
+            $email = $row['Email'];
             if (!$row['Avatar']){
                 $first_character = substr($name, 0, 1);
                 echo "<script>
@@ -388,7 +459,11 @@
                     navProfile.src = '../public/images/$Profile'
                 </script>";
             }
-            echo "<script>
+            echo "<script>fullName
+                document.getElementById('name').innerHTML = '$name';
+                document.getElementById('fullName').value = '$name';
+                document.getElementById('email').value = '$email';
+
                 document.getElementById('user').innerHTML = '$name';
                 document.getElementById('op1').style.display='none';
                 document.getElementById('op2').style.display='block';

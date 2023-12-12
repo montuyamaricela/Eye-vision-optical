@@ -140,8 +140,30 @@
             <div>
                 <h2 id="popupHeader">Are you sure you want to delete?</h2>
                 <div class="buttonRow" id="buttonRow">
-                    <button class=" buttonYes" onclick="deleteProducts()">Yes</button>
+                    <button class=" buttonYes" onclick="confirmDeleteCategory()">Yes</button>
                     <button class="buttonNo" onclick="closePopup()">No</button>
+                </div>
+            </div>
+    </section>
+    <section id="deleteConfirmation" style="display:none">
+        <div class="box-content">
+            <div>
+                <img src="../public/images/icons/warning.png" alt="warning">
+            </div>
+            <div>
+                <p class="popuptext">Please enter admin password</p>
+
+                <form action="delete-product.php" id="products-list-form" method="POST">
+                    <input type="hidden" id="data-field" name="data" value="">
+
+                    <div class="form-input">
+                        <label class="error" id="error"></label>
+                        <input type="password" name="adminPassword" id="adminPassword" required>
+                    </div>
+                </form>
+                <div class="buttonRow" id="buttonRow">
+                    <button class="buttonYes" onclick="deleteProducts()">Submit</button>
+                    <button class="buttonNo" onclick="closePopup()">Cancel</button>
                 </div>
             </div>
     </section>
@@ -311,10 +333,8 @@
 
                 </div>
                 <div class="productsDiv">
-                    <form id="products-list-form" action="delete-product.php" method="POST">
+                    <form>
                         <table>
-                            <input type="hidden" id="data-field" name="data" value="">
-
                             <thead>
                                 <tr>
                                     <th width="10px">
@@ -424,7 +444,34 @@
                         }
                     ?>
                     </div>
+                    <div>
+                        <form action="products-report.php" method="POST">
+                            <!-- Existing date filter fields -->
+                            <div class="filterBy">
+                                <div class="input-field">
+                                    <label for="">Start Date: </label>
+                                    <input type="date" class="date" name="startDate">
+                                </div>
+                                <div class="input-field">
+                                    <label for="">End Date: </label>
+                                    <input type="date" class="date" name="endDate">
+                                </div>
 
+                                <!-- Add a hidden input field for filterByCategory -->
+                                <?php
+                                $filter_category = isset($_GET['filterByCategory']) ? $_GET['filterByCategory'] : '';                           
+                                
+                                if (!empty($filter_category)) { ?>
+                                <input type="hidden" name="filterByCategory" value="<?php echo $filter_category; ?>">
+                                <?php } ?>
+                                <button class="export">
+                                    Export
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- <a href="export-accounts.php" class="export">Export to CSV</a> -->
+                    </div>
                 </div>
             </div>
         </div>

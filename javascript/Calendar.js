@@ -3,22 +3,18 @@ const calendar = document.querySelector(".calendar"),
   daysContainer = document.querySelector(".days"),
   prev = document.querySelector(".prev"),
   next = document.querySelector(".next"),
-  todayBtn = document.querySelector(".today-btn"),
-  dateInput = document.querySelector(".date-input"),
-  eventDay = document.querySelector(".event-day"),
-  eventDate = document.querySelector(".event-date"),
-  eventsContainer = document.querySelector(".events"),
-  addEventBtn = document.querySelector(".add-event"),
-  addEventWrapper = document.querySelector(".add-event-wrapper "),
-  addEventCloseBtn = document.querySelector(".close "),
-  addEventTitle = document.querySelector(".event-name "),
-  addEventSubmit = document.querySelector(".add-event-btn ");
+  dateClicked = document.getElementById("clickedDate"),
+  timelist = document.getElementById("time-list"),
+  appointmentCalendar = document.getElementById("appointmentCalendar"),
+  appointmentForm = document.getElementById("appointment-form");
 
 let today = new Date();
 let activeDay;
 let month = today.getMonth();
 let year = today.getFullYear();
 let clickedDate;
+let occupiedDate;
+let occupiedTime;
 
 const months = [
   "January",
@@ -34,11 +30,6 @@ const months = [
   "November",
   "December",
 ];
-
-const eventsArr = [];
-getEvents();
-
-console.log(eventsArr);
 
 //function to add days in days with class day and prev-date next-date on previous month and next month days and active on today
 function initCalendar() {
@@ -61,35 +52,16 @@ function initCalendar() {
 
   for (let i = 1; i <= lastDate; i++) {
     //check if event is present on that day
-    let event = false;
-    eventsArr.forEach((eventObj) => {
-      if (
-        eventObj.day === i &&
-        eventObj.month === month + 1 &&
-        eventObj.year === year
-      ) {
-        event = true;
-      }
-    });
+
     if (
       i === new Date().getDate() &&
       year === new Date().getFullYear() &&
       month === new Date().getMonth()
     ) {
       activeDay = i;
-      if (event) {
-        // if meron event sa current date.
-        days += `<div class="day today active event">${i}</div>`;
-      } else {
-        days += `<div class="day today active">${i}</div>`;
-      }
+      days += `<div class="day today active">${i}</div>`;
     } else {
-      if (event) {
-        // if meron event sa current date
-        days += `<div class="day event">${i}</div>`;
-      } else {
-        days += `<div class="day ">${i}</div>`;
-      }
+      days += `<div class="day ">${i}</div>`;
     }
   }
 
@@ -109,10 +81,6 @@ function prevMonth() {
     year--;
   }
 
-  // if (clickedDate < today) {
-  //   console.log("hehe");
-  // }
-  // console.log(clickedDate < today);
   initCalendar();
 }
 
@@ -125,76 +93,31 @@ function nextMonth() {
   initCalendar();
 }
 
-// prev.addEventListener("click", prevMonth);
-// next.addEventListener("click", nextMonth);
+prev.addEventListener("click", prevMonth);
+next.addEventListener("click", nextMonth);
 
 initCalendar();
 
-// function getActiveDay(date) {
-//   const day = new Date(year, month, date);
-//   const dayName = day.toString().split(" ")[0];
-//   eventDay.innerHTML = dayName;
-//   eventDate.innerHTML = date + " " + months[month] + " " + year;
-// }
-
-//function to add active on day
-// function addListner() {
-//   const days = document.querySelectorAll(".day");
-//   days.forEach((day) => {
-//     day.addEventListener("click", (e) => {
-//       clickedDate = new Date(year, month, e.target.innerHTML);
-//       const currentDate = new Date();
-
-//       activeDay = Number(e.target.innerHTML);
-
-//       //remove active
-//       days.forEach((day) => {
-//         day.classList.remove("active");
-//       });
-//       //if clicked prev-date or next-date switch to that month
-//       if (e.target.classList.contains("prev-date")) {
-//         prevMonth();
-
-//         //add active to clicked day afte month is change
-//         setTimeout(() => {
-//           //add active where no prev-date or next-date
-//           const days = document.querySelectorAll(".day");
-//           days.forEach((day) => {
-//             if (
-//               !day.classList.contains("prev-date") &&
-//               day.innerHTML === e.target.innerHTML
-//             ) {
-//               // day.classList.add("active");
-//               clickedDate = new Date(year, month, day.innerHTML);
-//               return clickedDate;
-//               // console.log(clickedDate > currentDate);
-//             }
-//           });
-//         }, 100);
-//       } else if (e.target.classList.contains("next-date")) {
-//         // nextMonth();
-//         //add active to clicked day afte month is changed
-//         setTimeout(() => {
-//           const days = document.querySelectorAll(".day");
-//           days.forEach((day) => {
-//             if (
-//               !day.classList.contains("next-date") &&
-//               day.innerHTML === e.target.innerHTML
-//             ) {
-//               day.classList.add("active");
-//               clickedDate = new Date(year, month, day.innerHTML);
-//               return clickedDate;
-//             }
-//           });
-//         }, 100);
-//       } else {
-//         e.target.classList.add("active");
-//       }
-//       console.log(clickedDate);
-
-//     });
-//   });
-// }
+// Function to send the clicked date to PHP
+function sendClickedDateToPHP(clickedDate) {
+  fetch("appointment.php", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: "clickedDate=" + encodeURIComponent(clickedDate),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      // Handle the response from the PHP script
+      occupiedDate = data.schedules;
+      occupiedTime = data.times;
+      displayTimeSlots(occupiedTime);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+}
 
 function addListner() {
   const days = document.querySelectorAll(".day");
@@ -204,13 +127,6 @@ function addListner() {
       const clickedDay = parseInt(e.target.innerHTML, 10);
       const currentDate = new Date();
 
-      const clickedDate = new Date(year, month, clickedDay);
-      clickedDate.setHours(0, 0, 0, 0); // Set hours to beginning of the day for accurate comparison
-
-      // if (clickedDate <= currentDate) {
-      //   // Prevent setting clickedDate for past or today's dates
-      //   return;
-      // }
       if (e.target.classList.contains("prev-date")) {
         const updatedDate = new Date(year, month, clickedDay);
         updatedDate.setHours(0, 0, 0, 0);
@@ -221,13 +137,41 @@ function addListner() {
 
       // Update the 'clickedDate' after month change
       const updatedDate = new Date(year, month, clickedDay);
+
       updatedDate.setHours(0, 0, 0, 0); // Set hours to beginning of the day
       if (currentDate > updatedDate) {
         if (e.target.classList.contains("prev-date")) {
           nextMonth();
         }
-        e.classList.remove("active");
       }
+
+      displayTimeList(updatedDate);
+      // const formattedClickedDate = updatedDate
+      //   .toLocaleDateString("en-US", {
+      //     year: "numeric",
+      //     month: "numeric",
+      //     day: "numeric",
+      //   })
+      //   .replace(/\//g, "-"); // Replace slashes with dashes
+      const formattedClickedDate = `${updatedDate.getUTCFullYear()}-${(
+        updatedDate.getUTCMonth() + 1
+      )
+        .toString()
+        .padStart(2, "0")}-${updatedDate
+        .getUTCDate()
+        .toString()
+        .padStart(2, "0")}`;
+
+      sendClickedDateToPHP(formattedClickedDate);
+      const formattedDateWithDay = updatedDate.toLocaleDateString("en-US", {
+        weekday: "short",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+      clickedDate = formattedClickedDate;
+
+      dateClicked.innerHTML = formattedDateWithDay;
 
       // Remove 'active' class from all days
       days.forEach((d) => {
@@ -240,55 +184,68 @@ function addListner() {
   });
 }
 
-todayBtn.addEventListener("click", () => {
-  today = new Date();
-  month = today.getMonth();
-  year = today.getFullYear();
-  initCalendar();
-});
+function displayTimeList(clickedDate) {
+  const currentDate = new Date();
 
-// dateInput.addEventListener("input", (e) => {
-//   dateInput.value = dateInput.value.replace(/[^0-9/]/g, "");
-//   if (dateInput.value.length === 2) {
-//     dateInput.value += "/";
-//   }
-//   if (dateInput.value.length > 7) {
-//     dateInput.value = dateInput.value.slice(0, 7);
-//   }
-//   if (e.inputType === "deleteContentBackward") {
-//     if (dateInput.value.length === 3) {
-//       dateInput.value = dateInput.value.slice(0, 2);
-//     }
-//   }
-//   console.log("ito");
-// });
+  // Set hours, minutes, seconds, and milliseconds to 0 for accurate date comparison
+  currentDate.setHours(0, 0, 0, 0);
+  clickedDate.setHours(0, 0, 0, 0);
 
-// gotoBtn.addEventListener("click", gotoDate);
-
-// function gotoDate() {
-//   console.log("here");
-//   const dateArr = dateInput.value.split("/");
-//   if (dateArr.length === 2) {
-//     if (dateArr[0] > 0 && dateArr[0] < 13 && dateArr[1].length === 4) {
-//       month = dateArr[0] - 1;
-//       year = dateArr[1];
-//       initCalendar();
-//       return;
-//     }
-//   }
-//   alert("Invalid Date");
-// }
-
-//function to save events in local storage
-function saveEvents() {
-  localStorage.setItem("events", JSON.stringify(eventsArr));
+  // Compare the dates
+  if (clickedDate > currentDate) {
+    // Display the time list
+    timelist.style.display = "block";
+  } else {
+    timelist.style.display = "none";
+    appointmentForm.style.display = "none";
+  }
 }
 
-//function to get events from local storage
-function getEvents() {
-  //check if events are already saved in local storage then return event else nothing
-  if (localStorage.getItem("events") === null) {
-    return;
+function displayTimeSlots(occupiedTime) {
+  const timeList = document.getElementById("timeList");
+  const startHour = 10;
+  const endHour = 16;
+
+  // Clear existing content in the timeList div
+  timeList.innerHTML = "";
+
+  // Loop through the hours and add time slots to the timeList div
+  for (let hour = startHour; hour <= endHour; hour++) {
+    // Convert to 12-hour format
+    const hour12 = hour % 12 === 0 ? 12 : hour % 12;
+
+    // Determine whether it's AM or PM
+    const period = hour < 12 ? "AM" : "PM";
+
+    // Create a formatted time string
+    const timeString = `${hour12}:00${period}`;
+    // Skip displaying occupied times
+    if (occupiedTime.includes(timeString)) {
+      continue;
+    }
+
+    // Create a new time container div
+    const timeContainer = document.createElement("div");
+    timeContainer.className = "time-container";
+    timeContainer.textContent = timeString;
+    timeContainer.onclick = function () {
+      displayForm(timeString);
+    };
+
+    // Append the time container to the timeList div
+    timeList.appendChild(timeContainer);
   }
-  eventsArr.push(...JSON.parse(localStorage.getItem("events")));
+}
+
+const appointmentDate = document.getElementById("appointmentDate"),
+  appointmentTime = document.getElementById("appointmentTime");
+
+function displayForm(selectedTime) {
+  // alert("Form will be displayed for: " + selectedTime);
+  appointmentForm.style.display = "block";
+  timelist.style.display = "none";
+  console.log(clickedDate);
+  appointmentDate.value = clickedDate;
+  appointmentTime.value = selectedTime;
+  // You can replace the alert with your code to display the form
 }

@@ -52,8 +52,30 @@
             <div>
                 <h2 id="popupHeader">Are you sure you want to Delete?</h2>
                 <div class="buttonRow" id="buttonRow">
-                    <button class="buttonYes" id="confirmButton" onclick="deleteAccount()">Yes</button>
+                    <button class="buttonYes" id="confirmButton" onclick="confirmDeleteCategory()">Yes</button>
                     <button class="buttonNo" onclick="closePopup()">No</button>
+                </div>
+            </div>
+    </section>
+    <section id="deleteConfirmation" style="display:none">
+        <div class="box-content">
+            <div>
+                <img src="../public/images/icons/warning.png" alt="warning">
+            </div>
+            <div>
+                <p class="popuptext">Please enter admin password</p>
+
+                <form action="delete-category.php" id="delete-user-account-form" method="POST">
+                    <input type="hidden" id="delete" name="delete" value="">
+
+                    <div class="form-input">
+                        <label class="error" id="error"></label>
+                        <input type="password" name="adminPassword" id="adminPassword" required>
+                    </div>
+                </form>
+                <div class="buttonRow" id="buttonRow">
+                    <button class="buttonYes" onclick="deleteCategory()">Submit</button>
+                    <button class="buttonNo" onclick="closePopup()">Cancel</button>
                 </div>
             </div>
     </section>
