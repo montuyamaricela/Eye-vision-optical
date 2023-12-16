@@ -146,19 +146,12 @@ function addListner() {
       }
 
       displayTimeList(updatedDate);
-      // const formattedClickedDate = updatedDate
-      //   .toLocaleDateString("en-US", {
-      //     year: "numeric",
-      //     month: "numeric",
-      //     day: "numeric",
-      //   })
-      //   .replace(/\//g, "-"); // Replace slashes with dashes
-      const formattedClickedDate = `${updatedDate.getUTCFullYear()}-${(
-        updatedDate.getUTCMonth() + 1
+      const formattedClickedDate = `${updatedDate.getFullYear()}-${(
+        updatedDate.getMonth() + 1
       )
         .toString()
         .padStart(2, "0")}-${updatedDate
-        .getUTCDate()
+        .getDate()
         .toString()
         .padStart(2, "0")}`;
 
@@ -170,7 +163,6 @@ function addListner() {
         day: "numeric",
       });
       clickedDate = formattedClickedDate;
-
       dateClicked.innerHTML = formattedDateWithDay;
 
       // Remove 'active' class from all days

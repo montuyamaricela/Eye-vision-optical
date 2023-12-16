@@ -77,7 +77,7 @@ $result = mysqli_query($con, $sql);
                         $logo = mysqli_query($con, $getLogo);
                         while ($row = mysqli_fetch_array($logo)){
                             $image = $row['Image'];
-                            echo "<img src='../public/images/$image' alt='Logo' height='85px'>";
+                            echo "<img src='../public/images/$image' alt='Logo' height='85px' width='85px'>";
                         }
                     ?>
                 </a>
@@ -238,7 +238,7 @@ $result = mysqli_query($con, $sql);
                         <div class="item" onclick="getImageSrc(this)">
                             <div class=" product-image">
                                 <img id="product-image" src="../public/images/<?php echo $row['Image']?>"
-                                    alt="<?php echo $row['Name']?>" height="120" />
+                                    alt="<?php echo $row['Name']?>" height="120" width="120"/>
                             </div>
                             <div>
                                 <h3 class="dark-text"><?php echo $row['Name']?></h3>

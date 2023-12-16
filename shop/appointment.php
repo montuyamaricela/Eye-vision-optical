@@ -18,7 +18,7 @@
         $formattedDate = date('Y-m-d', strtotime($clickedDate));
 
         // Use mysqli_query to execute the query
-        $query = "SELECT Schedule, Time FROM contact.appointments WHERE Schedule = '$formattedDate'";
+        $query = "SELECT Schedule, Time FROM contact.appointments WHERE Schedule = '$formattedDate' AND Status != 'Cancelled'";
         $result = mysqli_query($con, $query);
 
         // Check if the query was successful
@@ -115,15 +115,12 @@
                                 $category = $row['Category_name'];
                                 echo "<a href='products.php?category=$category'>$category</a>";
                             }
-                        
                         ?>
                     </div>
                 </div>
                 <a href="virtual-try-on.php">Virtual Try On</a>
                 <a href="appointment.php">Book an Appointment</a>
-
                 <div class="svg-items">
-
                     <a href="cart.php" class="dropbtn cart">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
                             <path
@@ -203,7 +200,7 @@
                                 <img src="#" alt="" id="navbarProfile">
                                 <p id="userName">Name</p>
                             </div>
-                            <p id="user" ">My Account</p>
+                            <p id="user">My Account</p>
                         </div>
                         <div class=" dropdown-content">
                             <div id='op2'>
@@ -338,7 +335,7 @@
             <div class="time" id="time-list">
                 <h4 id="clickedDate"></h4>
                 <div class="time-list" id="timeList">
-                    <div class="time-container">test</div>
+                    <div class="time-container"></div>
                 </div>
             </div>
         </div>
