@@ -18,6 +18,7 @@
     }
 
     if ($password === $adminPassword){
+        echo $ID;
         $sqlDeleteCategory = "DELETE FROM product.category WHERE ID=$ID";
         mysqli_query($con, $sqlDeleteCategory);
         echo "<script>

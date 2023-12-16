@@ -180,6 +180,8 @@ function displayCategoryDeleteConfirmation(button) {
   // Implement a confirmation action, for example, with an "onclick" event on a confirm button in the confirmation dialog
   document.getElementById("confirmButton").onclick = function () {
     confirmDeleteCategory(id);
+    document.getElementById("delete").value = id;
+
   };
 }
 
@@ -190,7 +192,7 @@ function confirmDeleteCategory(id) {
 }
 
 function deleteCategory() {
-  const form = document.getElementById("delete-user-account-form");
+  const form = document.getElementById("delete-category-form");
   let password = document.getElementById("adminPassword").value;
   if (password) {
     form.submit();

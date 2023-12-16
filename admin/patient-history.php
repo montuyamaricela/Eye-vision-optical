@@ -6,32 +6,49 @@
             location.href='login.php'
         </script>";
     }
+    // Connect to the database
     include '../db_connection.php';
-    mysqli_select_db($con, 'product');
+    mysqli_select_db($con, 'Contact');
 
+    // variable to store the number of rows per page
     $limit = 10;
 
+    // update the active page number
     if (isset($_GET['page'])) {
         $page_number = $_GET['page'];
     } else {
         $page_number = 1;
     }
 
+    // get the initial page number
     $initial_page = ($page_number - 1) * $limit;
 
-    $filter_category = isset($_GET['filterByCategory']) ? $_GET['filterByCategory'] : '';
+    $filterName = isset($_GET['patientName']) ? $_GET['patientName'] : '';
+    $sql = "SELECT * FROM Appointments";
 
-    $sql = "SELECT * FROM products";
-    
     // Add condition to filter by category if selected
-    if (!empty($filter_category)) {
-        $sql .= " WHERE Category = '$filter_category'";
+    if (!empty($filterName)) {
+        $sql .= " WHERE FullName LIKE '$filterName%'";
     }
 
     $sql .= " LIMIT $initial_page, $limit";
 
     $result = mysqli_query($con, $sql);
-    
+
+
+    // return background color for each status
+    function getStatusColorClass($status){
+        switch ($status) {
+            case 'Pending':
+                return 'orange-bg';
+            case 'Confirmed':
+                return 'green-bg';
+            case 'Cancelled':
+                return 'red-bg';
+            default:
+                return '';
+        }
+    }
 ?>
 <html>
 
@@ -68,30 +85,28 @@
                     </svg>
                 </a>
                 <a href="appointment.php">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"  viewBox="0 0 24 24"
+                        stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
                     </svg>
                 </a>
                 <a href="patient-history.php">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" class="activeSvg" viewBox="0 0 24 24"
-                        stroke-width="1.5" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" class="activeSvg" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
                     </svg>
+                    <a href="payment-history.php">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" />
+                        </svg>
 
+                    </a>
                 </a>
-                <a href="payment-history.php">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" />
-                    </svg>
-
-                </a>
-                <a href="products-category.php
-                ">
+                <a href="products-category.php">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor">
                         <path stroke-linecap=" round" stroke-linejoin="round"
@@ -106,13 +121,7 @@
                             d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349m-16.5 11.65V9.35m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 002.25 1.016c.896 0 1.7-.393 2.25-1.016a3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.621-4.72L4.318 3.44A1.5 1.5 0 015.378 3h13.243a1.5 1.5 0 011.06.44l1.19 1.189a3 3 0 01-.621 4.72m-13.5 8.65h3.75a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H6.75a.75.75 0 00-.75.75v3.75c0 .415.336.75.75.75z" />
                     </svg>
                 </a>
-                <a href="report.php">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25M9 16.5v.75m3-3v3M15 12v5.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-                    </svg>
-                </a>
+
                 <a href="modify-customer-page.php">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="w-6 h-6">
@@ -172,13 +181,13 @@
                 <div class="content-header">
                     <div>
                         <h2>Patient History</h2>
-                        <p>View a comprehensive list of all patient history in the system.</p>
+                        <p>View a comprehensive list of all patient in the system.</p>
                     </div>
                 </div>
                 <div class="filterAdd">
                     <form action="">
                         <div class="filterBy">
-                            <input class="search" type="text" placeholder="Enter patient name">
+                            <input class="search" name="patientName" type="text" placeholder="Enter Patient Name">
                             <button class="search-button">
                                 Search
                             </button>
@@ -187,49 +196,59 @@
                     </form>
                 </div>
                 <div class="productsDiv">
-                    <form action="">
+                    <form>
                         <table>
                             <thead>
                                 <tr>
-
-                                    <th width="50px">ID</th>
-                                    <th>First Name</th>
-                                    <th>Last Name</th>
-
-                                    <th>Age</th>
-                                    <th>Medical History</th>
-                                    <th>Doctor</th>
-                                    <th>Scheduled Date</th>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Purpose Of Visit</th>
+                                    <th>Schedule</th>
+                                    <th>Time</th>
+                                    <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php if (mysqli_num_rows($result) == 0) {
                                 echo "<td colspan='11'>No records found!</td>";
-                            }?>
+                            } ?>
                                 <?php while (
                                 $row = mysqli_fetch_array($result)
                             ) { ?>
                                 <tr>
 
-                                    <td>1</td>
-                                    <td>John</td>
-                                    <td>Doe</td>
-
-                                    <td>20</td>
-                                    <td>Eye Check up</td>
-                                    <td>Mrs. Montuya</td>
-                                    <td>2023-11-12 | 12:00NN</td>
+                                    <td><?php echo $row['ID']; ?></td>
+                                    <td><?php echo $row['FullName']; ?></td>
+                                    <td><?php echo $row['EmailAddress']; ?></td>
+                                    <td><?php echo $row['Phone']; ?></td>
+                                    <td><?php echo $row[
+                                        'PurposeOfVisit'
+                                    ]; ?></td>
+                                    <td><?php echo $row[
+                                        'Schedule'
+                                    ]; ?></td>
+                                    <td>
+                                        <?php
+                                        echo $row['Time'];
+                                        ?>
+                                    </td>
+                                    <td>
+                                        <p class="<?php echo getStatusColorClass(
+                                            $row['Status']
+                                        ); ?>"><?php echo $row['Status']; ?></p>
+                                    </td>
                                 </tr>
                                 <?php } ?>
                             </tbody>
                         </table>
                     </form>
-
                 </div>
                 <div class="pagination">
                     <div>
                         <?php
-                        $getQuery = 'SELECT COUNT(*) FROM products';
+                        $getQuery = 'SELECT COUNT(*) FROM Appointments';
                         $result = mysqli_query($con, $getQuery);
                         $row = mysqli_fetch_row($result);
                         $total_rows = $row[0];
@@ -239,21 +258,21 @@
                         $total_pages = ceil($total_rows / $limit);
                         $pageURL = '';
                         if ($page_number >= 2) {
-                            echo "<a href='products.php?page=" .
+                            echo "<a href='patient-history.php?page=" .
                                 ($page_number - 1) .
                                 "'> Prev </a>";
                         }
                         for ($curpage = 1; $curpage <= $total_pages; $curpage++) {
                             if ($curpage == $page_number) {
                                 $pageURL .=
-                                    "<a class = 'active' href='products.php?page=" .
+                                    "<a class = 'active' href='appointment.php?page=" .
                                     $curpage .
                                     "'>" .
                                     $curpage .
                                     ' </a>';
                             } else {
                                 $pageURL .=
-                                    "<a href='products.php?page=" .
+                                    "<a href='patient-history.php?page=" .
                                     $curpage .
                                     "'>" .
                                     $curpage .
@@ -263,19 +282,18 @@
                         echo $pageURL;
 
                         if ($page_number < $total_pages) {
-                            echo "<a href='products.php?page=" .
+                            echo "<a href='patient-history.php?page=" .
                                 ($page_number + 1) .
                                 "'> Next </a>";
                         }
                     ?>
                     </div>
-                    <div>
-                        <a class="export">Export to CSV</a>
-                    </div>
+
                 </div>
             </div>
         </div>
     </section>
+
     <!-- Add JavaScript code to handle checkbox functionality -->
     <script src="../javascript/dashboard.js?v=25"></script>
 
