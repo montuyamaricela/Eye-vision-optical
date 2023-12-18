@@ -184,9 +184,7 @@
                         ?>
 
                 <div class="swiper-slide">
-                    <a href="products.php">
                         <img src="../public/images/<?php echo $image?>" alt="Image <?php echo $id?>" />
-                    </a>
                 </div>
                 <?php }?>
 

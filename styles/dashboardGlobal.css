@@ -808,6 +808,7 @@ input[type="file"] {
 }
 
 .card-content {
+  margin-top: 5px;
   display: flex;
   justify-content: space-between;
 }
@@ -1011,7 +1012,7 @@ form {
   border-radius: 100px;
   font-size: 12px;
   color: #172b4d;
-  border: 1px solid #172b4d !important;
+  /* //border: 1px solid #172b4d !important; */
   font-family: "Inter", sans-serif !important;
   cursor: pointer;
 

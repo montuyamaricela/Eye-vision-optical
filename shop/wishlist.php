@@ -185,7 +185,7 @@
     <section class="">
         <div class="">
             <?php
-                $checkWishlist = "Select Product_ID, Product_name, Color, Image, Price from product.products a join user.wishlist b on a.ID = b.Product_ID WHERE b.User_id = '$user_id'";
+                $checkWishlist = "Select Product_ID, Product_name, Category ,Color, Image, Price from product.products a join user.wishlist b on a.ID = b.Product_ID WHERE b.User_id = '$user_id'";
                 $res = mysqli_query($con, $checkWishlist);
             ?>
             <?php if(mysqli_num_rows($res) === 0){
@@ -204,6 +204,8 @@
 
                         <div class="wishlist-items">
                             <?php while ($row = mysqli_fetch_array($res)){ 
+                                $categ = $row['Category'];
+                                            
                                 ?>
                             <!-- <a href="<products.php" class="product-item"> -->
 
@@ -220,8 +222,12 @@
                                 </div>
 
                                 <a href="item.php?product-id=<?php echo $row['Product_ID']?>" class=" product-image">
-                                    <img src="../public/images/<?php echo $row['Image'];?>"
-                                        alt="<?php echo $row['Product_name'];?>" height="250" />
+                                <?php if ($categ === 'Contact Lenses') {
+                                        echo "<img src='../public/images/products/Contactlens.jpeg' alt='Contact Lens' height='250' width='270'/>";
+                                    } else { ?>
+                                        <img src="../public/images/<?php echo $row['Image'];?>"
+                                            alt="<?php echo $row['Product_name'];?>" height="250" />   
+                                    <?php } ?>
                                 </a>
                                 <div class="product-details">
                                     <h3 class="dark-text"><?php echo $row['Product_name']?></h3>

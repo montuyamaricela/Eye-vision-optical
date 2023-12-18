@@ -17,15 +17,7 @@ if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) {
 
 
 $filter_category = isset($_GET['category']) ? $_GET['category'] : '';
-$limit = 6;
 
-if (isset($_GET['page'])) {
-    $page_number = $_GET['page'];
-} else {
-    $page_number = 1;
-}
-
-$initial_page = ($page_number - 1) * $limit;
 
 $sql = "SELECT * FROM products";
 
@@ -37,7 +29,6 @@ if (!empty($filter_category) && $filter_category !== 'Accessories') {
     $sql .= " WHERE Category != 'Accessories'";
 }
 
-$sql .= " LIMIT $initial_page, $limit";
 
 
 $result = mysqli_query($con, $sql);
@@ -63,7 +54,7 @@ $result = mysqli_query($con, $sql);
     <link rel="stylesheet" href="../styles/global.css?v=4" />
 
     <!-- product styles/css -->
-    <link rel="stylesheet" href="../styles/virtual-try-on.css?v=8" />
+    <link rel="stylesheet" href="../styles/virtual-try-on.css?v=9" />
 </head>
 
 <body>
@@ -142,7 +133,7 @@ $result = mysqli_query($con, $sql);
                                 <img src="#" alt="" id="navbarProfile">
                                 <p id="userName">Name</p>
                             </div>
-                            <p id="user" ">My Account</p>
+                            <p id="user">My Account</p>
                         </div>
                         <div class=" dropdown-content">
                             <div id='op2'>
@@ -208,7 +199,6 @@ $result = mysqli_query($con, $sql);
                             echo "<a href='virtual-try-on.php' class='filter-item-active'>All</a>";
                         } else {
                             echo "<a href='virtual-try-on.php'>All</a>";
-
                         }
                     ?>
                     <?php
@@ -236,7 +226,7 @@ $result = mysqli_query($con, $sql);
                         ?>
                         <?php while ($row = mysqli_fetch_array($result)){ ?>
                         <div class="item" onclick="getImageSrc(this)">
-                            <div class=" product-image">
+                            <div class="product-image">
                                 <img id="product-image" src="../public/images/<?php echo $row['Image']?>"
                                     alt="<?php echo $row['Name']?>" height="120" width="120"/>
                             </div>

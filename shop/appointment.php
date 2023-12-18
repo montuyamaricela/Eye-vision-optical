@@ -1,61 +1,67 @@
-<?php 
-    session_start(); 
-    include '../db_connection.php';
-    if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === FALSE || empty($_SESSION)) {
-        echo "<script>
+<?php
+session_start();
+include '../db_connection.php';
+if (
+    (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === false) ||
+    empty($_SESSION)
+) {
+    echo "<script>
             alert('You must logged in before accessing the page!');
             location.href='login.php'
         </script>";
-    } else if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) {
-        $user_id = $_SESSION['user_id'];
-    } 
+} elseif (
+    isset($_SESSION['is_logged_in']) &&
+    $_SESSION['is_logged_in'] === true
+) {
+    $user_id = $_SESSION['user_id'];
+}
 
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        // Retrieve the clicked date from the POST data
-        $clickedDate = $_POST['clickedDate'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Retrieve the clicked date from the POST data
+    $clickedDate = $_POST['clickedDate'];
 
-        // Format the date as needed
-        $formattedDate = date('Y-m-d', strtotime($clickedDate));
+    // Format the date as needed
+    $formattedDate = date('Y-m-d', strtotime($clickedDate));
 
-        // Use mysqli_query to execute the query
-        $query = "SELECT Schedule, Time FROM contact.appointments WHERE Schedule = '$formattedDate' AND Status != 'Cancelled'";
-        $result = mysqli_query($con, $query);
+    // Use mysqli_query to execute the query
+    $query = "SELECT Schedule, Time FROM contact.appointments WHERE Schedule = '$formattedDate' AND Status != 'Cancelled'";
+    $result = mysqli_query($con, $query);
 
-        // Check if the query was successful
-        if ($result) {
-            // Initialize arrays to store the data
-            $schedules = [];
-            $times = [];
+    // Check if the query was successful
+    if ($result) {
+        // Initialize arrays to store the data
+        $schedules = [];
+        $times = [];
 
-            // Fetch appointments
-            while ($row = mysqli_fetch_assoc($result)) {
-                $schedules[] = $row['Schedule'];
-                $times[] = $row['Time'];
-            }
-
-            // Free the result set
-            mysqli_free_result($result);
-
-            // Close the database connection
-            mysqli_close($con);
-
-            // Combine data into an associative array
-            $appointmentsData = [
-                'schedules' => $schedules,
-                'times' => $times,
-            ];
-
-            // Convert the array to JSON and echo to send it to JavaScript
-            echo json_encode($appointmentsData);
-            exit; // Terminate the script after sending the response
-        } else {
-            // Handle the case where the query was not successful
-            echo "Error executing query: " . mysqli_error($con);
+        // Fetch appointments
+        while ($row = mysqli_fetch_assoc($result)) {
+            $schedules[] = $row['Schedule'];
+            $times[] = $row['Time'];
         }
+
+        // Free the result set
+        mysqli_free_result($result);
 
         // Close the database connection
         mysqli_close($con);
+
+        // Combine data into an associative array
+        $appointmentsData = [
+            'schedules' => $schedules,
+            'times' => $times,
+        ];
+
+        // Convert the array to JSON and echo to send it to JavaScript
+        echo json_encode($appointmentsData);
+        exit(); // Terminate the script after sending the response
+    } else {
+        // Handle the case where the query was not successful
+        echo 'Error executing query: ' . mysqli_error($con);
     }
+
+    // Close the database connection
+    mysqli_close($con);
+}
 ?>
 
 
@@ -91,13 +97,13 @@
             <div>
                 <a href="index.php" class="logo">
                     <?php
-                        mysqli_select_db($con, 'cms');
-                        $getLogo = "SELECT * FROM logo WHERE id = '1'";
-                        $logo = mysqli_query($con, $getLogo);
-                        while ($row = mysqli_fetch_array($logo)){
-                            $image = $row['Image'];
-                            echo "<img src='../public/images/$image' alt='Logo' height='85px'>";
-                        }
+                    mysqli_select_db($con, 'cms');
+                    $getLogo = "SELECT * FROM logo WHERE id = '1'";
+                    $logo = mysqli_query($con, $getLogo);
+                    while ($row = mysqli_fetch_array($logo)) {
+                        $image = $row['Image'];
+                        echo "<img src='../public/images/$image' alt='Logo' height='85px'>";
+                    }
                     ?>
                 </a>
             </div>
@@ -106,15 +112,15 @@
                     <a>Products</a>
                     <div class=" dropdown-content">
                         <?php
-                            include '../db_connection.php';
-                            mysqli_select_db($con, 'product');
-                            $sql = "SELECT * FROM Category";
-                            $result = mysqli_query($con, $sql);
-                
-                            while ($row = mysqli_fetch_array($result)){
-                                $category = $row['Category_name'];
-                                echo "<a href='products.php?category=$category'>$category</a>";
-                            }
+                        include '../db_connection.php';
+                        mysqli_select_db($con, 'product');
+                        $sql = 'SELECT * FROM Category';
+                        $result = mysqli_query($con, $sql);
+
+                        while ($row = mysqli_fetch_array($result)) {
+                            $category = $row['Category_name'];
+                            echo "<a href='products.php?category=$category'>$category</a>";
+                        }
                         ?>
                     </div>
                 </div>
@@ -133,27 +139,26 @@
                                 d="M1 1H5L7.68 14.39C7.77144 14.8504 8.02191 15.264 8.38755 15.5583C8.75318 15.8526 9.2107 16.009 9.68 16H19.4C19.8693 16.009 20.3268 15.8526 20.6925 15.5583C21.0581 15.264 21.3086 14.8504 21.4 14.39L23 6H6"
                                 stroke="#5775B7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                         </svg>
-                        <?php
-                            if(isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true){
-                                mysqli_select_db($con, 'user');
-                        
-                                $sql = "SELECT COUNT(*) AS totalItems FROM cart WHERE User_id = '$user_id'";
-                                $res = mysqli_query($con, $sql);
-                                if ($res) {
+                        <?php if (
+                            isset($_SESSION['is_logged_in']) &&
+                            $_SESSION['is_logged_in'] === true
+                        ) {
+                            mysqli_select_db($con, 'user');
+
+                            $sql = "SELECT COUNT(*) AS totalItems FROM cart WHERE User_id = '$user_id'";
+                            $res = mysqli_query($con, $sql);
+                            if ($res) {
                                 // Fetch the result as an associative array
-                                    $row = mysqli_fetch_assoc($res);
+                                $row = mysqli_fetch_assoc($res);
 
                                 // Access the totalItems value
-                                    $totalItems = $row['totalItems'];
-                                    if ($totalItems != 0){
-                                        // Output the total number of items
-                                        echo "<span class='item-number'>$totalItems</span>" ;
-                                    }
-                                    
-                                } 
+                                $totalItems = $row['totalItems'];
+                                if ($totalItems != 0) {
+                                    // Output the total number of items
+                                    echo "<span class='item-number'>$totalItems</span>";
+                                }
                             }
-                
-                        ?>
+                        } ?>
                     </a>
                     <a href="wishlist.php" class="dropbtn wishlist">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"
@@ -161,27 +166,26 @@
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
                         </svg>
-                        <?php
-                            if(isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true){
-                                mysqli_select_db($con, 'user');
-                        
-                                $sql = "SELECT COUNT(*) AS totalItems FROM wishlist WHERE User_id = '$user_id'";
-                                $res = mysqli_query($con, $sql);
-                                if ($res) {
+                        <?php if (
+                            isset($_SESSION['is_logged_in']) &&
+                            $_SESSION['is_logged_in'] === true
+                        ) {
+                            mysqli_select_db($con, 'user');
+
+                            $sql = "SELECT COUNT(*) AS totalItems FROM wishlist WHERE User_id = '$user_id'";
+                            $res = mysqli_query($con, $sql);
+                            if ($res) {
                                 // Fetch the result as an associative array
-                                    $row = mysqli_fetch_assoc($res);
+                                $row = mysqli_fetch_assoc($res);
 
                                 // Access the totalItems value
-                                    $totalItems = $row['totalItems'];
-                                    if ($totalItems != 0){
-                                        // Output the total number of items
-                                        echo "<span class='item-number'>$totalItems</span>" ;
-                                    }
-                                    
-                                } 
+                                $totalItems = $row['totalItems'];
+                                if ($totalItems != 0) {
+                                    // Output the total number of items
+                                    echo "<span class='item-number'>$totalItems</span>";
+                                }
                             }
-                
-                        ?>
+                        } ?>
                     </a>
                     <div class="dropdown">
                         <div class="dropbtn">
@@ -257,7 +261,7 @@
                     <form action="sendAppointment.php" method="POST">
                         <div class="form-input">
                             <label for="name">Full Name <span class="required">*</span></label>
-                            <input type="text" id="fullName" name="fullName" readonly />
+                            <input type="text" id="fullName" name="fullName" required />
                         </div>
 
                         <div class="form-input">
@@ -279,6 +283,7 @@
 
                             </select>
                         </div>
+                            <p></p>
                         <div class="form-input">
                             <label for="name">Other</label>
                             <input type="text" id="other" name="other" />
@@ -350,11 +355,11 @@
                         mysqli_select_db($con, 'cms');
                         $getLogo = "SELECT * FROM logo WHERE id = '1'";
                         $logo = mysqli_query($con, $getLogo);
-                        while ($row = mysqli_fetch_array($logo)){
+                        while ($row = mysqli_fetch_array($logo)) {
                             $image = $row['Image'];
                             echo "<img src='../public/images/$image' alt='Logo' height='150'>";
                         }
-                    ?> </a>
+                        ?> </a>
                 </div>
                 <div class="two-column">
                     <div>
@@ -406,15 +411,15 @@
 
 </html>
 
-<?php 
-    mysqli_select_db($con, 'cms');
-    $getColor = "SELECT * FROM color WHERE id = '1'";
-    $color = mysqli_query($con, $getColor);
-    while ($row = mysqli_fetch_array($color)){
-        $darkColor = $row['darkColor'];
-        $lightColor = $row['lightColor'];
-    }
-    echo "<script>
+<?php
+mysqli_select_db($con, 'cms');
+$getColor = "SELECT * FROM color WHERE id = '1'";
+$color = mysqli_query($con, $getColor);
+while ($row = mysqli_fetch_array($color)) {
+    $darkColor = $row['darkColor'];
+    $lightColor = $row['lightColor'];
+}
+echo "<script>
         let elementsWithDarkClass = document.getElementsByClassName('dark-text');
         for (var i = 0; i < elementsWithDarkClass.length; i++) {
             elementsWithDarkClass[i].style.color = '$darkColor';
@@ -425,29 +430,29 @@
             elementsWithLightClass[i].style.color = '$lightColor';
         }
     </script>";
-    if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) {
-        $user_id = $_SESSION['user_id'];
-        mysqli_select_db($con, 'user');
-        $sql = "SELECT a.ID, a.Name, a.Email, a.Phone, a.Address, a.Avatar,b.Password, b.Status
+if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) {
+    $user_id = $_SESSION['user_id'];
+    mysqli_select_db($con, 'user');
+    $sql = "SELECT a.ID, a.Name, a.Email, a.Phone, a.Address, a.Avatar,b.Password, b.Status
 			FROM user_info a, accounts b
-			WHERE a.ID & b.ID = '$user_id'" ;
-        $result = mysqli_query($con, $sql);
+			WHERE a.ID & b.ID = '$user_id'";
+    $result = mysqli_query($con, $sql);
 
-        if (mysqli_num_rows($result) > 0){
-            $row = mysqli_fetch_array($result);
-            $Profile = $row['Avatar'];
-            $name = $row['Name'];
-            $email = $row['Email'];
-            if (!$row['Avatar']){
-                $first_character = substr($name, 0, 1);
-                echo "<script>
+    if (mysqli_num_rows($result) > 0) {
+        $row = mysqli_fetch_array($result);
+        $Profile = $row['Avatar'];
+        $name = $row['Name'];
+        $email = $row['Email'];
+        if (!$row['Avatar']) {
+            $first_character = substr($name, 0, 1);
+            echo "<script>
                     document.getElementById('iconSvg').style.display='none';
                     document.getElementById('userName').innerHTML = '$first_character';
                     document.getElementById('userName').style.display='block';
                     document.getElementById('navImage').style.display='block';
                 </script>";
-            } else {
-                echo "<script>
+        } else {
+            echo "<script>
                     document.getElementById('iconSvg').style.display='none';
                     document.getElementById('userName').style.display='none';
                     document.getElementById('navbarProfile').style.display='block';
@@ -455,8 +460,8 @@
                     document.getElementById('navImage').style.display='block';
                     navProfile.src = '../public/images/$Profile'
                 </script>";
-            }
-            echo "<script>fullName
+        }
+        echo "<script>fullName
                 document.getElementById('name').innerHTML = '$name';
                 document.getElementById('fullName').value = '$name';
                 document.getElementById('email').value = '$email';
@@ -465,9 +470,8 @@
                 document.getElementById('op1').style.display='none';
                 document.getElementById('op2').style.display='block';
             </script>";
-        }
- 
     }
+}
 
 
 ?>
