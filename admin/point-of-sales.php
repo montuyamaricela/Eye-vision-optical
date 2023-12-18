@@ -209,18 +209,25 @@
 
                                 }?>
                                 <!-- eto na 'yung naka while loop -->
-                                <?php while($row = mysqli_fetch_array($result)){ ?>
+                                <?php while($row = mysqli_fetch_array($result)){ 
+                                    $categ = $row['Category'];
+                                    if ($row['Stock'] != 0) {?>
                                 <div class="product-card"
                                     onclick="addProductToCheckout('<?php echo $row['ID']; ?>', '<?php echo $row['Name']; ?>', <?php echo $row['Price']; ?>, <?php echo $row['Stock']; ?>)">
                                     <div>
-                                        <img src="../public/images/<?php echo $row['Image']?>" alt="glasses">
+                                        <?php  if ($categ === 'Contact Lenses') {
+                                            echo "<img src='../public/images/products/Contactlens.jpeg' alt='Contact Lens' width='200'/>";
+                                        } else { ?>
+                                            <img src="../public/images/<?php echo $row['Image']?>" alt="<?php echo $row['Name'];?>">
+                                        <?php } ?>
                                     </div>
                                     <p class="product-name"><?php echo $row['Name']?></p>
                                     <p class="product-price">₱<?php echo $row['Price']?></p>
                                 </div>
 
 
-                                <?php } ?>
+
+                                <?php } } ?>
 
                             </div>
 

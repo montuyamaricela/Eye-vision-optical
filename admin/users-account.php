@@ -47,10 +47,6 @@
 
     }
 
-
-    // if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    // }
 ?>
 
 <html>
@@ -62,7 +58,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&family=Inter:wght@300; 400;500;600;700&family=Lato:wght@300;400;700;900&family=Poppins:wght@200;300;400;500;600;700&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="../styles/dashboardGlobal.css?v=25">
+    <link rel="stylesheet" href="../styles/dashboardGlobal.css?v=31">
     <link rel="stylesheet" href="../styles/global.css?v=1">
 </head>
 
@@ -556,4 +552,5 @@
     }
 
 
-?>
+?>/* The above code is a CSS comment. It is not doing anything in terms of affecting the appearance or
+behavior of the webpage. It is simply a note or reminder for the developer. */

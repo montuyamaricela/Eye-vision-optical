@@ -1,13 +1,18 @@
 <?php
-    session_start();
-    include '../db_connection.php';
-    mysqli_select_db($con, 'user');
+session_start();
+include '../db_connection.php';
+mysqli_select_db($con, 'user');
 
-    if (isset($_SESSION['adminLoggedin']) && $_SESSION['adminLoggedin'] === false || empty($_SESSION) || empty($_SESSION['adminLoggedin'])) {
-        echo "<script>
+if (
+    (isset($_SESSION['adminLoggedin']) &&
+        $_SESSION['adminLoggedin'] === false) ||
+    empty($_SESSION) ||
+    empty($_SESSION['adminLoggedin'])
+) {
+    echo "<script>
             location.href='login.php'
         </script>";
-    } 
+}
 ?>
 <html>
 
@@ -111,20 +116,19 @@
         </div>
         <div class="content">
             <div class="topbar">
-                <?php 
-                    $getAdminInfo = "SELECT * FROM admin WHERE ID = 1";
-                    $admin = mysqli_query($con, $getAdminInfo);
-                    if ($row = mysqli_fetch_array($admin)){
-                        
-                        $AdminName = $row['Name'];
-                        $adminProfile = $row['Profile'];
-                    }
+                <?php
+                $getAdminInfo = 'SELECT * FROM admin WHERE ID = 1';
+                $admin = mysqli_query($con, $getAdminInfo);
+                if ($row = mysqli_fetch_array($admin)) {
+                    $AdminName = $row['Name'];
+                    $adminProfile = $row['Profile'];
+                }
                 ?>
                 <div class="dropdown">
                     <div class="currentlyLoggedin">
-                        <img src="../public/images/<?php echo $adminProfile; ?>" alt="<?php echo $AdminName;?>"
+                        <img src="../public/images/<?php echo $adminProfile; ?>" alt="<?php echo $AdminName; ?>"
                             width="45">
-                        <p><?php echo $AdminName;?></p>
+                        <p><?php echo $AdminName; ?></p>
                         <div>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                                 stroke="currentColor" height="15">
@@ -133,7 +137,7 @@
 
                         </div>
                     </div>
-
+                    
                     <div class="dropdown-content">
                         <a href="account-setting.php">Account Settings</a>
                         <a href="logout.php">Logout</a>
@@ -147,10 +151,15 @@
                         <!-- <h2>Quick Stat</h2> -->
                         <div class="stats">
                             <div class="stat-card" onclick="directTo('users-account.php')">
-                                <?php $getNumberOfAccounts = 'SELECT COUNT(*) as userCount FROM accounts';
-                                    $result = mysqli_query($con, $getNumberOfAccounts);
-                                    $row = mysqli_fetch_assoc($result);
-                                    $userCount = $row['userCount'];
+                                <?php
+                                $getNumberOfAccounts =
+                                    'SELECT COUNT(*) as userCount FROM accounts';
+                                $result = mysqli_query(
+                                    $con,
+                                    $getNumberOfAccounts
+                                );
+                                $row = mysqli_fetch_assoc($result);
+                                $userCount = $row['userCount'];
                                 ?>
                                 <p>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -158,17 +167,20 @@
                                         <path stroke-linecap="round" stroke-linejoin="round"
                                             d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
                                     </svg>
-
                                 </p>
                                 <p class="stat-title">Users</p>
-
-                                <p class="stat-number"><?php echo $userCount?></p>
+                                <p class="stat-number"><?php echo $userCount; ?></p>
                             </div>
                             <div class="stat-card" onclick="directTo('payment-history.php')">
-                                <?php $getNumberOfOrders = 'SELECT COUNT(*) as orderCount FROM orders';
-                                    $result = mysqli_query($con, $getNumberOfOrders);
-                                    $row = mysqli_fetch_assoc($result);
-                                    $orderCount = $row['orderCount'];
+                                <?php
+                                $getNumberOfOrders =
+                                    'SELECT COUNT(*) as orderCount FROM orders';
+                                $result = mysqli_query(
+                                    $con,
+                                    $getNumberOfOrders
+                                );
+                                $row = mysqli_fetch_assoc($result);
+                                $orderCount = $row['orderCount'];
                                 ?>
                                 <p>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -179,13 +191,18 @@
 
                                 </p>
                                 <p class="stat-title">Orders</p>
-                                <p class="stat-number"><?php echo $orderCount?></p>
+                                <p class="stat-number"><?php echo $orderCount; ?></p>
                             </div>
                             <div class="stat-card" onclick="directTo('appointment.php')">
-                                <?php $getNumberOfAccounts = 'SELECT COUNT(*) as appointmentCount FROM contact.appointments';
-                                    $result = mysqli_query($con, $getNumberOfAccounts);
-                                    $row = mysqli_fetch_assoc($result);
-                                    $appointmentCount = $row['appointmentCount'];
+                                <?php
+                                $getNumberOfAccounts =
+                                    'SELECT COUNT(*) as appointmentCount FROM contact.appointments';
+                                $result = mysqli_query(
+                                    $con,
+                                    $getNumberOfAccounts
+                                );
+                                $row = mysqli_fetch_assoc($result);
+                                $appointmentCount = $row['appointmentCount'];
                                 ?>
                                 <p>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -195,7 +212,7 @@
                                     </svg>
                                 </p>
                                 <p class="stat-title">Appointments</p>
-                                <p class="stat-number"><?php echo $appointmentCount?></p>
+                                <p class="stat-number"><?php echo $appointmentCount; ?></p>
                             </div>
                         </div>
                     </div>
@@ -210,19 +227,30 @@
                                     <th>Quantity</th>
                                 </tr>
                                 <tbody>
-                                    <?php 
-                                        $getRecentOrders = 'SELECT orderID, User_email, Product_name, Quantity, DateOrdered FROM orders ORDER BY DateOrdered DESC LIMIT 4';
-                                        $result = mysqli_query($con, $getRecentOrders);
-                                        while ($row = mysqli_fetch_array($result)){ ?>
+                                    <?php
+                                    $getRecentOrders =
+                                        'SELECT orderID, User_email, Product_name, Quantity, DateOrdered FROM orders ORDER BY DateOrdered DESC LIMIT 4';
+                                    $result = mysqli_query(
+                                        $con,
+                                        $getRecentOrders
+                                    );
+                                    while (
+                                        $row = mysqli_fetch_array($result)
+                                    ) { ?>
 
                                     <tr>
-                                        <td><?php echo $row['orderID']?></td>
-                                        <td><?php echo $row['User_email']?></td>
+                                        <td><?php echo $row['orderID']; ?></td>
+                                        <td><?php echo $row[
+                                            'User_email'
+                                        ]; ?></td>
 
-                                        <td><?php echo $row['Product_name']?></td>
-                                        <td><?php echo $row['Quantity']?></td>
+                                        <td><?php echo $row[
+                                            'Product_name'
+                                        ]; ?></td>
+                                        <td><?php echo $row['Quantity']; ?></td>
                                     </tr>
-                                    <?php } ?>
+                                    <?php }
+                                    ?>
                                 </tbody>
                             </table>
                         </div>

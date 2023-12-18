@@ -192,7 +192,7 @@
                                 <img src="#" alt="" id="navbarProfile">
                                 <p id="userName">Name</p>
                             </div>
-                            <p id="user" ">My Account</p>
+                            <p id="user">My Account</p>
                         </div>
                         <div class=" dropdown-content">
                             <div id='op2'>
@@ -223,11 +223,19 @@
             $result = mysqli_query($con, $getProduct);
             if (mysqli_num_rows($result) != 0) {
                 while($row = mysqli_fetch_array($result)){
+                    $categ = $row['Category']
                 ?>
             <!-- <a href="<products.php" class="product-item"> -->
             <div class="product-card">
                 <div class="item-image">
-                    <img src="../public/images/<?php echo $row['Image']?>" alt="<?php echo $row['Name']?>" />
+                    <?php
+                        if ($categ === 'Contact Lenses') {
+                            echo "<img src='../public/images/products/Contactlens.jpeg' alt='Contact Lens'/>";
+                        } else { ?>
+                            <img src="../public/images/<?php echo $row['Image']?>" alt="<?php echo $row['Name']?>"  />
+                        <?php } ?>
+                
+                    <!-- <img src="../public/images/<?php echo $row['Image']?>" alt="<?php echo $row['Name']?>" /> -->
                 </div>
                 <div class="item-description">
                     <h2 class="dark-text item-name"><?php echo $row['Name']?></h2>

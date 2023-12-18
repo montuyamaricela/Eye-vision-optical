@@ -1,13 +1,13 @@
 <?php
-    session_start();
-    include '../db_connection.php';
-    mysqli_select_db($con, 'user');
+session_start();
+include '../db_connection.php';
+mysqli_select_db($con, 'user');
 
-    if (isset($_SESSION['adminLoggedin']) && $_SESSION['adminLoggedin'] === true) {
-        echo "<script>
+if (isset($_SESSION['adminLoggedin']) && $_SESSION['adminLoggedin'] === true) {
+    echo "<script>
             location.href='index.php'
         </script>";
-    } 
+}
 ?>
 <html>
 
@@ -45,7 +45,6 @@
                     </div>
                     <button>Submit</button>
                 </form>
-
             </div>
         </div>
     </section>
@@ -92,8 +91,7 @@
                     </svg>
 
                 </a>
-                <a href="products-category.php
-                ">
+                <a href="products-category.php">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor">
                         <path stroke-linecap=" round" stroke-linejoin="round"
@@ -137,50 +135,46 @@
     </section>
     <!-- Add JavaScript code to handle checkbox functionality -->
     <script src="../javascript/dashboard.js?v=25"></script>
-
+    
 </body>
 
 </html>
 
-<?php
-
-    // admin credentials
-    $getAdminCredentials = "SELECT User_name, Password FROM admin WHERE ID = 1";
+<?php if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $getAdminCredentials =
+        'SELECT User_name, Password, Name FROM admin WHERE ID = 1';
     $adminCredentials = mysqli_query($con, $getAdminCredentials);
-    while ($row = mysqli_fetch_array($adminCredentials)){
+    while ($row = mysqli_fetch_array($adminCredentials)) {
         $adminUser = $row['User_name'];
         $adminPassword = $row['Password'];
         $adminName = $row['Name'];
     }
 
-    if ($_SERVER['REQUEST_METHOD'] == 'POST'){
-        $username = $_POST['username'];
-        $password = $_POST['password'];
+    $username = $_POST['username'];
+    $password = $_POST['password'];
 
-        if ($adminUser === $username){
-   
-            if ($adminPassword === $password) {
-                $_SESSION['adminLoggedin'] = true;
-                echo "<script>
+    if ($adminUser === $username) {
+        if ($adminPassword === $password) {
+            $_SESSION['adminLoggedin'] = true;
+            echo "<script>
                     alert('Welcome, $adminName!')
                     location.href='index.php'
                     document.getElementById('username').value='$username';
                     document.getElementById('password').value='$password';
 
                 </script>";
-            } else {
-                echo "<script>
+        } else {
+            echo "<script>
                     document.getElementById('passwordError').style.display='block';
                     document.getElementById('username').value='$username';
         
                 </script>";
-            }
-        } else {
-                echo "<script>
+        }
+    } else {
+        echo "<script>
                     document.getElementById('error').style.display='block';
                 </script>";
-            }
     }
-
+}
 
 ?>

@@ -243,12 +243,20 @@ $result = mysqli_query($con, $sql);
                             echo "<h2 class='dark-text'>Products Not Found/unavailable</h2>";
                         }
                         ?>
-                        <?php while ($row = mysqli_fetch_array($result)){ ?>
+                        <?php while ($row = mysqli_fetch_array($result)){ 
+                            $categ = $row['Category']
+                            ?>
                         <!-- <a href="<products.php" class="product-item"> -->
+                        
                         <a href="item.php?product-id=<?php echo $row['ID']?>" class="product-item">
                             <div class=" product-image">
-                                <img src="../public/images/<?php echo $row['Image']?>" alt="<?php echo $row['Name']?>"
-                                    height="220" />
+                                <?php
+                                    if ($categ === 'Contact Lenses') {
+                                        echo "<img src='../public/images/products/Contactlens.jpeg' alt='Contact Lens' height='220'/>";
+                                    } else { ?>
+                                        <img src="../public/images/<?php echo $row['Image']?>" alt="<?php echo $row['Name']?>"
+                                        height="220" />
+                                    <?php } ?>
                             </div>
                             <div class="product-details">
                                 <h3 class="dark-text"><?php echo $row['Name']?></h3>

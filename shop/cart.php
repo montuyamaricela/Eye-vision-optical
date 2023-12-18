@@ -165,7 +165,7 @@
                                 <img src="#" alt="" id="navbarProfile">
                                 <p id="userName">Name</p>
                             </div>
-                            <p id="user" ">My Account</p>
+                            <p id="user">My Account</p>
                         </div>
                         <div class=" dropdown-content">
                             <div id='op2'>
@@ -188,7 +188,7 @@
     <section class="">
         <div class="">
             <?php
-                $checkCart = "Select Product_ID, Product_name, Color, Image, Price, Quantity, User_id, Stock from product.products a join user.cart b on a.ID = b.Product_ID WHERE b.User_id = '$user_id'";
+                $checkCart = "Select Product_ID, Product_name, Category ,Color, Image, Price, Quantity, User_id, Stock from product.products a join user.cart b on a.ID = b.Product_ID WHERE b.User_id = '$user_id'";
                 $res = mysqli_query($con, $checkCart);
             ?>
             <?php if(mysqli_num_rows($res) === 0){
@@ -228,7 +228,13 @@
                                 <div class="card-image">
                                     <?php
                                         $product_image = $row['Image'];
-                                        echo "<img src='../public/images/$product_image' height='150px'></img>";
+                                        $categ = $row['Category'];
+                                                
+                                        if ($categ === 'Contact Lenses') {
+                                            echo "<img src='../public/images/products/Contactlens.jpeg' alt='Contact Lens' height='150'/>";
+                                        } else {
+                                            echo "<img src='../public/images/$product_image' height='150px'></img>";
+                                        }
                                     ?>
                                 </div>
                                 <div class="cart-detail">
